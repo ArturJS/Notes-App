@@ -44,6 +44,7 @@
   padding: 10px 15px;
   color: #ffffff;
   position: relative;
+  vertical-align: top;
 
   .remove-todo {
     position: absolute;
@@ -65,6 +66,7 @@
 
   .todo-description {
     padding: 5px 0;
+    word-break: break-all;
   }
 }
 
