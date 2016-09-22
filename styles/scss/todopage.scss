@@ -1,7 +1,10 @@
+@import "mixins.scss";
+
 .input-form {
   border: 0;
   background: #3949AB;
   padding: 15px;
+  @include box-shadow-animated();
 
   .title-input-container, .description-input-container {
     margin-bottom: 15px;
@@ -45,6 +48,8 @@
   color: #ffffff;
   position: relative;
   vertical-align: top;
+  @include box-shadow-animated();
+
 
   .remove-todo {
     position: absolute;
