@@ -1,0 +1,61 @@
+.input-form {
+  border: 0;
+  background: #3949AB;
+  padding: 15px;
+
+  .title-input-container, .description-input-container {
+    margin-bottom: 15px;
+  }
+
+  .title-input {
+    font-size: 24px;
+    padding: 10px 15px;
+  }
+
+  .description-area {
+    font-size: 16px;
+    padding: 10px 15px;
+    max-width: 100%;
+  }
+
+  .btn-add-todo {
+    border: 0;
+    background: #F44336;
+    color: #FFEBEE;
+    padding: 10px 15px;
+    cursor: pointer;
+
+    &[disabled="disabled"] {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+}
+
+.todo-item:nth-child(3n-1) {
+  margin: 20px 20px 0;
+}
+
+.todo-item {
+  width: 240px;
+  display: inline-block;
+  background: #663399;
+  margin-top: 20px;
+  padding: 10px 15px;
+  color: #ffffff;
+
+  .todo-title {
+    margin: 0;
+    padding: 10px 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .todo-description {
+    padding: 5px 0;
+  }
+}
+
+

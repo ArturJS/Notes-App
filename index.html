@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"
+      ng-app="App"
+      class="wh100">
+<head>
+  <meta charset="UTF-8">
+  <title>My Angular ToDo (Firebase)</title>
+  <link href="./styles/css/allStyles.css" rel="stylesheet">
+</head>
+<body class="wh100">
+<div class="root-container wh100">
+  <div class="page-container h100">
+    <div class="wh100" ui-view></div>
+  </div>
+</div>
+
+<script src="./bower_components/firebase/firebase.js"></script>
+<script src="./app/firebase.config.js"></script>
+
+<script src="./bower_components/lodash/lodash.js"></script>
+<script src="./bower_components/angular/angular.js"></script>
+<script src="./bower_components/angularfire/dist/angularfire.js"></script>
+<script src="./bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+
+<script src="./app/templates.js"></script>
+<script src="./app/app.js"></script>
+<script src="./app/config.js"></script>
+<script src="./app/controllers/todo.ctrl.js"></script>
+</body>
+</html>

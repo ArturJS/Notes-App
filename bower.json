@@ -1,0 +1,18 @@
+{
+  "name": "angular_todo_list(firebase)",
+  "authors": [
+    "Artur Nizamutdinov <artur_nizamutdinov@epam.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "dependencies": {
+    "angular": "~1.5.8",
+    "angularfire": "~2.0.2",
+    "firebase": "~3.4.0",
+    "angular-ui-router": "~0.3.1",
+    "lodash": "~4.16.1",
+    "normalize.scss": "~5.0.3"
+  }
+}
