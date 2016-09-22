@@ -21,6 +21,10 @@ App.controller('ToDoCtrl', ['$scope', '$firebaseArray', function ($scope, $fireb
     vm.newTodo = getEmptyTodo();
   };
 
+  vm.removeTodo = function (index) {
+    vm.todoList.$remove(index);
+  };
+
   function getEmptyTodo() {
     return angular.copy({
       title: '',

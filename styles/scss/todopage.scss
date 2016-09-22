@@ -43,6 +43,16 @@
   margin-top: 20px;
   padding: 10px 15px;
   color: #ffffff;
+  position: relative;
+
+  .remove-todo {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-style: normal;
+    cursor: pointer;
+    color: #FFFFFF;
+  }
 
   .todo-title {
     margin: 0;
