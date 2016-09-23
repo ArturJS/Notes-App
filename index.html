@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"
-      ng-app="App"
       class="wh100">
 <head>
   <meta charset="UTF-8">
   <title>My Angular ToDo (Firebase)</title>
   <link href="./bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
   <!-- inject:css -->
-  <link rel="stylesheet" href="/styles/css/allStyles.css?v=1474641015039">
+  <link rel="stylesheet" href="/styles/css/allStyles.css?v=1474645787379">
   <!-- endinject -->
 </head>
 <body>
@@ -17,17 +16,9 @@
   </div>
 </div>
 
-<script src="./bower_components/firebase/firebase.js"></script>
-<script src="./app/firebase.config.js"></script>
-
-<script src="./bower_components/lodash/lodash.js"></script>
+<!--todo: check why angular initially is not defined and remove this tag-->
 <script src="./bower_components/angular/angular.js"></script>
-<script src="./bower_components/angularfire/dist/angularfire.js"></script>
-<script src="./bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 
-<script src="./app/templates.js"></script>
-<script src="./app/app.js"></script>
-<script src="./app/config.js"></script>
-<script src="./app/controllers/todo.ctrl.js"></script>
+<script src="./bower_components/requirejs/require.js" data-main="app/main.js"></script>
 </body>
 </html>

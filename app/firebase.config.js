@@ -1,4 +1,8 @@
-(function () {
+define('firebase-config', [
+  'firebase'
+], function(firebase) {
+  'use strict';
+  
   // Initialize Firebase
   var config = {
     apiKey: "AIzaSyC6LDuww70ztN7YfscpvEHrkJteSdvPco8",
@@ -8,4 +12,4 @@
     messagingSenderId: "956700524818"
   };
   firebase.initializeApp(config);
-}(firebase));
+});
