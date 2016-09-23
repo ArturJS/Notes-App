@@ -8,7 +8,9 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "gulp-inject": "4.0.0"
+  },
   "devDependencies": {
     "connect": "3.4.1",
     "connect-livereload": "0.5.4",
@@ -25,7 +27,7 @@
     "gulp-minify-css": "~1.2.4",
     "gulp-open": "2.0.0",
     "gulp-sass": "~2.2.0",
-    "gulp-watch": "4.3.8",
+    "gulp-watch": "4.3.9",
     "livereload": "0.4.1",
     "require-dir": "~0.3.0",
     "run-sequence": "~1.1.5",

@@ -8,7 +8,7 @@ var concat = require('gulp-concat');
 var paths = gulp.paths;
 
 gulp.task('styles', function (done) {
-  runSequence('cleanStyles', 'buildStyles', done);
+  runSequence('cleanStyles', 'buildStyles', 'injectStyles', done);
 });
 
 gulp.task('cleanStyles', function () {
