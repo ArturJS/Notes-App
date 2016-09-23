@@ -1,0 +1,71 @@
+<h1>To Do List</h1>
+
+<form name="NewTodoForm"
+      novalidate
+      class="input-form w100"
+      ng-submit="NewTodoForm.$valid && todoPage.addTodo()">
+  <div class="title-input-container">
+    <input type="text"
+           class="title-input w100"
+           placeholder="Enter some title here..."
+           ng-model="todoPage.newTodo.title"
+           required>
+  </div>
+  <div class="description-input-container">
+    <textarea class="description-area w100"
+              ng-model="todoPage.newTodo.description"
+              placeholder="Enter some description here..."
+              required></textarea>
+  </div>
+  <div class="buttons-container">
+    <button class="btn-add-todo"
+            type="submit"
+            ng-disabled="NewTodoForm.$invalid">
+      Add!
+    </button>
+  </div>
+</form>
+
+<div class="todos-container">
+  <form name="todoItemForm"
+        novalidate
+        class="todo-item"
+        ng-repeat="todo in todoPage.todoList track by $index">
+
+    <i class="glyphicon glyphicon-remove remove-todo"
+       ng-click="todoPage.removeTodo($index)"></i>
+
+    <i class="glyphicon glyphicon-pencil edit-todo"
+       ng-click="todoPage.editTodo($index)"
+       ng-hide="todoPage.isEditingTodo[$index]"></i>
+
+    <i class="glyphicon glyphicon-floppy-disk save-todo"
+       ng-click="todoItemForm.$valid && todoPage.saveTodo($index)"
+       ng-show="todoPage.isEditingTodo[$index]"
+       ng-disabled="todoItemForm.$invalid"></i>
+
+    <div ng-if="!todoPage.isEditingTodo[$index]">
+      <h3 class="todo-title">{{todo.title}}</h3>
+      <div class="todo-description">{{todo.description}}</div>
+    </div>
+
+    <div ng-if="todoPage.isEditingTodo[$index]">
+      <h3 class="todo-title">
+        <input class="w100 edit-input"
+               type="text"
+               name="todoTitle"
+               placeholder="Enter title here..."
+               ng-model="todo.title"
+               required />
+      </h3>
+      <div class="todo-description">
+        <textarea class="w100 mw100 edit-description"
+                  name="todoDescription"
+                  placeholder="Enter description here..."
+                  ng-model="todo.description"
+                  required></textarea>
+      </div>
+    </div>
+
+  </form>
+</div>
