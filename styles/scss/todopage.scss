@@ -28,10 +28,7 @@
     padding: 10px 15px;
     cursor: pointer;
 
-    &[disabled="disabled"] {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
+    @include if-disabled();
   }
 }
 
@@ -58,6 +55,35 @@
     font-style: normal;
     cursor: pointer;
     color: #FFFFFF;
+  }
+
+  .edit-todo {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-style: normal;
+    cursor: pointer;
+    color: #FFFFFF;
+  }
+
+  .save-todo {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-style: normal;
+    cursor: pointer;
+    color: #FFFFFF;
+    @include if-disabled();
+  }
+
+  .todo-title, .todo-description {
+    .edit-input, .edit-description {
+      color: #000000;
+    }
+
+    .edit-input {
+      text-align: center;
+    }
   }
 
   .todo-title {

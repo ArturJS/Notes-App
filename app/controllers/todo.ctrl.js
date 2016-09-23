@@ -14,6 +14,7 @@ App.controller('ToDoCtrl', ['$scope', '$firebaseArray', function ($scope, $fireb
   function init(){
     vm.todoList = $firebaseArray(todoStoreRef);
     vm.newTodo = getEmptyTodo();
+    vm.isEditingTodo = {};
   }
 
   vm.addTodo = function () {
@@ -25,10 +26,20 @@ App.controller('ToDoCtrl', ['$scope', '$firebaseArray', function ($scope, $fireb
     vm.todoList.$remove(index);
   };
 
+  vm.editTodo = function (index) {
+    vm.isEditingTodo[index] = true;
+  };
+
+  vm.saveTodo = function (index) {
+    vm.isEditingTodo[index] = false;
+    vm.todoList.$save(index);
+  };
+
   function getEmptyTodo() {
     return angular.copy({
       title: '',
       description: ''
     });
   }
+
 }]);
