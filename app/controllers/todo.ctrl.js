@@ -1,38 +1,46 @@
-define([
+require([
   'app',
-  'firebase'
-], function(app, firebase) {
+  'firebase',
+  'lodash'
+], function (app, firebase, _) {
   'use strict';
-  
+
   app.controller('ToDoCtrl', ['$scope', '$firebaseArray', function ($scope, $firebaseArray) {
     var vm = this,
-        todoStoreRef = firebase.database().ref().child('todos');
+      todoStoreRef = firebase.database().ref().child('todos');
 
     init();
 
-    function init(){
-      vm.todoList = $firebaseArray(todoStoreRef);
-      vm.newTodo = getEmptyTodo();
-      vm.isEditingTodo = {};
+    function init() {
+      angular.extend(vm, {
+        todoList: $firebaseArray(todoStoreRef),
+        newTodo: getEmptyTodo(),
+        isEditingTodo: {},
+        addTodo: addTodo,
+        removeTodo: removeTodo,
+        editTodo: editTodo,
+        saveTodo: saveTodo
+      });
     }
 
-    vm.addTodo = function () {
-      vm.todoList.$add(angular.copy(vm.newTodo));
+    function addTodo() {
+      var newTodo = angular.extend({id: Math.random()}, vm.newTodo);
+      vm.todoList.$add(newTodo);
       vm.newTodo = getEmptyTodo();
-    };
+    }
 
-    vm.removeTodo = function (index) {
+    function removeTodo(index) {
       vm.todoList.$remove(index);
-    };
+    }
 
-    vm.editTodo = function (index) {
-      vm.isEditingTodo[index] = true;
-    };
+    function editTodo(id) {
+      vm.isEditingTodo[id] = true;
+    }
 
-    vm.saveTodo = function (index) {
-      vm.isEditingTodo[index] = false;
+    function saveTodo(index, id) {
+      vm.isEditingTodo[id] = false;
       vm.todoList.$save(index);
-    };
+    }
 
     function getEmptyTodo() {
       return angular.copy({

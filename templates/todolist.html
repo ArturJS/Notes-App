@@ -9,11 +9,13 @@
            class="title-input w100"
            placeholder="Enter some title here..."
            ng-model="todoPage.newTodo.title"
+           ng-trim="false"
            required>
   </div>
   <div class="description-input-container">
     <textarea class="description-area w100"
               ng-model="todoPage.newTodo.description"
+              ng-trim="false"
               placeholder="Enter some description here..."
               required></textarea>
   </div>
@@ -30,32 +32,33 @@
   <form name="todoItemForm"
         novalidate
         class="todo-item"
-        ng-repeat="todo in todoPage.todoList track by $index">
+        ng-repeat="todo in todoPage.todoList track by todo.id">
 
     <i class="glyphicon glyphicon-remove remove-todo"
        ng-click="todoPage.removeTodo($index)"></i>
 
     <i class="glyphicon glyphicon-pencil edit-todo"
-       ng-click="todoPage.editTodo($index)"
-       ng-hide="todoPage.isEditingTodo[$index]"></i>
+       ng-click="todoPage.editTodo(todo.id)"
+       ng-hide="todoPage.isEditingTodo[todo.id]"></i>
 
     <i class="glyphicon glyphicon-floppy-disk save-todo"
-       ng-click="todoItemForm.$valid && todoPage.saveTodo($index)"
-       ng-show="todoPage.isEditingTodo[$index]"
+       ng-click="todoItemForm.$valid && todoPage.saveTodo($index, todo.id)"
+       ng-show="todoPage.isEditingTodo[todo.id]"
        ng-disabled="todoItemForm.$invalid"></i>
 
-    <div ng-if="!todoPage.isEditingTodo[$index]">
+    <div ng-if="!todoPage.isEditingTodo[todo.id]">
       <h3 class="todo-title">{{todo.title}}</h3>
       <div class="todo-description">{{todo.description}}</div>
     </div>
 
-    <div ng-if="todoPage.isEditingTodo[$index]">
+    <div ng-if="todoPage.isEditingTodo[todo.id]">
       <h3 class="todo-title">
         <input class="w100 edit-input"
                type="text"
                name="todoTitle"
                placeholder="Enter title here..."
                ng-model="todo.title"
+               ng-trim="false"
                required />
       </h3>
       <div class="todo-description">
@@ -63,6 +66,7 @@
                   name="todoDescription"
                   placeholder="Enter description here..."
                   ng-model="todo.description"
+                  ng-trim="false"
                   required></textarea>
       </div>
     </div>

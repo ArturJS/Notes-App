@@ -1,8 +1,8 @@
-define('firebase-config', [
+require([
   'firebase'
 ], function(firebase) {
   'use strict';
-  
+
   // Initialize Firebase
   var config = {
     apiKey: "AIzaSyC6LDuww70ztN7YfscpvEHrkJteSdvPco8",
