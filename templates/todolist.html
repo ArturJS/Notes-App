@@ -51,7 +51,7 @@
       <div class="todo-description">{{todo.description}}</div>
     </div>
 
-    <div ng-if="todoPage.isEditingTodo[todo.id]">
+    <div class="todo-for-edit-cnt" ng-if="todoPage.isEditingTodo[todo.id]">
       <h3 class="todo-title">
         <input class="w100 edit-input"
                type="text"

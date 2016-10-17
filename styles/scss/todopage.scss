@@ -1,8 +1,9 @@
 @import "mixins.scss";
+@import "colors.scss";
 
 .input-form {
   border: 0;
-  background: #3949AB;
+  background: $blue;
   padding: 15px;
   @include box-shadow-animated();
 
@@ -24,8 +25,8 @@
 
   .btn-add-todo {
     border: 0;
-    background: #F44336;
-    color: #FFEBEE;
+    background: $red;
+    color: $white1;
     padding: 10px 15px;
     cursor: pointer;
 
@@ -45,10 +46,10 @@
 .todo-item {
   width: 240px;
   display: inline-block;
-  background: #663399;
+  background: $violet;
   margin-top: 20px;
   padding: 10px 15px;
-  color: #ffffff;
+  color: $white;
   position: relative;
   vertical-align: top;
   @include box-shadow-animated();
@@ -60,7 +61,7 @@
     right: 5px;
     font-style: normal;
     cursor: pointer;
-    color: #FFFFFF;
+    color: $white;
   }
 
   .edit-todo {
@@ -69,7 +70,7 @@
     left: 5px;
     font-style: normal;
     cursor: pointer;
-    color: #FFFFFF;
+    color: $white;
   }
 
   .save-todo {
@@ -78,13 +79,13 @@
     left: 5px;
     font-style: normal;
     cursor: pointer;
-    color: #FFFFFF;
+    color: $white;
     @include if-disabled();
   }
 
   .todo-title, .todo-description {
     .edit-input, .edit-description {
-      color: #000000;
+      color: $black;
     }
 
     .edit-input {
@@ -96,14 +97,16 @@
     margin: 0;
     padding: 10px 0;
     text-align: center;
-    white-space: pre-wrap;
-    word-wrap: break-word;
   }
 
   .todo-description {
     padding: 5px 0;
-    word-break: break-all;
-    white-space: pre-wrap;
-    word-wrap: break-word;
+  }
+
+  div:not(.todo-for-edit-cnt) {
+    .todo-title, .todo-description {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
   }
 }
