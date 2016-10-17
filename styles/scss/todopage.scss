@@ -19,7 +19,7 @@
     font-size: 16px;
     padding: 10px 15px;
     max-width: 100%;
-    
+
   }
 
   .btn-add-todo {
@@ -33,6 +33,10 @@
   }
 }
 
+.todos-container {
+  display: flex;
+  flex-wrap: wrap;
+}
 
 .todo-item:nth-child(3n-1) {
   margin: 20px 20px 0;
@@ -92,13 +96,14 @@
     margin: 0;
     padding: 10px 0;
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
 
   .todo-description {
     padding: 5px 0;
     word-break: break-all;
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
 }
