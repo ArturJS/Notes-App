@@ -7,7 +7,8 @@ require([
 
   app.controller('ToDoCtrl', ['$scope', '$firebaseArray', function ($scope, $firebaseArray) {
     var vm = this,
-      todoStoreRef = firebase.database().ref().child('todos');
+      todoStoreRef = firebase.database().ref().child('todos'),
+      linkRegexp = /(http[^\s]+)/g;
 
     init();
 
@@ -25,6 +26,8 @@ require([
 
     function addTodo() {
       var newTodo = angular.extend({id: Math.random()}, vm.newTodo);
+      newTodo.description = _.escape(newTodo.description);
+      newTodo.description = newTodo.description.replace(linkRegexp, '<a href="$1" target="_blank" rel="nofollow noopener">$1</a>');
       vm.todoList.$add(newTodo);
       vm.newTodo = getEmptyTodo();
     }

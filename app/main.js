@@ -12,6 +12,7 @@ require.config({
     'app': 'app',
     'routes': 'routes',
     'todo-ctrl': './controllers/todo.ctrl',
+    'trust-filter': './filters/trust.filter'
   },
 
   shim: {
@@ -50,11 +51,15 @@ require.config({
     },
 
     'todo-ctrl': {
-      deps: ['angular', 'firebase-config']
+      deps: ['angular', 'firebase-config', 'trust-filter']
     },
 
     'routes': {
       deps: ['todo-ctrl', 'templates']
+    },
+
+    'trust-filter': {
+      deps: ['angular']
     }
   },
 
