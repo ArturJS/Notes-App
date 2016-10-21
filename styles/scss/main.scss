@@ -1,8 +1,9 @@
 @import "../../bower_components/normalize.scss/sass/_normalize.scss";
+@import "colors.scss";
 
 body {
   margin: 0;
-  background: #FFF3E0;
+  background: $white1;
   width: 100%;
   height: calc(100% - 20px);
 }
