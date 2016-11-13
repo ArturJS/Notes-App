@@ -1,0 +1,65 @@
+@import "../../../styles/_mixins.scss";
+@import "../../../styles/_colors.scss";
+
+.note-item {
+
+
+  .remove-note {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-style: normal;
+    cursor: pointer;
+    color: $white;
+  }
+
+  .edit-note {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-style: normal;
+    cursor: pointer;
+    color: $white;
+  }
+
+  .save-note {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-style: normal;
+    cursor: pointer;
+    color: $white;
+    @include if-disabled();
+  }
+
+  .note-title, .note-description {
+    .edit-input, .edit-description {
+      color: $black;
+    }
+
+    .edit-input {
+      text-align: center;
+    }
+  }
+
+  .note-title {
+    margin: 0;
+    padding: 10px 0;
+    text-align: center;
+  }
+
+  .note-description {
+    padding: 5px 0;
+  }
+
+  div:not(.note-for-edit-cnt) {
+    .note-title, .note-description {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  }
+}
+
+a {
+  color: $white !important;
+}

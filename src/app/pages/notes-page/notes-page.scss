@@ -1,0 +1,74 @@
+@import "../../styles/_mixins.scss";
+@import "../../styles/_colors.scss";
+
+.input-form {
+  border: 0;
+  background: $blue;
+  padding: 15px;
+  @include box-shadow-animated();
+
+  .title-input-container, .description-input-container {
+    margin-bottom: 15px;
+  }
+
+  .title-input {
+    font-size: 24px;
+    padding: 10px 15px;
+  }
+
+  .description-area {
+    font-size: 16px;
+    padding: 10px 15px;
+    max-width: 100%;
+  }
+
+  .btn-add-note {
+    border: 0;
+    background: $red;
+    color: $white1;
+    padding: 10px 15px;
+    cursor: pointer;
+
+    @include if-disabled();
+  }
+}
+
+.notes-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+note {
+  width: 100%;
+  display: inline-block;
+  background: $violet;
+  margin-top: 20px;
+  padding: 10px 15px;
+  color: $white;
+  position: relative;
+  vertical-align: top;
+  @include box-shadow-animated();
+}
+
+@media all and (min-width: 520px) and (max-width: 779px) {
+  note {
+    width: calc(50% - 10px);
+
+    &:nth-child(even) {
+      margin-left: 20px;
+    }
+  }
+}
+
+@media all and (min-width: 780px) {
+  note {
+    width: 240px;
+
+    &:nth-child(3n-1) {
+      margin: 20px 20px 0;
+
+    }
+  }
+}
+

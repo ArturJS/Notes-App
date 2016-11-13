@@ -1,0 +1,39 @@
+<div class="wh100 notes-page">
+
+  <h1 class="text-center">Notes</h1>
+
+  <form [formGroup]="newNoteForm"
+        (ngSubmit)="newNoteForm.valid && addNote()"
+        class="input-form w100"
+        novalidate>
+    <div class="title-input-container">
+      <input type="text"
+             class="title-input w100"
+             placeholder="Enter some title here..."
+             [formControl]="newNoteForm.controls.title">
+    </div>
+    <div class="description-input-container">
+      <textarea class="description-area w100"
+                [formControl]="newNoteForm.controls.description"
+                placeholder="Enter some description here..."
+                stretch-by-content></textarea>
+    </div>
+    <div class="buttons-container">
+      <button class="btn-add-note"
+              type="submit"
+              [disabled]="!newNoteForm.valid">
+        Add!
+      </button>
+    </div>
+  </form>
+
+  <div class="notes-container">
+    <note *ngFor="let note of notesList | async"
+          [note]="note"
+          [isEditingNote]="isEditingNote[note.id]"
+          (onEdit)="editNote($event)"
+          (onRemove)="removeNote($event)"
+          (onSave)="saveNote($event)"></note>
+  </div>
+
+</div>
