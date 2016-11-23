@@ -19,8 +19,8 @@ const HtmlElementsPlugin = require('./html-elements-plugin');
  * Webpack Constants
  */
 const METADATA = {
-  title: 'Video courses',
-  baseUrl: '/',
+  title: 'Notes',
+  baseUrl: '/notes/',
   isDevServer: helpers.isWebpackDevServer()
 };
 
