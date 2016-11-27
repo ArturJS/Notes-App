@@ -34,8 +34,6 @@
 }
 
 .notes-container {
-  display: flex;
-  flex-wrap: wrap;
   margin-bottom: 20px;
 }
 
@@ -44,10 +42,10 @@ note {
   display: inline-block;
   background: $violet;
   margin-top: 20px;
-  padding: 10px 15px;
   color: $white;
   position: relative;
   vertical-align: top;
+  overflow: hidden;
   @include box-shadow-animated();
 }
 

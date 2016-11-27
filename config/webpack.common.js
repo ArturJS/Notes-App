@@ -269,6 +269,12 @@ module.exports = {
       jQuery: 'jquery',
       $: 'jquery',
       jquery: 'jquery'
+    }),
+
+
+    // GSAP
+    new ProvidePlugin({
+      TweenMax: 'gsap'
     })
   ],
 

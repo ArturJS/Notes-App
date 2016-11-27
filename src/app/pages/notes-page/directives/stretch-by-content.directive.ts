@@ -9,6 +9,7 @@ import {
   selector: '[stretch-by-content]'
 })
 export class StretchByContentDirective implements OnInit {
+
   constructor(private el:ElementRef) {
   }
 

@@ -4,7 +4,8 @@
 import { NgModule } from '@angular/core';
 import { NotesPage } from './notes-page.component.ts';
 import { Note } from './note/note.component';
-import { StretchByContentDirective } from './directives/stretch-by-content/stretch-by-content.directive';
+import { StretchByContentDirective } from './directives/stretch-by-content.directive.ts';
+import { CollapseDirective } from './directives/collapse.directive.ts';
 
 import { SharedModule } from './../../shared';
 import { NotesEffects } from './notes.effects.ts';
@@ -21,7 +22,8 @@ import { NotesActions } from './notes.actions.ts';
   declarations: [
     NotesPage,
     Note,
-    StretchByContentDirective
+    StretchByContentDirective,
+    CollapseDirective
   ],
   providers: [
     NotesActions

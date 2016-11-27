@@ -1,5 +1,7 @@
 import {
   Component,
+  ElementRef,
+  HostListener,
   Input,
   Output,
   EventEmitter,
@@ -24,13 +26,16 @@ export class Note {
   @Input() public isEditingNote:boolean;
   @Input() public note:any;
 
-  @Output() public onEdit : EventEmitter<any>;
-  @Output() public onRemove : EventEmitter<any>;
-  @Output() public onSave : EventEmitter<any>;
+  @Output() public onEdit:EventEmitter<any>;
+  @Output() public onRemove:EventEmitter<any>;
+  @Output() public onSave:EventEmitter<any>;
 
+  private $elem:any;
   private noteForm:FormGroup;
+  private isCollapsed: boolean;
 
-  constructor(private fb:FormBuilder) {
+  constructor(private fb:FormBuilder,
+              private el:ElementRef) {
 
     this.onEdit = new EventEmitter<any>();
     this.onRemove = new EventEmitter<any>();
@@ -44,6 +49,12 @@ export class Note {
         Validators.required
       ]]
     });
+
+    this.isCollapsed = false;
+  }
+
+  ngOnInit():void {
+    this.$elem = jQuery(this.el.nativeElement);
   }
 
   editNote(note) {
@@ -63,10 +74,13 @@ export class Note {
     this.onSave.emit(note);
   }
 
-  linksFommatter(text:string){
+  linksFormatter(text:string) {
     let linkRegexp = /(http[^\s]+)/g;
     text = _.escape(text);
     return text.replace(linkRegexp, `<a href="$1" target="_blank" rel="nofollow noopener" style="color: #fff;">$1</a>`);
   }
 
+  toggleCollapse(){
+    this.isCollapsed = !this.isCollapsed;
+  }
 }

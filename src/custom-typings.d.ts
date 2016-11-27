@@ -122,3 +122,5 @@ interface NodeRequireFunction extends Es6PromiseLoader  {}
 interface NodeModule extends WebpackModule {}
 interface Global extends GlobalEnvironment  {}
 
+declare var jQuery:any;
+declare var TweenMax:any;

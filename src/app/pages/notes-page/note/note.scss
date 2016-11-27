@@ -2,33 +2,43 @@
 @import "../../../styles/_colors.scss";
 
 .note-item {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  padding: 10px 15px 20px;
 
+  $icon-offset: 12px;
+  $icon-offset-top: 12px;
 
   .remove-note {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: $icon-offset-top;
+    right: $icon-offset;
     font-style: normal;
     cursor: pointer;
     color: $white;
+    transform: scale(2);
   }
 
   .edit-note {
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: $icon-offset-top;
+    left: $icon-offset;
     font-style: normal;
     cursor: pointer;
     color: $white;
+    transform: scale(2);
   }
 
   .save-note {
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: $icon-offset-top;
+    left: $icon-offset;
     font-style: normal;
     cursor: pointer;
     color: $white;
+    transform: scale(2);
+
     @include if-disabled();
   }
 
@@ -38,18 +48,22 @@
     }
 
     .edit-input {
+      display: block;
+      margin: 0 auto;
+      width: calc(100% - 34px);
       text-align: center;
     }
   }
 
   .note-title {
     margin: 0;
-    padding: 10px 0;
+    padding: 15px 0 10px;
     text-align: center;
   }
 
   .note-description {
-    padding: 5px 0;
+    overflow: hidden;
+    margin-bottom: 5px;
   }
 
   div:not(.note-for-edit-cnt) {
@@ -58,8 +72,41 @@
       word-wrap: break-word;
     }
   }
-}
 
-a {
-  color: $white !important;
+  .toggle-collapse {
+    background: $violet;
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    height: 20px;
+
+    .icon-double-arrow {
+      display: inline-block;
+    }
+
+    &.is-collapsed {
+      .arrow-path {
+        transform: rotate(0deg);
+      }
+    }
+
+    &:hover {
+      .arrow-path {
+        opacity: 1;
+      }
+    }
+
+    .arrow-path {
+      stroke: #FFF;
+      fill: none;
+      stroke-width: 2px;
+      opacity: 0.65;
+      transition: opacity 0.1s linear;
+      transform-origin: center;
+      transform: rotate(180deg);
+    }
+  }
 }

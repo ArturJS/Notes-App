@@ -16,18 +16,23 @@
 
   <div *ngIf="!isEditingNote">
     <h3 class="note-title">{{note.title}}</h3>
-    <div class="note-description" [innerHTML]="linksFommatter(note.description)"></div>
+    <div class="note-description"
+         [innerHTML]="linksFormatter(note.description)"
+         collapse
+         [isCollapsed]="isCollapsed"></div>
   </div>
 
   <div class="note-for-edit-cnt"
        *ngIf="isEditingNote">
     <h3 class="note-title">
-      <input class="w100 edit-input"
+      <input class="edit-input"
              type="text"
              placeholder="Enter title here..."
              [formControl]="noteForm.controls.title"/>
     </h3>
-    <div class="note-description">
+    <div class="note-description"
+         collapse
+         [isCollapsed]="isCollapsed">
         <textarea class="w100 mw100 edit-description"
                   placeholder="Enter description here..."
                   [formControl]="noteForm.controls.description"
@@ -35,4 +40,11 @@
     </div>
   </div>
 
+  <div class="toggle-collapse" (click)="toggleCollapse()" [ngClass]="{'is-collapsed': isCollapsed}">
+    <svg class="icon-double-arrow"
+         width="40"
+         height="20">
+      <path class="arrow-path" d="M 1 1 L 20 10 L 40 1 M 1 6 L 20 15 L 40 6"></path>
+    </svg>
+  </div>
 </form>
