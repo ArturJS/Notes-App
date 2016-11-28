@@ -24,16 +24,26 @@
               [disabled]="!newNoteForm.valid">
         Add!
       </button>
+      <!--<button class="btn btn-primary" (click)="login()">login</button>
+      <button class="btn btn-warning" (click)="logout()">logout</button>
+      <button class="btn btn-default" (click)="updateLayout()">update layout</button>-->
     </div>
   </form>
 
-  <div class="notes-container">
-    <note *ngFor="let note of notesList | async"
-          [note]="note"
-          [isEditingNote]="isEditingNote[note.id]"
-          (onEdit)="editNote($event)"
-          (onRemove)="removeNote($event)"
-          (onSave)="saveNote($event)"></note>
+  <div class="notes-container"
+       masonry
+       [options]="{ transitionDuration: '0.3s' }"
+       #masonryContainer>
+    <div class="note-wrap"
+         masonry-brick
+         *ngFor="let note of notesList | async">
+      <note [note]="note"
+            [isEditingNote]="isEditingNote[note.id]"
+            (onEdit)="editNote($event)"
+            (onRemove)="removeNote($event)"
+            (onSave)="saveNote($event)"
+            (onUpdateLayout)="updateLayout()"></note>
+    </div>
   </div>
 
 </div>

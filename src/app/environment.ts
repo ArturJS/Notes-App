@@ -3,6 +3,7 @@
 // rc2 workaround
 import { enableDebugTools, disableDebugTools } from '@angular/platform-browser';
 import { enableProdMode, ApplicationRef } from '@angular/core';
+import { AuthProviders, AuthMethods } from 'angularfire2';
 // Environment Providers
 let PROVIDERS = [
   // common env directives
@@ -57,4 +58,9 @@ export const firebaseConfig = {
   databaseURL: "https://angulartodo-561d2.firebaseio.com",
   storageBucket: "",
   messagingSenderId: "956700524818"
+};
+
+export const firebaseAuthConfig = {
+  provider: AuthProviders.Google,
+  method: AuthMethods.Popup
 };

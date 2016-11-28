@@ -17,7 +17,7 @@ import { LoggedInGuard, LoggedOutGuard } from "./guards";
 import { NoContent } from './pages/no-content';
 import { StoreModule } from '@ngrx/store';
 import { AngularFireModule } from 'angularfire2';
-import { firebaseConfig } from './environment';
+import { firebaseConfig, firebaseAuthConfig } from './environment';
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -41,7 +41,7 @@ const APP_PROVIDERS = [
     BrowserModule,
     ROUTING,
     StoreModule.provideStore({}),
-    AngularFireModule.initializeApp(firebaseConfig)
+    AngularFireModule.initializeApp(firebaseConfig, firebaseAuthConfig)
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,

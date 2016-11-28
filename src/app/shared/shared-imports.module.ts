@@ -6,13 +6,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MasonryModule } from 'angular2-masonry';
 
 const angularModules = [
   FormsModule,
   ReactiveFormsModule,
   RouterModule,
   CommonModule,
-  NgbModule
+  NgbModule,
+  MasonryModule
 ];
 
 @NgModule({

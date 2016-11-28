@@ -1,7 +1,6 @@
 import {
   Component,
   ElementRef,
-  HostListener,
   Input,
   Output,
   EventEmitter,
@@ -29,6 +28,7 @@ export class Note {
   @Output() public onEdit:EventEmitter<any>;
   @Output() public onRemove:EventEmitter<any>;
   @Output() public onSave:EventEmitter<any>;
+  @Output() public onUpdateLayout:EventEmitter<any>;
 
   private $elem:any;
   private noteForm:FormGroup;
@@ -40,6 +40,7 @@ export class Note {
     this.onEdit = new EventEmitter<any>();
     this.onRemove = new EventEmitter<any>();
     this.onSave = new EventEmitter<any>();
+    this.onUpdateLayout = new EventEmitter<any>();
 
     this.noteForm = this.fb.group({
       title: ['', [
@@ -63,6 +64,8 @@ export class Note {
       title: note.title,
       description: note.description
     });
+
+    this.onUpdateLayout.emit();
   }
 
   removeNote(note) {
@@ -72,6 +75,8 @@ export class Note {
   saveNote(note) {
     note = Object.assign(note, this.noteForm.getRawValue());
     this.onSave.emit(note);
+
+    this.onUpdateLayout.emit();
   }
 
   linksFormatter(text:string) {
@@ -82,5 +87,7 @@ export class Note {
 
   toggleCollapse(){
     this.isCollapsed = !this.isCollapsed;
+
+    this.onUpdateLayout.emit();
   }
 }

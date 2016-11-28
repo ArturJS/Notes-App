@@ -1,6 +1,8 @@
 @import "../../styles/_mixins.scss";
 @import "../../styles/_colors.scss";
 
+$note-offset: 20px;
+
 .input-form {
   border: 0;
   background: $blue;
@@ -34,14 +36,14 @@
 }
 
 .notes-container {
-  margin-bottom: 20px;
+  margin-bottom: $note-offset;
 }
 
-note {
+.note-wrap {
   width: 100%;
   display: inline-block;
   background: $violet;
-  margin-top: 20px;
+  margin-top: $note-offset;
   color: $white;
   position: relative;
   vertical-align: top;
@@ -49,24 +51,26 @@ note {
   @include box-shadow-animated();
 }
 
-@media all and (min-width: 520px) and (max-width: 779px) {
-  note {
-    width: calc(50% - 10px);
+@media all and (min-width: 520px) {
+  .notes-container {
+    margin-right: -$note-offset;
+  }
 
-    &:nth-child(even) {
-      margin-left: 20px;
-    }
+  .note-wrap {
+    margin-right: $note-offset;
   }
 }
 
+@media all and (min-width: 520px) and (max-width: 779px) {
+  .note-wrap {
+    width: calc(50% - 20px);
+  }
+
+}
+
 @media all and (min-width: 780px) {
-  note {
+  .note-wrap {
     width: 240px;
-
-    &:nth-child(3n-1) {
-      margin: 20px 20px 0;
-
-    }
   }
 }
 

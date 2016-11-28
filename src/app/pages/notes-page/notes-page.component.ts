@@ -4,7 +4,10 @@ import {
   Validators
 } from '@angular/forms';
 
-import {Component} from '@angular/core';
+import {
+  Component,
+  ViewChild
+} from '@angular/core';
 
 import {Router} from '@angular/router';
 
@@ -16,7 +19,9 @@ import {AbstractSmartComponent} from '../../shared/components';
 
 import {NotesActions} from './notes.actions.ts';
 import {notesReducer} from './notes-page.reducer.ts';
-import {AngularFire, FirebaseListObservable} from 'angularfire2';
+import {AngularFire, FirebaseListObservable, AuthProviders, AuthMethods} from 'angularfire2';
+
+import {AngularMasonry} from 'angular2-masonry';
 
 import * as _ from 'lodash';
 
@@ -31,6 +36,8 @@ export class NotesPage extends AbstractSmartComponent {
   private notesList:FirebaseListObservable<any[]>;
   private isEditingNote:any;
 
+  @ViewChild('masonryContainer') private masonryCnt:AngularMasonry;
+
   static initialize() {
     NotesPage.reducers = {
       note: notesReducer
@@ -43,10 +50,10 @@ export class NotesPage extends AbstractSmartComponent {
               private storeService:StoreService,
               private noteActions:NotesActions,
               private actions$:Actions,
-              af:AngularFire) {
+              private af:AngularFire) {
     super(storeService, NotesPage.reducers);
 
-    this.notesList = af.database.list('/todos');
+    this.notesList = this.af.database.list('/todos');
     this.isEditingNote = {};
 
     this.newNoteForm = this.fb.group({
@@ -57,12 +64,25 @@ export class NotesPage extends AbstractSmartComponent {
         Validators.required
       ]]
     });
+
+    this.af.auth.subscribe(auth => console.log(auth));
+  }
+
+  login() {
+    this.af.auth.login({
+      provider: AuthProviders.Google,
+      method: AuthMethods.Popup,
+    });
+  }
+
+  logout() {
+    this.af.auth.logout();
   }
 
   addNote() {
     let newNote = Object.assign({id: Math.random()}, this.newNoteForm.value);
     this.notesList.push(newNote);
-    this.newNoteForm.setValue({title:'', description: ''});
+    this.newNoteForm.setValue({title: '', description: ''});
   }
 
   removeNote(note) {
@@ -76,6 +96,14 @@ export class NotesPage extends AbstractSmartComponent {
   saveNote(note) {
     this.isEditingNote[note.id] = false;
     this.notesList.update(note.$key, _.pick(note, ['id', 'title', 'description']));
+  }
+
+  updateLayout() {
+    this.masonryCnt.layout();
+
+    setTimeout(()=> {//intended for waiting end of animation
+      this.masonryCnt.layout();
+    }, 500);
   }
 
   onInit() {
