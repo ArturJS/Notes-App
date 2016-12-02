@@ -30,7 +30,6 @@ export class Note {
   @Output() public onSave:EventEmitter<any>;
   @Output() public onUpdateLayout:EventEmitter<any>;
 
-  private $elem:any;
   private noteForm:FormGroup;
   private isCollapsed: boolean;
 
@@ -55,7 +54,6 @@ export class Note {
   }
 
   ngOnInit():void {
-    this.$elem = jQuery(this.el.nativeElement);
   }
 
   editNote(note) {

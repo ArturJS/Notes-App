@@ -100,10 +100,6 @@ export class NotesPage extends AbstractSmartComponent {
 
   updateLayout() {
     this.masonryCnt.layout();
-
-    setTimeout(()=> {//intended for waiting end of animation
-      this.masonryCnt.layout();
-    }, 500);
   }
 
   onInit() {
