@@ -39,6 +39,10 @@ $note-offset: 20px;
   margin-bottom: $note-offset;
 }
 
+.note-wrap {
+  width: 100%;
+}
+
 note {
   width: 100%;
   display: inline-block;

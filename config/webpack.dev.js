@@ -23,8 +23,8 @@ const METADATA = webpackMerge(commonConfig.metadata, {
   host: HOST,
   port: PORT,
   ENV: ENV,
-  HMR: HMR,
-  baseUrl: '/',
+  HMR: true,
+  baseUrl: '/'
 });
 
 /**
@@ -154,7 +154,7 @@ module.exports = webpackMerge(commonConfig, {
     host: METADATA.host,
     historyApiFallback: true,
     watchOptions: {
-      aggregateTimeout: 500,
+      aggregateTimeout: 300,
       poll: 1000
     },
     outputPath: helpers.root('dist')
