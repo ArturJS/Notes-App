@@ -19,7 +19,13 @@ import {AbstractSmartComponent} from '../../shared/components';
 
 import {NotesActions} from './notes.actions.ts';
 import {notesReducer} from './notes-page.reducer.ts';
-import {AngularFire, FirebaseListObservable, AuthProviders, AuthMethods} from 'angularfire2';
+import {
+  AngularFire,
+  FirebaseListObservable,
+  FirebaseObjectObservable,
+  AuthProviders,
+  AuthMethods
+} from 'angularfire2';
 
 import {AngularMasonry} from 'angular2-masonry';
 
@@ -34,7 +40,9 @@ export class NotesPage extends AbstractSmartComponent {
   private newNoteForm:FormGroup;
   private static reducers:any;
   private notesList:FirebaseListObservable<any[]>;
+  private userSettings:FirebaseObjectObservable<any[]>;
   private isEditingNote:any;
+  private auth:any;
 
   @ViewChild('masonryContainer') private masonryCnt:AngularMasonry;
 
@@ -53,7 +61,7 @@ export class NotesPage extends AbstractSmartComponent {
               private af:AngularFire) {
     super(storeService, NotesPage.reducers);
 
-    this.notesList = this.af.database.list('/todos');
+
     this.isEditingNote = {};
 
     this.newNoteForm = this.fb.group({
@@ -65,7 +73,14 @@ export class NotesPage extends AbstractSmartComponent {
       ]]
     });
 
-    this.af.auth.subscribe(auth => console.log(auth));
+    this.af.auth.subscribe(auth => {
+      this.auth = auth;
+
+      if (!auth) return;
+
+      this.notesList = this.af.database.list('users/' + auth.uid + '/notes');
+      this.userSettings = this.af.database.object('users/' + auth.uid + '/settings');
+    });
   }
 
   login() {

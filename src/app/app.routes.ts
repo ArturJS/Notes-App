@@ -5,18 +5,12 @@ declare var System:any;
 export const ROUTES: Routes = [
   {
     path: '',
-    redirectTo: '/notes',
-    pathMatch: 'full'
-  },
-
-  {
-    path: 'notes',
     loadChildren: () => System.import('./pages/notes-page/notes-page.module')
   },
 
   {
     path: '**',
-    redirectTo: '/notes'
+    redirectTo: ''
   },
 ];
 

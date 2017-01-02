@@ -1,0 +1,31 @@
+@import "../../../styles/_colors.scss";
+
+.login-popup-root {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+}
+
+.login-via-google {
+  width: 400px;
+  height: 70px;
+  font-size: 30px;
+  border: 0;
+  background-color: $red;
+  color: $white1;
+  padding: 10px 15px;
+  cursor: pointer;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.1s ease-in;
+
+  &:hover {
+    background-color: #ff5447;
+  }
+}
