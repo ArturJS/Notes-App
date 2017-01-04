@@ -81,6 +81,11 @@ export class NotesPage extends AbstractSmartComponent {
       this.notesList = this.af.database.list('users/' + auth.uid + '/notes');
       this.userSettings = this.af.database.object('users/' + auth.uid + '/settings');
     });
+
+  }
+
+  trackFbObjects(index, obj) {
+    return obj.$key;
   }
 
   login() {

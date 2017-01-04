@@ -42,7 +42,7 @@
        #masonryContainer>
     <div class="note-wrap"
          masonry-brick
-         *ngFor="let note of notesList | async">
+         *ngFor="let note of notesList | async; trackBy: trackFbObjects">
       <note [note]="note"
             [isEditingNote]="isEditingNote[note.id]"
             (onEdit)="editNote($event)"

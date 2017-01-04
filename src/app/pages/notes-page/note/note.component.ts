@@ -33,8 +33,7 @@ export class Note {
   private noteForm:FormGroup;
   private isCollapsed: boolean;
 
-  constructor(private fb:FormBuilder,
-              private el:ElementRef) {
+  constructor(private fb:FormBuilder) {
 
     this.onEdit = new EventEmitter<any>();
     this.onRemove = new EventEmitter<any>();
@@ -51,6 +50,7 @@ export class Note {
     });
 
     this.isCollapsed = false;
+
   }
 
   ngOnInit():void {
