@@ -36,7 +36,9 @@
         <textarea class="w100 mw100 edit-description"
                   placeholder="Enter description here..."
                   [formControl]="noteForm.controls.description"
-                  stretch-by-content></textarea>
+                  stretch-by-content="{{noteForm.controls.description.value}}"
+                  (onContentUpdate)="updateLayout()"
+        ></textarea>
     </div>
   </div>
 

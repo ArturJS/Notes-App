@@ -63,7 +63,9 @@ export class Note {
       description: note.description
     });
 
-    this.onUpdateLayout.emit();
+    setTimeout(()=>{
+      this.updateLayout();
+    });
   }
 
   removeNote(note) {
@@ -74,7 +76,7 @@ export class Note {
     note = Object.assign(note, this.noteForm.getRawValue());
     this.onSave.emit(note);
 
-    this.onUpdateLayout.emit();
+    this.updateLayout();
   }
 
   linksFormatter(text:string) {
@@ -86,6 +88,10 @@ export class Note {
   toggleCollapse(){
     this.isCollapsed = !this.isCollapsed;
 
+    this.updateLayout();
+  }
+  
+  updateLayout() {
     this.onUpdateLayout.emit();
   }
 }

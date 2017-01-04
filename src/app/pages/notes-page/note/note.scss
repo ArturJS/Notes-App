@@ -53,6 +53,11 @@
       width: calc(100% - 34px);
       text-align: center;
     }
+
+    .edit-description {
+      resize: none;
+      overflow: hidden;
+    }
   }
 
   .note-title {

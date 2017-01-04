@@ -73,14 +73,16 @@ export class NotesPage extends AbstractSmartComponent {
       ]]
     });
 
-    this.af.auth.subscribe(auth => {
-      this.auth = auth;
+    this._subscribe([
+      this.af.auth.subscribe(auth => {
+        this.auth = auth;
 
-      if (!auth) return;
+        if (!auth) return;
 
-      this.notesList = this.af.database.list('users/' + auth.uid + '/notes');
-      this.userSettings = this.af.database.object('users/' + auth.uid + '/settings');
-    });
+        this.notesList = this.af.database.list('users/' + auth.uid + '/notes');
+        this.userSettings = this.af.database.object('users/' + auth.uid + '/settings');
+      })
+    ]);
 
   }
 

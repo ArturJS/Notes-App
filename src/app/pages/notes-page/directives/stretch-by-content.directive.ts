@@ -2,7 +2,9 @@ import {
   Directive,
   ElementRef,
   OnChanges,
-  Input
+  Input,
+  Output,
+  EventEmitter
 } from '@angular/core';
 
 @Directive({
@@ -10,13 +12,16 @@ import {
 })
 export class StretchByContentDirective implements OnChanges {
   @Input('stretch-by-content') value;
+  @Output()onContentUpdate:EventEmitter<any>;
 
   constructor(private el:ElementRef) {
+    this.onContentUpdate = new EventEmitter<any>();
   }
 
   ngOnChanges() {
     setTimeout(()=>{
       this.updateHeight();
+      this.onContentUpdate.emit();
     }, 0);
   }
 
