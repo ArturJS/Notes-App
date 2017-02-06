@@ -52,7 +52,9 @@
     </div>
   </div>
 
-  <login-popup *ngIf="!auth"
+  <login-popup *ngIf="!auth && !isLoggingIn"
                (onLogin)="login()"></login-popup>
+
+  <loader [isActive]="isLoggingIn"></loader>
 </div>
 

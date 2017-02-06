@@ -43,6 +43,7 @@ export class NotesPage extends AbstractSmartComponent {
   private userSettings:FirebaseObjectObservable<any[]>;
   private isEditingNote:any;
   private auth:any;
+  private isLoggingIn:boolean;
 
   @ViewChild('masonryContainer') private masonryCnt:AngularMasonry;
 
@@ -73,9 +74,12 @@ export class NotesPage extends AbstractSmartComponent {
       ]]
     });
 
+    this.isLoggingIn = true;
+
     this._subscribe([
       this.af.auth.subscribe(auth => {
         this.auth = auth;
+        this.isLoggingIn = false;
 
         if (!auth) return;
 
@@ -91,9 +95,11 @@ export class NotesPage extends AbstractSmartComponent {
   }
 
   login() {
+    this.isLoggingIn = true;
+
     this.af.auth.login({
       provider: AuthProviders.Google,
-      method: AuthMethods.Popup,
+      method: AuthMethods.Redirect,
     });
   }
 
