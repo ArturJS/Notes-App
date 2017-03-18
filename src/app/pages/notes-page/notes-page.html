@@ -32,8 +32,16 @@
         Logout
         <i class="glyphicon glyphicon-log-out"></i>
       </button>
+      <!--<button class="btn-add-note"
+              type="button"
+              (click)="throwError()">
+        Throw ERROR!
+      </button>-->
     </div>
   </form>
+
+  <!--for iPad debug info-->
+  <pre style="white-space: normal;" class="hide"></pre>
 
   <div class="notes-container"
        *ngIf="auth"

@@ -6,19 +6,11 @@ import {
 
 import {
   Component,
-  ViewChild
+  ViewChild, ErrorHandler
 } from '@angular/core';
 
-import {Router} from '@angular/router';
-
-import {Store} from '@ngrx/store';
-import {Actions} from "@ngrx/effects";
-
-import {StoreService} from '../../shared/services';
 import {AbstractSmartComponent} from '../../shared/components';
 
-import {NotesActions} from './notes.actions.ts';
-import {notesReducer} from './notes-page.reducer.ts';
 import {
   AngularFire,
   FirebaseListObservable,
@@ -37,32 +29,21 @@ import * as _ from 'lodash';
   styleUrls: ['./notes-page.scss']
 })
 export class NotesPage extends AbstractSmartComponent {
-  private newNoteForm:FormGroup;
-  private static reducers:any;
-  private notesList:FirebaseListObservable<any[]>;
-  private userSettings:FirebaseObjectObservable<any[]>;
-  private isEditingNote:any;
-  private auth:any;
-  private isLoggingIn:boolean;
+  public newNoteForm: FormGroup;
+  public notesList: FirebaseListObservable<any[]>;
+  public userSettings: FirebaseObjectObservable<any[]>;
+  public isEditingNote: any;
+  public auth: any;
+  public isLoggingIn: boolean;
 
-  @ViewChild('masonryContainer') private masonryCnt:AngularMasonry;
+  @ViewChild('masonryContainer') public masonryCnt: AngularMasonry;
 
-  static initialize() {
-    NotesPage.reducers = {
-      note: notesReducer
-    };
-  }
+  constructor(private fb: FormBuilder,
+              private af: AngularFire,
+              private errorHandler: ErrorHandler) {
+    super();
 
-  constructor(private fb:FormBuilder,
-              private router:Router,
-              private store:Store<any>,
-              private storeService:StoreService,
-              private noteActions:NotesActions,
-              private actions$:Actions,
-              private af:AngularFire) {
-    super(storeService, NotesPage.reducers);
-
-
+    this.isLoggingIn = true;
     this.isEditingNote = {};
 
     this.newNoteForm = this.fb.group({
@@ -73,9 +54,9 @@ export class NotesPage extends AbstractSmartComponent {
         Validators.required
       ]]
     });
+  }
 
-    this.isLoggingIn = true;
-
+  onInit() {
     this._subscribe([
       this.af.auth.subscribe(auth => {
         this.auth = auth;
@@ -88,6 +69,21 @@ export class NotesPage extends AbstractSmartComponent {
       })
     ]);
 
+    this._subscribe([
+      (this.errorHandler as any).getObservable()
+        .subscribe((error) => {
+          const el = document.querySelector('pre');
+          el.className = '';
+          el.innerHTML = error;
+        })
+    ]);
+  }
+
+  onDestroy() {
+  }
+
+  throwError() {
+    throw new Error('Error description');
   }
 
   trackFbObjects(index, obj) {
@@ -129,12 +125,4 @@ export class NotesPage extends AbstractSmartComponent {
   updateLayout() {
     this.masonryCnt.layout();
   }
-
-  onInit() {
-  }
-
-  onDestroy() {
-  }
 }
-//instead of static constructor
-NotesPage.initialize();//see also https://basarat.gitbooks.io/typescript/content/docs/tips/staticConstructor.html

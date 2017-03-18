@@ -1,5 +1,5 @@
 
-import { NgModule, ApplicationRef } from '@angular/core';
+import {NgModule, ApplicationRef, ErrorHandler} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
 
@@ -18,6 +18,7 @@ import { NoContent } from './pages/no-content';
 import { StoreModule } from '@ngrx/store';
 import { AngularFireModule } from 'angularfire2';
 import { firebaseConfig, firebaseAuthConfig } from './environment';
+import {EnhancedErrorHandlerService} from "./shared/services/enhanced-error-handler.service";
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -27,7 +28,7 @@ const APP_PROVIDERS = [
 ];
 
 /**
- * `AppModule` is the main entry point into Angular2's bootstraping process
+ * `AppModule` is the main entry point into Angular2's bootstrapping process
  */
 @NgModule({
   bootstrap: [ App ],
@@ -45,7 +46,8 @@ const APP_PROVIDERS = [
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
-    APP_PROVIDERS
+    APP_PROVIDERS,
+    {provide: ErrorHandler, useClass: EnhancedErrorHandlerService}
   ]
 })
 

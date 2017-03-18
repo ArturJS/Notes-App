@@ -11,6 +11,7 @@ let _:any = lodash;
 export abstract class AbstractSmartComponent implements OnInit, OnDestroy {
   private namelessSubscriptions:Subscription[] = [];
   private namedSubscriptions:any = {};
+  public error:any;
 
   constructor(private _storeService?: StoreService,
               private _reducers?:any) {
