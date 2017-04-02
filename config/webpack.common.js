@@ -14,6 +14,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkCheckerPlugin = require('awesome-typescript-loader').ForkCheckerPlugin;
 const HtmlElementsPlugin = require('./html-elements-plugin');
+const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 
 /*
  * Webpack Constants
@@ -29,13 +30,6 @@ const METADATA = {
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
 module.exports = {
-
-  /*
-   * Static metadata for index.html
-   *
-   * See: (custom attribute)
-   */
-  metadata: METADATA,
 
   /*
    * Cache generated modules and chunks to improve performance for multiple incremental builds.
@@ -72,13 +66,12 @@ module.exports = {
      *
      * See: http://webpack.github.io/docs/configuration.html#resolve-extensions
      */
-    extensions: ['', '.ts', '.js', '.json'],
+    extensions: ['.ts', '.js', '.json'],
 
-    // Make sure root is src
-    root: helpers.root('src'),
-
-    // remove other default values
-    modulesDirectories: ['node_modules'],
+    modules: [
+      helpers.root('src'),
+      'node_modules'
+    ]
 
   },
 
@@ -88,24 +81,6 @@ module.exports = {
    * See: http://webpack.github.io/docs/configuration.html#module
    */
   module: {
-    /*
-     * An array of applied pre and post loaders.
-     *
-     * See: http://webpack.github.io/docs/configuration.html#module-preloaders-module-postloaders
-     */
-    preLoaders: [
-      {
-        test: /\.ts$/,
-        loader: 'string-replace-loader',
-        query: {
-          search: '(System|SystemJS)(.*[\\n\\r]\\s*\\.|\\.)import\\((.+)\\)',
-          replace: '$1.import($3).then(mod => mod.__esModule ? mod.default : mod)',
-          flags: 'g'
-        },
-        include: [helpers.root('src')]
-      },
-
-    ],
 
     /*
      * An array of automatically applied loaders.
@@ -116,6 +91,17 @@ module.exports = {
      * See: http://webpack.github.io/docs/configuration.html#module-loaders
      */
     loaders: [
+      {
+        test: /\.ts$/,
+        loader: 'string-replace-loader',
+        enforce: "pre",
+        query: {
+          search: '(System|SystemJS)(.*[\\n\\r]\\s*\\.|\\.)import\\((.+)\\)',
+          replace: '$1.import($3).then(mod => mod.__esModule ? mod.default : mod)',
+          flags: 'g'
+        },
+        include: [helpers.root('src')]
+      },
 
       /*
        * Typescript loader support for .ts and Angular 2 async routes via .async.ts
@@ -160,7 +146,7 @@ module.exports = {
         loaders: ['raw-loader', 'sass-loader'] // sass-loader not scss-loader
       },
 
-      { test: /\.(woff2?|ttf|eot|svg)$/, loader: 'url?limit=10000' },
+      { test: /\.(woff2?|ttf|eot|svg)$/, loader: 'url-loader?limit=10000' },
 
       /* Raw loader support for *.html
        * Returns file content as string
@@ -177,13 +163,11 @@ module.exports = {
       */
       {
         test: /\.(jpg|png|gif)$/,
-        loader: 'file'
+        loader: 'file-loader'
       }
     ]
 
   },
-
-  postcss: [autoprefixer],  // <--- postcss
 
   /*
    * Add additional plugins to the compiler.
@@ -234,7 +218,8 @@ module.exports = {
      */
     new HtmlWebpackPlugin({
       template: 'src/index.html',
-      chunksSortMode: 'dependency'
+      chunksSortMode: 'dependency',
+      metadata: METADATA
     }),
 
     /*
@@ -274,6 +259,15 @@ module.exports = {
     // GSAP
     new ProvidePlugin({
       TweenMax: 'gsap'
+    }),
+
+    new LoaderOptionsPlugin({
+      options: {
+        context: helpers.root(),
+        output: { path: helpers.root('dist') },
+
+        postcss: [autoprefixer],  // <--- postcss
+      }
     })
   ],
 
@@ -284,7 +278,7 @@ module.exports = {
    * See: https://webpack.github.io/docs/configuration.html#node
    */
   node: {
-    global: 'window',
+    global: true,
     crypto: 'empty',
     process: true,
     module: false,

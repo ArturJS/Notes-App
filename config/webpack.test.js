@@ -9,6 +9,7 @@ const helpers = require('./helpers');
  */
 const ProvidePlugin = require('webpack/lib/ProvidePlugin');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
+const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
 
 /**
  * Webpack Constants
@@ -59,11 +60,14 @@ module.exports = {
   module: {
 
     /**
-     * An array of applied pre and post loaders.
+     * An array of automatically applied loaders.
      *
-     * See: http://webpack.github.io/docs/configuration.html#module-preloaders-module-postloaders
+     * IMPORTANT: The loaders here are resolved relative to the resource which they are applied to.
+     * This means they are not resolved relative to the configuration file.
+     *
+     * See: http://webpack.github.io/docs/configuration.html#module-loaders
      */
-    preLoaders: [
+    loaders: [
 
       /**
        * Tslint loader support for *.ts files
@@ -73,6 +77,7 @@ module.exports = {
       {
         test: /\.ts$/,
         loader: 'tslint-loader',
+        enforce: "pre",
         exclude: [helpers.root('node_modules')]
       },
 
@@ -85,23 +90,12 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'source-map-loader',
+        enforce: "pre",
         exclude: [
-        // these packages have problems with their sourcemaps
-        helpers.root('node_modules/rxjs'),
-        helpers.root('node_modules/@angular')
-      ]}
-
-    ],
-
-    /**
-     * An array of automatically applied loaders.
-     *
-     * IMPORTANT: The loaders here are resolved relative to the resource which they are applied to.
-     * This means they are not resolved relative to the configuration file.
-     *
-     * See: http://webpack.github.io/docs/configuration.html#module-loaders
-     */
-    loaders: [
+          // these packages have problems with their sourcemaps
+          helpers.root('node_modules/rxjs'),
+          helpers.root('node_modules/@angular')
+        ]},
 
       /**
        * Typescript loader support for .ts and Angular 2 async routes via .async.ts
@@ -200,20 +194,26 @@ module.exports = {
       }
     }),
 
+    new LoaderOptionsPlugin({
+      options: {
+        context: helpers.root(),
+        output: { path: helpers.root('dist') },
+        /**
+         * Static analysis linter for TypeScript advanced options configuration
+         * Description: An extensible linter for the TypeScript language.
+         *
+         * See: https://github.com/wbuchwalter/tslint-loader
+         */
+        tslint: {
+          emitErrors: false,
+          failOnHint: false,
+          resourcePath: 'src'
+        },
+      },
+    })
+
 
   ],
-
-  /**
-   * Static analysis linter for TypeScript advanced options configuration
-   * Description: An extensible linter for the TypeScript language.
-   *
-   * See: https://github.com/wbuchwalter/tslint-loader
-   */
-  tslint: {
-    emitErrors: false,
-    failOnHint: false,
-    resourcePath: 'src'
-  },
 
   /**
    * Include polyfills or mocks for various node stuff
@@ -222,7 +222,7 @@ module.exports = {
    * See: https://webpack.github.io/docs/configuration.html#node
    */
   node: {
-    global: 'window',
+    global: true,
     process: false,
     crypto: 'empty',
     module: false,

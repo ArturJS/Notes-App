@@ -16,6 +16,8 @@ const IgnorePlugin = require('webpack/lib/IgnorePlugin');
 const DedupePlugin = require('webpack/lib/optimize/DedupePlugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
+const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /**
  * Webpack Constants
@@ -32,13 +34,6 @@ const METADATA = webpackMerge(commonConfig.metadata, {
 });
 
 module.exports = webpackMerge(commonConfig, {
-
-  /**
-   * Switch loaders to debug mode.
-   *
-   * See: http://webpack.github.io/docs/configuration.html#debug
-   */
-  debug: false,
 
   /**
    * Developer tool to enhance debugging
@@ -87,8 +82,6 @@ module.exports = webpackMerge(commonConfig, {
     chunkFilename: '[id].[chunkhash].chunk.js'
 
   },
-
-  postcss: [autoprefixer], // <--- postcss
   /**
    * Add additional plugins to the compiler.
    *
@@ -159,8 +152,8 @@ module.exports = webpackMerge(commonConfig, {
 
 
       beautify: false, //prod
-      mangle: { screw_ie8 : true, keep_fnames: true }, //prod
-      compress: { screw_ie8: true }, //prod
+      mangle: {screw_ie8: true, keep_fnames: true}, //prod
+      compress: {screw_ie8: true}, //prod
       comments: false //prod
     }),
 
@@ -202,38 +195,54 @@ module.exports = webpackMerge(commonConfig, {
       jQuery: 'jquery',
       $: 'jquery',
       jquery: 'jquery'
-    })
+    }),
+
+    new LoaderOptionsPlugin({
+      /**
+       * Switch loaders to debug mode.
+       *
+       * See: http://webpack.github.io/docs/configuration.html#debug
+       */
+      debug: false,
+
+      options: {
+        context: helpers.root(),
+        output: {path: helpers.root('dist')},
+
+        /**
+         * Static analysis linter for TypeScript advanced options configuration
+         * Description: An extensible linter for the TypeScript language.
+         *
+         * See: https://github.com/wbuchwalter/tslint-loader
+         */
+        tslint: {
+          emitErrors: false,
+          failOnHint: false,
+          resourcePath: 'src'
+        },
+
+        htmlLoader: {
+          minimize: true,
+          removeAttributeQuotes: false,
+          caseSensitive: true,
+          customAttrSurround: [
+            [/#/, /(?:)/],
+            [/\*/, /(?:)/],
+            [/\[?\(?/, /(?:)/]
+          ],
+          customAttrAssign: [/\)?\]?=/]
+        },
+
+        postcss: [autoprefixer],  // <--- postcss
+      },
+    }),
+
+    new HtmlWebpackPlugin({
+      template: 'src/index.html',
+      chunksSortMode: 'dependency',
+      metadata: METADATA
+    }),
   ],
-
-  /**
-   * Static analysis linter for TypeScript advanced options configuration
-   * Description: An extensible linter for the TypeScript language.
-   *
-   * See: https://github.com/wbuchwalter/tslint-loader
-   */
-  tslint: {
-    emitErrors: true,
-    failOnHint: true,
-    resourcePath: 'src'
-  },
-
-  /**
-   * Html loader advanced options
-   *
-   * See: https://github.com/webpack/html-loader#advanced-options
-   */
-  // TODO: Need to workaround Angular 2's html syntax => #id [bind] (event) *ngFor
-  htmlLoader: {
-    minimize: true,
-    removeAttributeQuotes: false,
-    caseSensitive: true,
-    customAttrSurround: [
-      [/#/, /(?:)/],
-      [/\*/, /(?:)/],
-      [/\[?\(?/, /(?:)/]
-    ],
-    customAttrAssign: [/\)?\]?=/]
-  },
 
   /*
    * Include polyfills or mocks for various node stuff
@@ -242,7 +251,7 @@ module.exports = webpackMerge(commonConfig, {
    * See: https://webpack.github.io/docs/configuration.html#node
    */
   node: {
-    global: 'window',
+    global: true,
     crypto: 'empty',
     process: false,
     module: false,

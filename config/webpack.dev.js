@@ -11,6 +11,8 @@ const commonConfig = require('./webpack.common.js'); // the settings that are co
  */
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
+const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /**
  * Webpack Constants
@@ -33,20 +35,6 @@ const METADATA = webpackMerge(commonConfig.metadata, {
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
 module.exports = webpackMerge(commonConfig, {
-
-  /**
-   * Merged metadata from webpack.common.js for index.html
-   *
-   * See: (custom attribute)
-   */
-  metadata: METADATA,
-
-  /**
-   * Switch loaders to debug mode.
-   *
-   * See: http://webpack.github.io/docs/configuration.html#debug
-   */
-  debug: true,
 
   /**
    * Developer tool to enhance debugging
@@ -127,19 +115,39 @@ module.exports = webpackMerge(commonConfig, {
        */
       new NamedModulesPlugin(),
 
-  ],
+    new LoaderOptionsPlugin({
 
-  /**
-   * Static analysis linter for TypeScript advanced options configuration
-   * Description: An extensible linter for the TypeScript language.
-   *
-   * See: https://github.com/wbuchwalter/tslint-loader
-   */
-  tslint: {
-    emitErrors: false,
-    failOnHint: false,
-    resourcePath: 'src'
-  },
+      /**
+       * Switch loaders to debug mode.
+       *
+       * See: http://webpack.github.io/docs/configuration.html#debug
+       */
+      debug: true,
+
+      options: {
+        context: helpers.root(),
+        output: { path: helpers.root('dist') },
+
+        /**
+         * Static analysis linter for TypeScript advanced options configuration
+         * Description: An extensible linter for the TypeScript language.
+         *
+         * See: https://github.com/wbuchwalter/tslint-loader
+         */
+        tslint: {
+          emitErrors: false,
+          failOnHint: false,
+          resourcePath: 'src'
+        }
+      },
+    }),
+
+    new HtmlWebpackPlugin({
+      template: 'src/index.html',
+      chunksSortMode: 'dependency',
+      metadata: METADATA
+    }),
+  ],
 
   /**
    * Webpack Development Server configuration
@@ -156,8 +164,7 @@ module.exports = webpackMerge(commonConfig, {
     watchOptions: {
       aggregateTimeout: 300,
       poll: 1000
-    },
-    outputPath: helpers.root('dist')
+    }
   },
 
   /*
@@ -167,7 +174,7 @@ module.exports = webpackMerge(commonConfig, {
    * See: https://webpack.github.io/docs/configuration.html#node
    */
   node: {
-    global: 'window',
+    global: true,
     crypto: 'empty',
     process: true,
     module: false,
