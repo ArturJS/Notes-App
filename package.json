@@ -24,7 +24,8 @@
         "rules": {
             "react/jsx-no-bind": 0,
             "react/jsx-indent": 0,
-            "react/jsx-indent-props": 0
+            "react/jsx-indent-props": 0,
+            "import/no-extraneous-dependencies": 0
         }
     },
     "devDependencies": {
@@ -43,7 +44,8 @@
         "preact-cli": "2.1.0",
         "prettier": "1.9.2",
         "prop-types": "15.6.0",
-        "sass-loader": "6.0.6"
+        "sass-loader": "6.0.6",
+        "webpack-bundle-analyzer": "2.9.1"
     },
     "dependencies": {
         "classnames": "2.2.5",
@@ -53,7 +55,6 @@
         "preact-compat": "3.17.0",
         "preact-router": "2.6.0",
         "react-final-form": "2.1.1",
-        "react-grid-layout": "0.16.2",
-        "webpack-bundle-analyzer": "2.9.1"
+        "react-grid-layout": "0.16.2"
     }
 }

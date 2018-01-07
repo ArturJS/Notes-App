@@ -3,6 +3,7 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import _ from 'lodash';
 import AddNoteForm from './components/add-note-form';
+import Note from './components/note';
 
 import style from './home.scss';
 
@@ -51,6 +52,8 @@ export default class Home extends Component {
         });
     };
 
+    onEditNote = () => {};
+
     render() {
         const { notes, layouts } = this.state;
 
@@ -71,12 +74,7 @@ export default class Home extends Component {
                     draggableCancel={'[data-non-draggable]'}>
                     {notes.map(note => (
                         <div key={note.id}>
-                            <div className={style.noteTitle}>{note.title}</div>
-                            <div
-                                className={style.noteDescription}
-                                data-non-draggable>
-                                {note.description}
-                            </div>
+                            <Note note={note} />
                         </div>
                     ))}
                 </ResponsiveReactGridLayout>

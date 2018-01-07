@@ -5,28 +5,10 @@
     background: linear-gradient(to right bottom, #f44336, #ffeb3b);
 }
 
-.note {
-    &Title {
-        margin: 0;
-        padding: 15px 0 10px;
-        text-align: center;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-        cursor: move;
-
-        @media (pointer: coarse) {
-            pointer-events: none;
-        }
-    }
-
-    &Description {
-        padding: 10px 0;
-        height: 100%;
-    }
-}
 
 :global {
     .react-grid-item {
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(63, 81, 181, 0.7);
         box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
         color: #ffffff;
         overflow: hidden;
