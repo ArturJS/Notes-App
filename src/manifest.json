@@ -1,6 +1,6 @@
 {
-    "name": "Preact PWA",
-    "short_name": "Preact PWA",
+    "name": "Notes app",
+    "short_name": "Notes app",
     "start_url": "/",
     "display": "standalone",
     "orientation": "portrait",

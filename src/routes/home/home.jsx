@@ -22,8 +22,8 @@ export default class Home extends Component {
         },
         notes: _.times(3, i => ({
             id: i.toString(),
-            title: i,
-            description: i
+            title: i.toString(),
+            description: i.toString()
         }))
     };
 
