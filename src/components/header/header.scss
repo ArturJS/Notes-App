@@ -1,7 +1,7 @@
 $header-height: 40px;
 
 .header {
-  background: linear-gradient(to right bottom, #000046, #000046);
+  background-color: rgba(0, 0, 70, .8);
   color: #ffffff;
   position: fixed;
   top: 0;
@@ -10,6 +10,14 @@ $header-height: 40px;
   height: $header-height;
   display: flex;
   z-index: 1;
+
+  &Content {
+    display: flex;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 10px;
+  }
 
   &Title {
     flex-grow: 1;
@@ -29,12 +37,5 @@ $header-height: 40px;
 
   &:hover {
     opacity: 1;
-  }
-
-  &Left {
-
-  }
-
-  &Right {
   }
 }
