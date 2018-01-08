@@ -28,9 +28,8 @@ export default class Note extends Component {
 
     onRemove = () => {};
 
-    onSave = values => {
+    onSave = () => {
         this.setState({ isEditing: false });
-        console.log(values);
     };
 
     onCancel = () => {
@@ -44,7 +43,7 @@ export default class Note extends Component {
             errors.title = 'Please enter title';
         }
         if (!description || !description.trim()) {
-            errors.title = 'Please enter desctiption';
+            errors.title = 'Please enter description';
         }
 
         return errors;
