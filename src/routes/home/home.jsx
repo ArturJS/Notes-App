@@ -1,30 +1,36 @@
 import { h, Component } from 'preact';
-import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import _ from 'lodash';
 import AddNoteForm from './components/add-note-form';
 import Note from './components/note';
+import firebaseProvider from '../../providers/firebase-provider';
 
 import style from './home.scss';
 
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
 export default class Home extends Component {
     state = {
-        layouts: {
-            lg: _.times(3, i => ({
-                i: i.toString(),
-                x: i,
-                y: Math.floor(i / 2),
-                w: 1,
-                h: 1
-            }))
-        },
-        notes: _.times(3, i => ({
-            id: i.toString(),
-            title: i.toString(),
-            description: i.toString()
-        }))
+        notes: []
+    };
+
+    componentDidMount() {
+        firebaseProvider.login().then(auth => {
+            const { user } = auth;
+            this.getNotes(user.uid);
+        });
+    }
+
+    getNotes = uid => {
+        firebaseProvider.database
+            .ref(`users/${uid}/notes`)
+            .on('value', snapshot => {
+                const notesMap = snapshot.val();
+                const notes = _.entries(notesMap).map(([id, note]) => ({
+                    id,
+                    title: note.title,
+                    description: note.description
+                }));
+                this.setState({ notes });
+            });
     };
 
     onAddNote = note => {
@@ -55,29 +61,18 @@ export default class Home extends Component {
     onEditNote = () => {};
 
     render() {
-        const { notes, layouts } = this.state;
+        const { notes } = this.state;
 
         return (
             <div className={style.home}>
                 <AddNoteForm onAddNote={this.onAddNote} />
-                <ResponsiveReactGridLayout
-                    layouts={layouts}
-                    breakpoints={{
-                        lg: 1200,
-                        md: 996,
-                        sm: 768,
-                        xs: 480,
-                        xxs: 0
-                    }}
-                    cols={{ lg: 6, md: 4, sm: 3, xs: 2, xxs: 1 }}
-                    compactType={'horizontal'}
-                    draggableCancel={'[data-non-draggable]'}>
+                <div className={'react-grid-layout'}>
                     {notes.map(note => (
-                        <div key={note.id}>
+                        <div key={note.id} className={'react-grid-item'}>
                             <Note note={note} />
                         </div>
                     ))}
-                </ResponsiveReactGridLayout>
+                </div>
             </div>
         );
     }

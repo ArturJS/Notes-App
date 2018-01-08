@@ -20,6 +20,8 @@
     padding: 10px;
     flex-grow: 1;
     display: flex;
+    white-space: pre-wrap;
+    word-break: break-all;
 
     &Control {
       flex-grow: 1;

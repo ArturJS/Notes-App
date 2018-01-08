@@ -49,6 +49,20 @@ export default class Note extends Component {
         return errors;
     };
 
+    setTextareaRef = node => {
+        if (!node || !node.base) {
+            return;
+        }
+        const descriptionEl = node.base;
+
+        this.descriptionEl = descriptionEl;
+
+        window.requestAnimationFrame(() => {
+            descriptionEl.style.height = '0px';
+            descriptionEl.style.height = `${descriptionEl.scrollHeight}px`;
+        });
+    };
+
     renderDefaultMode() {
         const { note } = this.props;
 
@@ -58,20 +72,16 @@ export default class Note extends Component {
                     <img
                         className={classNames(style.icon, style.iconLeft)}
                         src={pencilIcon}
-                        data-non-draggable
                         onClick={this.onEdit}
                     />
                     <img
                         className={classNames(style.icon, style.iconRight)}
                         src={trashIcon}
-                        data-non-draggable
                         onClick={this.onRemove}
                     />
                 </div>
                 <div className={style.noteTitle}>{note.title}</div>
-                <div className={style.noteDescription} data-non-draggable>
-                    {note.description}
-                </div>
+                <div className={style.noteDescription}>{note.description}</div>
             </div>
         );
     }
@@ -88,7 +98,6 @@ export default class Note extends Component {
                     <form
                         className={style.note}
                         onSubmit={handleSubmit}
-                        data-non-draggable
                         noValidate>
                         <div>
                             <button
@@ -125,6 +134,7 @@ export default class Note extends Component {
                             <Field
                                 name="description"
                                 component="textarea"
+                                ref={this.setTextareaRef}
                                 className={style.noteDescriptionControl}
                                 autoComplete="off"
                                 placeholder="Note description..."
