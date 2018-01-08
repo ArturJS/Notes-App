@@ -5,22 +5,28 @@
     "main": "index.js",
     "scripts": {
         "test": "eslint src && preact test",
-        "start":
-            "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+        "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
         "build": "preact build",
         "serve": "preact build && preact serve",
         "dev": "preact watch",
         "precommit": "lint-staged"
     },
     "lint-staged": {
-        "*.{js,json,css,md}": ["prettier --write", "git add"],
-        "*.{js,jsx}": "eslint --fix"
+        "./src/**/*.{js,jsx}": [
+            "prettier --write",
+            "eslint --fix",
+            "git add"
+        ]
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "eslintConfig": {
-        "extends": ["airbnb-base", "prettier", "standard-preact"],
+        "extends": [
+            "airbnb-base",
+            "prettier",
+            "standard-preact"
+        ],
         "parser": "babel-eslint",
         "rules": {
             "react/jsx-no-bind": 0,
@@ -28,7 +34,10 @@
             "react/jsx-indent-props": 0,
             "import/no-extraneous-dependencies": 0,
             "linebreak-style": 0,
-            "jsx-quotes": ["error", "prefer-double"],
+            "jsx-quotes": [
+                "error",
+                "prefer-double"
+            ],
             "class-methods-use-this": 0
         },
         "globals": {
