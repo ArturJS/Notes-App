@@ -13,11 +13,21 @@ export default class Home extends Component {
     };
 
     componentDidMount() {
+        firebaseProvider.auth.onAuthStateChanged(user => {
+            if (user) {
+                this.getNotes(user.uid);
+            } else {
+                this.login();
+            }
+        });
+    }
+
+    login = () => {
         firebaseProvider.login().then(auth => {
             const { user } = auth;
             this.getNotes(user.uid);
         });
-    }
+    };
 
     getNotes = uid => {
         firebaseProvider.database

@@ -11,7 +11,7 @@ const config = {
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 const firebaseProvider = {
     app: firebase.initializeApp(config),
-    auth: firebase.auth,
+    auth: firebase.auth(),
     database: firebase.database(),
     login: () => firebase.auth().signInWithPopup(googleProvider),
     logout: () => firebase.auth().signOut()
