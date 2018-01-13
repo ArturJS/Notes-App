@@ -1,13 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { Form, Field } from 'react-final-form';
 
-import pencilIcon from './icons/pencil-icon.svg';
-import trashIcon from './icons/trash-icon.svg';
-import checkIcon from './icons/check-icon.svg';
-import timesIcon from './icons/times-icon.svg';
-import style from './note.scss';
+import './note.scss';
 
 export default class Note extends Component {
     static propTypes = {
@@ -67,21 +62,19 @@ export default class Note extends Component {
         const { note } = this.props;
 
         return (
-            <div className={style.note}>
+            <div className={'note'}>
                 <div>
-                    <img
-                        className={classNames(style.icon, style.iconLeft)}
-                        src={pencilIcon}
+                    <i
+                        className={'icon icon-left icon-pencil'}
                         onClick={this.onEdit}
                     />
-                    <img
-                        className={classNames(style.icon, style.iconRight)}
-                        src={trashIcon}
+                    <i
+                        className={'icon icon-right icon-bin'}
                         onClick={this.onRemove}
                     />
                 </div>
-                <div className={style.noteTitle}>{note.title}</div>
-                <div className={style.noteDescription}>{note.description}</div>
+                <div className={'note-title'}>{note.title}</div>
+                <div className={'note-description'}>{note.description}</div>
             </div>
         );
     }
@@ -95,33 +88,20 @@ export default class Note extends Component {
                 validate={this.validate}
                 initialValues={note}
                 render={({ handleSubmit, invalid }) => (
-                    <form
-                        className={style.note}
-                        onSubmit={handleSubmit}
-                        noValidate>
+                    <form className={'note'} onSubmit={handleSubmit} noValidate>
                         <div>
                             <button
                                 type="submit"
-                                className={style.iconSubmit}
+                                className={' icon-submit'}
                                 disabled={invalid}>
-                                <img
-                                    className={classNames(
-                                        style.icon,
-                                        style.iconLeft
-                                    )}
-                                    src={checkIcon}
-                                />
+                                <i className={'icon icon-checkmark'} />
                             </button>
-                            <img
-                                className={classNames(
-                                    style.icon,
-                                    style.iconRight
-                                )}
-                                src={timesIcon}
+                            <i
+                                className={'icon icon-right icon-cross'}
                                 onClick={this.onCancel}
                             />
                         </div>
-                        <div className={style.noteTitle}>
+                        <div className={'note-title'}>
                             <Field
                                 name="title"
                                 component="input"
@@ -130,12 +110,12 @@ export default class Note extends Component {
                                 placeholder="Note title..."
                             />
                         </div>
-                        <div className={style.noteDescription}>
+                        <div className={'note-description'}>
                             <Field
                                 name="description"
                                 component="textarea"
                                 ref={this.setTextareaRef}
-                                className={style.noteDescriptionControl}
+                                className={'note-description-control'}
                                 autoComplete="off"
                                 placeholder="Note description..."
                             />

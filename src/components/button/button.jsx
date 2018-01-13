@@ -2,21 +2,21 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import style from './button.scss';
+import './button.scss';
 
 export default class Button extends Component {
     static propTypes = {
-        theme: PropTypes.oneOf(['Primary', 'Hot'])
+        theme: PropTypes.oneOf(['primary', 'hot'])
     };
 
     static defaultProps = {
         children: null,
-        theme: 'Primary'
+        theme: 'primary'
     };
 
     getThemeClass() {
         const { theme } = this.props;
-        return style[`btn${theme}`];
+        return `btn-${theme}`;
     }
 
     render() {
@@ -27,13 +27,12 @@ export default class Button extends Component {
             <button
                 type="button"
                 class={classNames(
-                    style.btn,
-                    style.btnGradientBasis,
+                    'btn btn-gradient-basis',
                     themeClass,
                     ...otherClassNames
                 )}
                 {...restProps}>
-                <span class={style.btnContent}>{children}</span>
+                <span class={'btn-content'}>{children}</span>
             </button>
         );
     }

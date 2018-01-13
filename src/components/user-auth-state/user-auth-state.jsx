@@ -44,12 +44,12 @@ export default class UserAuthState extends Component {
         return (
             <div className={'user-auth-state'}>
                 {isLoggedIn ? (
-                    <Button onClick={this.doSignOut}>
+                    <Button theme="primary" onClick={this.doSignOut}>
                         Sign out &nbsp;
                         <i className={'icon icon-exit'} />
                     </Button>
                 ) : (
-                    <Button theme={'Hot'} onClick={this.doSignIn}>
+                    <Button theme={'hot'} onClick={this.doSignIn}>
                         Sign in &nbsp;
                         <i className={'icon icon-enter'} />
                     </Button>

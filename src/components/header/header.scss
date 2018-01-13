@@ -4,7 +4,7 @@ $header-height: 40px;
 
 :global {
   .header {
-    background-color: rgba(244, 67, 54, 0.8);
+    background-color: #f54f36;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     color: #ffffff;
     position: fixed;
@@ -47,6 +47,7 @@ $header-height: 40px;
       cursor: pointer;
       width: 1em;
       height: 1em;
+      margin-left: 65px;
 
       &-times {
         &:before,
@@ -123,6 +124,7 @@ $header-height: 40px;
       cursor: pointer;
       width: $header-height;
       height: $header-height;
+      font-size: $header-height;
       opacity: 0.7;
       transition: opacity 0.25s linear;
       will-change: opacity;

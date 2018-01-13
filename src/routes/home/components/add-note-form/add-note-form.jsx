@@ -59,7 +59,7 @@ export default class AddNoteForm extends Component {
 
                         <Button
                             type="submit"
-                            theme="Primary"
+                            theme="primary"
                             disabled={pristine || invalid}>
                             Add
                         </Button>

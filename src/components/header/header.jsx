@@ -2,8 +2,6 @@ import { h, Component } from 'preact';
 import classNames from 'classnames';
 import { Collapse } from 'react-collapse';
 
-import arrowUpIcon from './icons/arrow-up-icon.svg';
-import arrowDownIcon from './icons/arrow-down-icon.svg';
 import './header.scss';
 
 export default class Header extends Component {
@@ -33,14 +31,12 @@ export default class Header extends Component {
             <div className={'header'}>
                 <div className={'header-content-wrapper'}>
                     <div className={'header-content'}>
-                        <img
-                            className={'icon'}
-                            src={arrowUpIcon}
+                        <i
+                            className={'icon icon-arrow-up'}
                             onClick={this.scrollTop}
                         />
-                        <img
-                            className={'icon'}
-                            src={arrowDownIcon}
+                        <i
+                            className={'icon icon-arrow-down'}
                             onClick={this.scrollBottom}
                         />
                         <div className={'header-title'}>Notes app</div>
