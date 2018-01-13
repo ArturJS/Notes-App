@@ -17,15 +17,14 @@ export default class Home extends Component {
             if (user) {
                 this.getNotes(user.uid);
             } else {
-                this.login();
+                this.clearNotes();
             }
         });
     }
 
-    login = () => {
-        firebaseProvider.login().then(auth => {
-            const { user } = auth;
-            this.getNotes(user.uid);
+    clearNotes = () => {
+        this.setState({
+            notes: []
         });
     };
 

@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 
-import Button from '../button';
+import Button from '../../../../components/button';
 import style from './add-note-form.scss';
 
 export default class AddNoteForm extends Component {

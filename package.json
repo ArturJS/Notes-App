@@ -67,12 +67,16 @@
     "dependencies": {
         "classnames": "2.2.5",
         "final-form": "3.0.0",
+        "firebase": "4.8.2",
         "lodash": "4.17.4",
         "preact": "8.2.7",
         "preact-compat": "3.17.0",
         "preact-router": "2.6.0",
+        "react-collapse": "4.0.3",
         "react-final-form": "2.1.1",
         "react-grid-layout": "0.16.2",
+        "react-height": "3.0.0",
+        "react-motion": "0.5.2",
         "smoothscroll-polyfill": "0.4.0"
     }
 }
