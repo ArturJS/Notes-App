@@ -32,11 +32,11 @@ export default class Header extends Component {
                 <div className={'header-content-wrapper'}>
                     <div className={'header-content'}>
                         <i
-                            className={'icon icon-arrow-up'}
+                            className={'header-icon icon-arrow-up'}
                             onClick={this.scrollTop}
                         />
                         <i
-                            className={'icon icon-arrow-down'}
+                            className={'header-icon icon-arrow-down'}
                             onClick={this.scrollBottom}
                         />
                         <div className={'header-title'}>Notes app</div>

@@ -120,7 +120,7 @@ $header-height: 40px;
       }
     }
 
-    .icon {
+    &-icon {
       cursor: pointer;
       width: $header-height;
       height: $header-height;
