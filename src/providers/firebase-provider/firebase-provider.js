@@ -13,6 +13,9 @@ const firebaseProvider = {
     app: firebase.initializeApp(config),
     auth: firebase.auth(),
     database: firebase.database(),
+    getCurrentUserData: () =>
+        firebase.database().ref(`users/${firebase.auth().currentUser.uid}`),
+    isLoggedIn: () => !!firebase.auth().currentUser,
     login: () => firebase.auth().signInWithPopup(googleProvider),
     logout: () => firebase.auth().signOut()
 };

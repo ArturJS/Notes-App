@@ -1,18 +1,26 @@
 import { h, Component } from 'preact';
-import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 
+import firebaseProvider from '../../../../providers/firebase-provider';
 import Button from '../../../../components/button';
 import style from './add-note-form.scss';
 
 export default class AddNoteForm extends Component {
-    static propTypes = {
-        onAddNote: PropTypes.func.isRequired
+    createNote = ({ title, description }) => {
+        const notesRef = firebaseProvider.getCurrentUserData().child('notes');
+        const newNoteId = notesRef.push().key;
+
+        notesRef.child(newNoteId).update({ title, description });
     };
 
     onSubmit = (values, formApi) => {
+        if (!firebaseProvider.isLoggedIn()) {
+            return;
+        }
+
+        this.createNote(values);
+
         formApi.reset();
-        this.props.onAddNote(values);
     };
 
     validate = ({ title, description }) => {
@@ -22,7 +30,7 @@ export default class AddNoteForm extends Component {
             errors.title = 'Please enter title';
         }
         if (!description || !description.trim()) {
-            errors.title = 'Please enter desctiption';
+            errors.description = 'Please enter description';
         }
 
         return errors;

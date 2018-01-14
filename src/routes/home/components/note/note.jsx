@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 
+import firebaseProvider from '../../../../providers/firebase-provider';
 import './note.scss';
 
 export default class Note extends Component {
@@ -17,13 +18,25 @@ export default class Note extends Component {
         isEditing: false
     };
 
+    getNoteRef = () => {
+        const { id } = this.props.note;
+
+        return firebaseProvider.getCurrentUserData().child(`notes/${id}`);
+    };
+
     onEdit = () => {
         this.setState({ isEditing: true });
     };
 
-    onRemove = () => {};
+    onRemove = () => {
+        this.getNoteRef().remove();
+    };
 
-    onSave = () => {
+    onSave = ({ title, description }) => {
+        this.getNoteRef().update({
+            title,
+            description
+        });
         this.setState({ isEditing: false });
     };
 

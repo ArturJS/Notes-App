@@ -17,6 +17,10 @@
       @media (pointer: coarse) {
         pointer-events: none;
       }
+
+      .form-control {
+        text-align: center;
+      }
     }
 
     &-description {
@@ -31,6 +35,7 @@
         resize: none;
         border: 0;
         border-radius: 3px;
+        font-size: 16px;
       }
     }
 
