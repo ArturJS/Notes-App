@@ -1,9 +1,12 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
+import _ from 'lodash';
 
 import firebaseProvider from '../../../../providers/firebase-provider';
 import './note.scss';
+
+const linkRegexp = /(http[^\s]+)/g;
 
 export default class Note extends Component {
     static propTypes = {
@@ -71,6 +74,12 @@ export default class Note extends Component {
         });
     };
 
+    wrapUrlLinks = text =>
+        _.escape(text).replace(
+            linkRegexp,
+            '<a href="$1" class="note-link" target="_blank" rel="nofollow noopener">$1</a>'
+        );
+
     renderDefaultMode() {
         const { note } = this.props;
 
@@ -87,7 +96,12 @@ export default class Note extends Component {
                     />
                 </div>
                 <div className={'note-title'}>{note.title}</div>
-                <div className={'note-description'}>{note.description}</div>
+                <div
+                    className={'note-description'}
+                    dangerouslySetInnerHTML={{
+                        __html: this.wrapUrlLinks(note.description)
+                    }}
+                />
             </div>
         );
     }
