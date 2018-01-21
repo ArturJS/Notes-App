@@ -21,3 +21,13 @@ body {
 #app {
     height: 100%;
 }
+
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+    margin: 0;
+}
+
+.cp {
+    cursor: pointer;
+}

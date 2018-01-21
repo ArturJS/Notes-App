@@ -111,11 +111,12 @@ $header-height: 40px;
       &-content {
         padding: 15px;
         background-color: rgba(244, 67, 54, 0.9);
-        max-height: calc(100vh - #{$header-height});
+        height: calc(100vh - #{$header-height});
         overflow: auto;
 
         @media (min-width: $tablet-width) {
           padding: 0;
+          height: auto;
         }
       }
     }

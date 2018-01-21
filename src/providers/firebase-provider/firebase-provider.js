@@ -4,7 +4,7 @@ const config = {
     apiKey: 'AIzaSyC6LDuww70ztN7YfscpvEHrkJteSdvPco8',
     authDomain: 'angulartodo-561d2.firebaseapp.com',
     databaseURL: 'https://angulartodo-561d2.firebaseio.com',
-    storageBucket: '',
+    storageBucket: 'gs://angulartodo-561d2.appspot.com/',
     messagingSenderId: '956700524818'
 };
 
@@ -13,6 +13,7 @@ const firebaseProvider = {
     app: firebase.initializeApp(config),
     auth: firebase.auth(),
     database: firebase.database(),
+    storage: firebase.storage(),
     getCurrentUserData: () =>
         firebase.database().ref(`users/${firebase.auth().currentUser.uid}`),
     isLoggedIn: () => !!firebase.auth().currentUser,

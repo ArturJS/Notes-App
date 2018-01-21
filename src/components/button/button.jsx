@@ -20,7 +20,11 @@ export default class Button extends Component {
     }
 
     render() {
-        const { children, class: otherClassNames, ...restProps } = this.props;
+        const {
+            children,
+            className: otherClassNames,
+            ...restProps
+        } = this.props;
         const themeClass = this.getThemeClass();
 
         return (

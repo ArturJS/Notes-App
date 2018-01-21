@@ -4,6 +4,7 @@ import { Form, Field } from 'react-final-form';
 import _ from 'lodash';
 
 import firebaseProvider from '../../../../providers/firebase-provider';
+import FilesList from '../file-list';
 import './note.scss';
 
 const linkRegexp = /(http[^\s]+)/g;
@@ -13,7 +14,8 @@ export default class Note extends Component {
         note: PropTypes.shape({
             id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
-            description: PropTypes.string.isRequired
+            description: PropTypes.string.isRequired,
+            files: PropTypes.array
         }).isRequired
     };
 
@@ -102,6 +104,7 @@ export default class Note extends Component {
                         __html: this.wrapUrlLinks(note.description)
                     }}
                 />
+                <FilesList files={note.files} />
             </div>
         );
     }

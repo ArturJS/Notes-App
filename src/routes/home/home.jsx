@@ -37,7 +37,8 @@ export default class Home extends Component {
                 const notes = _.entries(notesMap).map(([id, note]) => ({
                     id,
                     title: note.title,
-                    description: note.description
+                    description: note.description,
+                    files: note.files
                 }));
                 this.setState({ notes });
             });
