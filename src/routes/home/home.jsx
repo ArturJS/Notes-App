@@ -34,12 +34,14 @@ export default class Home extends Component {
             .child('notes')
             .on('value', snapshot => {
                 const notesMap = snapshot.val();
-                const notes = _.entries(notesMap).map(([id, note]) => ({
-                    id,
-                    title: note.title,
-                    description: note.description,
-                    files: note.files
-                }));
+                const notes = _.entries(notesMap)
+                    .map(([id, note]) => ({
+                        id,
+                        title: note.title,
+                        description: note.description,
+                        files: note.files,
+                    }))
+                    .reverse();
                 this.setState({ notes });
             });
     };
