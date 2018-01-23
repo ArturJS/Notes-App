@@ -33,8 +33,23 @@ export default class Note extends Component {
         this.setState({ isEditing: true });
     };
 
-    onRemove = () => {
+    removeRelatedFiles = () => {
+        const { files } = this.props.note;
+
+        const removeFilesPromises = files.map(file =>
+            firebaseProvider.storage
+                .ref()
+                .child(file.storagePath)
+                .delete()
+        );
+
+        return Promise.all(removeFilesPromises);
+    };
+
+    onRemove = async () => {
+        // TODO: implement optimistic updates with rollback in case of error
         this.getNoteRef().remove();
+        this.removeRelatedFiles();
     };
 
     onSave = ({ title, description }) => {
