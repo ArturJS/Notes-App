@@ -1,3 +1,7 @@
+// @flow
+// @jsx h
+import type { FormApi } from 'final-form';
+
 import { h, Component } from 'preact';
 import { Form, Field } from 'react-final-form';
 import _ from 'lodash';
@@ -13,12 +17,34 @@ const FILE_UPLOAD_STATE = {
     rejected: '[REJECTED]'
 };
 
-export default class AddNoteForm extends Component {
-    state = {
+type UploadFileResult = {
+    remove: () => void,
+    uploadPromise: Promise<void>,
+    storagePath: string
+};
+
+type FileToUpload = {
+    file: File,
+    ...UploadFileResult
+};
+
+type Note = {
+    title: string,
+    description: string
+};
+
+type Props = {};
+
+type State = {
+    filesToUpload: FileToUpload[]
+};
+
+export default class AddNoteForm extends Component<Props, State> {
+    state: State = {
         filesToUpload: []
     };
 
-    waitForUploading = async () => {
+    waitForUploading = async (): Promise<void[]> => {
         const uploadPromises = this.state.filesToUpload.map(
             ({ uploadPromise }) => uploadPromise
         );
@@ -26,7 +52,7 @@ export default class AddNoteForm extends Component {
         return Promise.all(uploadPromises);
     };
 
-    createNote = async ({ title, description }) => {
+    createNote = async ({ title, description }: Note): Promise<void> => {
         const notesRef = firebaseProvider.getCurrentUserData().child('notes');
         const newNoteId = notesRef.push().key;
 
@@ -36,13 +62,13 @@ export default class AddNoteForm extends Component {
             title,
             description,
             files: this.state.filesToUpload.map(({ file, storagePath }) => ({
-                name: file.name,
+                name: (file: any).name,
                 storagePath
             }))
         });
     };
 
-    onSubmit = async (values, formApi) => {
+    onSubmit = async (values: Note, formApi: FormApi) => {
         if (!firebaseProvider.isLoggedIn()) {
             return;
         }
@@ -53,7 +79,7 @@ export default class AddNoteForm extends Component {
         this.setState({ filesToUpload: [] });
     };
 
-    validate = ({ title, description }) => {
+    validate = ({ title, description }: Note) => {
         const errors = {};
 
         if (!title || !title.trim()) {
@@ -66,7 +92,7 @@ export default class AddNoteForm extends Component {
         return errors;
     };
 
-    removeFile = fileToRemove => {
+    removeFile = (fileToRemove: File): void => {
         this.setState(({ filesToUpload }) => ({
             filesToUpload: filesToUpload.filter(
                 ({ file }) => file !== fileToRemove
@@ -74,7 +100,7 @@ export default class AddNoteForm extends Component {
         }));
     };
 
-    uploadFile = file => {
+    uploadFile = (file: File): UploadFileResult => {
         const userEmail = firebaseProvider.auth.currentUser.email;
         const storagePath = `${userEmail}/${Date.now()}/${file.name}`;
         let resolveUploadPromise;
@@ -117,19 +143,23 @@ export default class AddNoteForm extends Component {
         };
     };
 
-    attachFile = e => {
+    attachFile = (e: SyntheticInputEvent<HTMLInputElement>): void => {
         const additionalFiles = Array.from(e.target.files);
-        const additionalFileItems = additionalFiles.map(file => ({
-            file,
-            ...this.uploadFile(file)
-        }));
+        const additionalFileItems = additionalFiles.map(
+            (file: File): FileToUpload => ({
+                file,
+                ...this.uploadFile(file)
+            })
+        );
 
-        this.setState(({ filesToUpload }) => ({
-            filesToUpload: [...filesToUpload, ...additionalFileItems]
-        }));
+        this.setState(
+            ({ filesToUpload }: { filesToUpload: FileToUpload[] }) => ({
+                filesToUpload: [...filesToUpload, ...additionalFileItems]
+            })
+        );
     };
 
-    onRemove = fileToRemove => {
+    onRemove = (fileToRemove: File): void => {
         const relatedFileItem = _.find(
             this.state.filesToUpload,
             ({ file }) => file === fileToRemove
@@ -139,7 +169,9 @@ export default class AddNoteForm extends Component {
             return;
         }
 
-        relatedFileItem.remove();
+        if (typeof relatedFileItem.remove === 'function') {
+            relatedFileItem.remove();
+        }
     };
 
     render() {
