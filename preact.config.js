@@ -6,10 +6,10 @@ export default (config, env, helpers) => {
 
     babelConfig.plugins.push('lodash', 'transform-async-to-promises');
 
-    const { plugin } = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0];
-    plugin.options.sourceMap = false;
-
     if (env.production) {
+        const { plugin } = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0];
+        plugin.options.sourceMap = false;
+
         config.output.publicPath = '/notes/';
         config.plugins.push(
             new BundleAnalyzerPlugin({
