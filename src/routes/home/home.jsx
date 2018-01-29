@@ -1,11 +1,10 @@
 import { h, Component } from 'preact';
-import 'react-grid-layout/css/styles.css';
 import _ from 'lodash';
 
 import AddNoteForm from './components/add-note-form';
-import Note from './components/note';
+import NotesList from './components/notes-list';
 import firebaseProvider from '../../providers/firebase-provider';
-import style from './home.scss';
+import './home.scss';
 
 export default class Home extends Component {
     state = {
@@ -28,37 +27,55 @@ export default class Home extends Component {
         });
     };
 
+    getNotesRef = () => firebaseProvider.getCurrentUserData().child('notes');
+
     getNotes = () => {
-        firebaseProvider
-            .getCurrentUserData()
-            .child('notes')
-            .on('value', snapshot => {
-                const notesMap = snapshot.val();
-                const notes = _.entries(notesMap)
-                    .map(([id, note]) => ({
-                        id,
-                        title: note.title,
-                        description: note.description,
-                        files: note.files
-                    }))
-                    .reverse();
-                this.setState({ notes });
-            });
+        this.getNotesRef().on('value', snapshot => {
+            const notesMap = snapshot.val();
+            const notes = _.entries(notesMap)
+                .map(([id, note]) => ({
+                    id,
+                    title: note.title,
+                    description: note.description,
+                    files: note.files
+                }))
+                .reverse();
+            this.setState({ notes });
+        });
+    };
+
+    onMoveNote = (dragIndex, hoverIndex) => {
+        if (_.isUndefined(dragIndex) || _.isUndefined(hoverIndex)) {
+            return;
+        }
+        const notes = [...this.state.notes];
+        const dragNote = notes[dragIndex];
+
+        // remove from dragIndex and insert into hoverIndex
+        [[dragIndex, 1], [hoverIndex, 0, dragNote]].forEach(args => {
+            notes.splice.apply(notes, args); // eslint-disable-line
+        });
+
+        this.setState({
+            notes
+        });
+    };
+
+    onDropNote = (dragIndex, hoverIndex) => {
+        console.log('dragIndex ', dragIndex, ' hoverIndex ', hoverIndex);
     };
 
     render() {
         const { notes } = this.state;
 
         return (
-            <div className={style.home}>
+            <div className="home-page">
                 <AddNoteForm />
-                <div className={'react-grid-layout'}>
-                    {notes.map(note => (
-                        <div key={note.id} className={'react-grid-item'}>
-                            <Note note={note} />
-                        </div>
-                    ))}
-                </div>
+                <NotesList
+                    notes={notes}
+                    onMoveNote={this.onMoveNote}
+                    onDropNote={this.onDropNote}
+                />
             </div>
         );
     }

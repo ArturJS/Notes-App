@@ -1,35 +1,9 @@
-.home {
-    padding: 56px 20px;
-    min-height: 100%;
-    width: 100%;
-    background: linear-gradient(to right bottom, #f44336, #ffeb3b);
-}
-
-
 :global {
-    .react-grid-item {
-        background-color: rgba(63, 81, 181, 0.7);
-        border-radius: 2px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        color: #ffffff;
-        overflow: hidden;
-        margin-bottom: 15px;
-        transition: box-shadow 0.15s ease;
-        will-change: box-shadow;
-
-        &:hover {
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
-    }
-
-    .react-grid-layout {
+    .home-page {
+        padding: 56px 20px;
+        min-height: 100%;
         width: 100%;
-        max-width: 700px;
-        margin: 0 auto;
-    }
-
-    .react-grid-item.react-grid-placeholder {
-        background: #673ab7;
+        background: linear-gradient(to right bottom, #f44336, #ffeb3b);
     }
 
     [data-draggable] {

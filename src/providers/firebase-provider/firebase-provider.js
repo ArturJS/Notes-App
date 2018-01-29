@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 
 const config = {
+    projectId: 'angulartodo-561d2',
     apiKey: 'AIzaSyC6LDuww70ztN7YfscpvEHrkJteSdvPco8',
     authDomain: 'angulartodo-561d2.firebaseapp.com',
     databaseURL: 'https://angulartodo-561d2.firebaseio.com',

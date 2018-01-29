@@ -1,0 +1,8 @@
+:global {
+  .note-drag-preview {
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+  }
+}
