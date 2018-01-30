@@ -37,7 +37,9 @@ export default class Home extends Component {
                     id,
                     title: note.title,
                     description: note.description,
-                    files: note.files
+                    files: note.files,
+                    prev: note.prev,
+                    next: note.next
                 }))
                 .reverse();
             this.setState({ notes });

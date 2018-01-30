@@ -24,7 +24,7 @@ const noteSource = {
             note
         };
     },
-    endDrag(props, monitor, component) {
+    endDrag(props, monitor) {
         const dragIndex = monitor.getItem().index;
         const hoverIndex = props.index;
 
@@ -75,6 +75,7 @@ const noteTarget = {
         // Generally it's better to avoid mutations,
         // but it's good here for the sake of performance
         // to avoid expensive index searches.
+        // eslint-disable-next-line no-param-reassign
         monitor.getItem().index = hoverIndex;
     }
 };
@@ -104,11 +105,8 @@ export default class Note extends Component {
         isEditing: false
     };
 
-    getNoteRef = () => {
-        const { id } = this.props.note;
-
-        return firebaseProvider.getCurrentUserData().child(`notes/${id}`);
-    };
+    getNoteRef = (id = this.props.note.id) =>
+        firebaseProvider.getCurrentUserData().child(`notes/${id}`);
 
     onEdit = () => {
         this.setState({ isEditing: true });
@@ -118,7 +116,7 @@ export default class Note extends Component {
         const { files } = this.props.note;
 
         if (!files) {
-            return;
+            return Promise.resolve();
         }
 
         const removeFilesPromises = files.map(file =>
@@ -131,8 +129,25 @@ export default class Note extends Component {
         return Promise.all(removeFilesPromises);
     };
 
+    connectSiblings = () => {
+        const { prev, next } = this.props.note;
+
+        if (prev) {
+            this.getNoteRef(prev).update({
+                next: next || null
+            });
+        }
+
+        if (next) {
+            this.getNoteRef(next).update({
+                prev: prev || null
+            });
+        }
+    };
+
     onRemove = async () => {
         // TODO: implement optimistic updates with rollback in case of error
+        this.connectSiblings();
         this.getNoteRef().remove();
         this.removeRelatedFiles();
     };
