@@ -70,7 +70,7 @@ export default class Home extends Component {
 
         return (
             <div className="home-page">
-                <AddNoteForm />
+                <AddNoteForm notes={notes} />
                 <NotesList
                     notes={notes}
                     onMoveNote={this.onMoveNote}

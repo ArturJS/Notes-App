@@ -3,6 +3,7 @@
 import type { FormApi } from 'final-form';
 
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 import _ from 'lodash';
 
@@ -40,6 +41,19 @@ type State = {
 };
 
 export default class AddNoteForm extends Component<Props, State> {
+    static propTypes = {
+        notes: PropTypes.arrayOf(
+            PropTypes.shape({
+                id: PropTypes.string.isRequired,
+                title: PropTypes.string.isRequired,
+                description: PropTypes.string.isRequired,
+                files: PropTypes.array,
+                prev: PropTypes.string,
+                next: PropTypes.string
+            }).isRequired
+        ).isRequired
+    };
+
     state: State = {
         filesToUpload: []
     };
@@ -52,11 +66,44 @@ export default class AddNoteForm extends Component<Props, State> {
         return Promise.all(uploadPromises);
     };
 
+    getNotesRef = () => firebaseProvider.getCurrentUserData().child('notes');
+
+    getLastNote = () => {
+        const { notes } = this.props;
+
+        if (notes.length === 0) {
+            return null;
+        }
+
+        return _.find(notes, note => !note.next);
+    };
+
+    updatePrevNoteRef(newNoteId) {
+        const lastNote = this.getLastNote();
+
+        if (!lastNote) {
+            return;
+        }
+
+        this.getNotesRef()
+            .child(lastNote.id)
+            .update({
+                next: newNoteId
+            });
+    }
+
     createNote = async ({ title, description }: Note): Promise<void> => {
-        const notesRef = firebaseProvider.getCurrentUserData().child('notes');
+        const notesRef = this.getNotesRef();
         const newNoteId = notesRef.push().key;
 
         await this.waitForUploading();
+
+        const lastNote = this.getLastNote();
+        let prevNoteId;
+
+        if (lastNote) {
+            prevNoteId = lastNote.id;
+        }
 
         notesRef.child(newNoteId).update({
             title,
@@ -64,8 +111,10 @@ export default class AddNoteForm extends Component<Props, State> {
             files: this.state.filesToUpload.map(({ file, storagePath }) => ({
                 name: (file: any).name,
                 storagePath
-            }))
+            })),
+            prev: prevNoteId
         });
+        this.updatePrevNoteRef(newNoteId);
     };
 
     onSubmit = async (values: Note, formApi: FormApi) => {

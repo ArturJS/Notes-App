@@ -13,7 +13,7 @@
         "flow": "node ./scripts/tasks/flow.js"
     },
     "lint-staged": {
-        "./src/**/*.{js,jsx}": [
+        "src/**/*.{js,jsx}": [
             "prettier --write",
             "eslint --fix",
             "git add"
