@@ -14,12 +14,24 @@ export default class Home extends Component {
     componentDidMount() {
         firebaseProvider.auth.onAuthStateChanged(user => {
             if (user) {
-                this.getNotes();
+                this.subscribeOnNotesUpdate();
             } else {
                 this.clearNotes();
             }
         });
     }
+
+    componentWillUnmount() {
+        this.unsubscribeFromNotesUpdate();
+    }
+
+    subscribeOnNotesUpdate = () => {
+        this.getNotesRef().on('value', this.getNotes);
+    };
+
+    unsubscribeFromNotesUpdate = () => {
+        this.getNotesRef().off('value', this.getNotes);
+    };
 
     clearNotes = () => {
         this.setState({
@@ -51,6 +63,7 @@ export default class Home extends Component {
         const lastNote = _.find(notes, note => !note.prev);
 
         if (!firstNote || !lastNote) {
+            // todo create notes validator
             console.error('Invalid notes data in Database!');
             console.error(
                 `firstNote: ${JSON.stringify(
@@ -81,63 +94,88 @@ export default class Home extends Component {
         return result;
     };
 
-    getNotes = () => {
-        this.getNotesRef().on('value', snapshot => {
-            const notesMap = snapshot.val();
-            const notes = this.mapNotes(notesMap);
+    getNotes = snapshot => {
+        const notesMap = snapshot.val();
+        const notes = this.mapNotes(notesMap);
 
-            this.setState({ notes });
-        });
+        this.setState({ notes });
     };
 
     connectSiblings = note => {
         const { prev, next } = note;
+        const updatePromises = [];
 
         if (prev) {
-            this.getNoteRef(prev).update({
-                next: next || null
-            });
+            updatePromises.push(
+                this.getNoteRef(prev).update({
+                    next: next || null
+                })
+            );
         }
 
         if (next) {
-            this.getNoteRef(next).update({
-                prev: prev || null
-            });
+            updatePromises.push(
+                this.getNoteRef(next).update({
+                    prev: prev || null
+                })
+            );
         }
+
+        return Promise.all(updatePromises);
     };
 
     insertBetweenNotes = (prevNextNotes, note) => {
         const { prevNote, nextNote } = prevNextNotes;
+        const updatePromises = [];
 
         if (prevNote) {
-            this.getNoteRef(prevNote.id).update({
-                next: note.id
-            });
+            updatePromises.push(
+                this.getNoteRef(prevNote.id).update({
+                    next: note.id
+                })
+            );
         }
 
         if (nextNote) {
-            this.getNoteRef(nextNote.id).update({
-                prev: note.id
-            });
+            updatePromises.push(
+                this.getNoteRef(nextNote.id).update({
+                    prev: note.id
+                })
+            );
         }
 
-        this.getNoteRef(note.id).update({
-            prev: prevNote ? prevNote.id : null,
-            next: nextNote ? nextNote.id : null
-        });
+        updatePromises.push(
+            this.getNoteRef(note.id).update({
+                prev: prevNote ? prevNote.id : null,
+                next: nextNote ? nextNote.id : null
+            })
+        );
+
+        return Promise.all(updatePromises);
     };
 
-    updateRelatedNotesRefs = (notes, currentNoteIndex) => {
+    updateRelatedNotesRefs = async (notes, currentNoteIndex) => {
         const currentNote = notes[currentNoteIndex];
 
-        this.connectSiblings(currentNote);
-        this.insertBetweenNotes(
+        this.unsubscribeFromNotesUpdate();
+
+        const connectPromise = this.connectSiblings(currentNote);
+        const insertBetweenPromise = this.insertBetweenNotes(
             {
                 prevNote: notes[currentNoteIndex + 1],
                 nextNote: notes[currentNoteIndex - 1]
             },
             currentNote
         );
+
+        try {
+            await Promise.all([connectPromise, insertBetweenPromise]);
+
+            this.subscribeOnNotesUpdate();
+        } catch (err) {
+            console.error('Something went wrong during notes order update...');
+            console.error(err);
+        }
     };
 
     onMoveNote = (dragIndex, hoverIndex) => {
