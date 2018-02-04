@@ -66,7 +66,8 @@ export default class AddNoteForm extends Component<Props, State> {
         return Promise.all(uploadPromises);
     };
 
-    getNotesRef = () => firebaseProvider.getCurrentUserData().child('notes');
+    getNotesRef = () =>
+        firebaseProvider.getCurrentUserData().child('notes_test');
 
     getLastNote = () => {
         const { notes } = this.props;
@@ -99,7 +100,7 @@ export default class AddNoteForm extends Component<Props, State> {
         await this.waitForUploading();
 
         const lastNote = this.getLastNote();
-        let prevNoteId;
+        let prevNoteId = null;
 
         if (lastNote) {
             prevNoteId = lastNote.id;
@@ -122,7 +123,7 @@ export default class AddNoteForm extends Component<Props, State> {
             return;
         }
 
-        await this.createNote(values);
+        await firebaseProvider.updatesQueue.add(() => this.createNote(values));
 
         formApi.reset();
         this.setState({ filesToUpload: [] });

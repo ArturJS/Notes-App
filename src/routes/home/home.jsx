@@ -19,10 +19,13 @@ export default class Home extends Component {
                 this.clearNotes();
             }
         });
+
+        firebaseProvider.updatesQueue.on('empty', this.subscribeOnNotesUpdate);
     }
 
     componentWillUnmount() {
         this.unsubscribeFromNotesUpdate();
+        firebaseProvider.updatesQueue.off('empty', this.subscribeOnNotesUpdate);
     }
 
     subscribeOnNotesUpdate = () => {
@@ -39,10 +42,11 @@ export default class Home extends Component {
         });
     };
 
-    getNotesRef = () => firebaseProvider.getCurrentUserData().child('notes');
+    getNotesRef = () =>
+        firebaseProvider.getCurrentUserData().child('notes_test');
 
     getNoteRef = id =>
-        firebaseProvider.getCurrentUserData().child(`notes/${id}`);
+        firebaseProvider.getCurrentUserData().child(`notes_test/${id}`);
 
     mapNotes = initialNotesMap => {
         // Important! Notes order is reversed!
@@ -98,7 +102,9 @@ export default class Home extends Component {
         const notesMap = snapshot.val();
         const notes = this.mapNotes(notesMap);
 
-        this.setState({ notes });
+        this.setState({ notes }, () => {
+            console.info('Updated!');
+        });
     };
 
     connectSiblings = note => {
@@ -158,6 +164,7 @@ export default class Home extends Component {
         const currentNote = notes[currentNoteIndex];
 
         this.unsubscribeFromNotesUpdate();
+        console.info('Start!');
 
         const connectPromise = this.connectSiblings(currentNote);
         const insertBetweenPromise = this.insertBetweenNotes(
@@ -170,8 +177,7 @@ export default class Home extends Component {
 
         try {
             await Promise.all([connectPromise, insertBetweenPromise]);
-
-            this.subscribeOnNotesUpdate();
+            console.info('Done!');
         } catch (err) {
             console.error('Something went wrong during notes order update...');
             console.error(err);
@@ -198,7 +204,9 @@ export default class Home extends Component {
     onDropNote = (dragIndex, hoverIndex) => {
         const { notes } = this.state;
 
-        this.updateRelatedNotesRefs(notes, hoverIndex);
+        firebaseProvider.updatesQueue.add(() =>
+            this.updateRelatedNotesRefs(notes, hoverIndex)
+        );
     };
 
     render() {

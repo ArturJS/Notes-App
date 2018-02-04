@@ -106,7 +106,7 @@ export default class Note extends Component {
     };
 
     getNoteRef = (id = this.props.note.id) =>
-        firebaseProvider.getCurrentUserData().child(`notes/${id}`);
+        firebaseProvider.getCurrentUserData().child(`notes_test/${id}`);
 
     onEdit = () => {
         this.setState({ isEditing: true });
