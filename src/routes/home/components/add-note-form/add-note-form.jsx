@@ -66,8 +66,7 @@ export default class AddNoteForm extends Component<Props, State> {
         return Promise.all(uploadPromises);
     };
 
-    getNotesRef = () =>
-        firebaseProvider.getCurrentUserData().child('notes_test');
+    getNotesRef = () => firebaseProvider.getCurrentUserData().child('notes');
 
     getLastNote = () => {
         const { notes } = this.props;

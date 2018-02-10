@@ -44,10 +44,10 @@
             ],
             "class-methods-use-this": 0,
             "no-underscore-dangle": [
-              "error",
-              {
-                "allowAfterThis": true
-              }
+                "error",
+                {
+                    "allowAfterThis": true
+                }
             ]
         },
         "globals": {

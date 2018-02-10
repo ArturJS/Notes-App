@@ -7,9 +7,13 @@ import firebaseProvider from '../../providers/firebase-provider';
 import './home.scss';
 
 export default class Home extends Component {
-    state = {
-        notes: []
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            notes: []
+        };
+    }
 
     componentDidMount() {
         firebaseProvider.auth.onAuthStateChanged(user => {
@@ -42,11 +46,10 @@ export default class Home extends Component {
         });
     };
 
-    getNotesRef = () =>
-        firebaseProvider.getCurrentUserData().child('notes_test');
+    getNotesRef = () => firebaseProvider.getCurrentUserData().child('notes');
 
     getNoteRef = id =>
-        firebaseProvider.getCurrentUserData().child(`notes_test/${id}`);
+        firebaseProvider.getCurrentUserData().child(`notes/${id}`);
 
     mapNotes = initialNotesMap => {
         // Important! Notes order is reversed!
@@ -58,9 +61,9 @@ export default class Home extends Component {
             id,
             title: note.title,
             description: note.description,
-            files: note.files,
-            prev: note.prev,
-            next: note.next
+            files: note.files || [],
+            prev: note.prev || null,
+            next: note.next || null
         }));
         const notes = _.values(notesMap);
         const firstNote = _.find(notes, note => !note.next);
@@ -83,7 +86,7 @@ export default class Home extends Component {
         let nextNote = notesMap[firstNote.prev];
 
         while (nextNote) {
-            // TODO: check possible circular links! (in case of inconsistent data in database)
+            // TODO: move into separate check of circular links
             if (passedNotesSet.has(nextNote)) {
                 console.error('Circular links in database!');
                 console.error(`note: ${JSON.stringify(nextNote)}`);
@@ -102,87 +105,24 @@ export default class Home extends Component {
         const notesMap = snapshot.val();
         const notes = this.mapNotes(notesMap);
 
-        this.setState({ notes }, () => {
-            console.info('Updated!');
-        });
+        this.setState({ notes });
     };
 
-    connectSiblings = note => {
-        const { prev, next } = note;
-        const updatePromises = [];
+    setupPrevNextRefs(notes) {
+        const notesWithPrevNextRefs = notes.map((note, index) => ({
+            ...note,
+            prev: notes[index + 1] ? notes[index + 1].id : null,
+            next: notes[index - 1] ? notes[index - 1].id : null
+        }));
 
-        if (prev) {
-            updatePromises.push(
-                this.getNoteRef(prev).update({
-                    next: next || null
-                })
-            );
-        }
+        return _.mapKeys(notesWithPrevNextRefs, ({ id }) => id);
+    }
 
-        if (next) {
-            updatePromises.push(
-                this.getNoteRef(next).update({
-                    prev: prev || null
-                })
-            );
-        }
+    updateAllNotes = _.debounce(notes => {
+        const notesWithPrevNextRefs = this.setupPrevNextRefs(notes);
 
-        return Promise.all(updatePromises);
-    };
-
-    insertBetweenNotes = (prevNextNotes, note) => {
-        const { prevNote, nextNote } = prevNextNotes;
-        const updatePromises = [];
-
-        if (prevNote) {
-            updatePromises.push(
-                this.getNoteRef(prevNote.id).update({
-                    next: note.id
-                })
-            );
-        }
-
-        if (nextNote) {
-            updatePromises.push(
-                this.getNoteRef(nextNote.id).update({
-                    prev: note.id
-                })
-            );
-        }
-
-        updatePromises.push(
-            this.getNoteRef(note.id).update({
-                prev: prevNote ? prevNote.id : null,
-                next: nextNote ? nextNote.id : null
-            })
-        );
-
-        return Promise.all(updatePromises);
-    };
-
-    updateRelatedNotesRefs = async (notes, currentNoteIndex) => {
-        const currentNote = notes[currentNoteIndex];
-
-        this.unsubscribeFromNotesUpdate();
-        console.info('Start!');
-
-        const connectPromise = this.connectSiblings(currentNote);
-        const insertBetweenPromise = this.insertBetweenNotes(
-            {
-                prevNote: notes[currentNoteIndex + 1],
-                nextNote: notes[currentNoteIndex - 1]
-            },
-            currentNote
-        );
-
-        try {
-            await Promise.all([connectPromise, insertBetweenPromise]);
-            console.info('Done!');
-        } catch (err) {
-            console.error('Something went wrong during notes order update...');
-            console.error(err);
-        }
-    };
+        this.getNotesRef().set(notesWithPrevNextRefs);
+    }, 1500);
 
     onMoveNote = (dragIndex, hoverIndex) => {
         if (_.isUndefined(dragIndex) || _.isUndefined(hoverIndex)) {
@@ -201,12 +141,10 @@ export default class Home extends Component {
         });
     };
 
-    onDropNote = (dragIndex, hoverIndex) => {
+    onDropNote = () => {
         const { notes } = this.state;
 
-        firebaseProvider.updatesQueue.add(() =>
-            this.updateRelatedNotesRefs(notes, hoverIndex)
-        );
+        this.updateAllNotes(notes);
     };
 
     render() {
