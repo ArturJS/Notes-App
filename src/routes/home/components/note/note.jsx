@@ -265,7 +265,7 @@ export default class Note extends Component {
                                 placeholder="Note title..."
                             />
                         </div>
-                        <div className={'note-description'}>
+                        <div className={'note-description is-editing'}>
                             <Field
                                 name="description"
                                 component="textarea"
