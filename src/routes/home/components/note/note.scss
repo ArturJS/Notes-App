@@ -86,5 +86,15 @@
     &-link {
       color: $c-white;
     }
+
+    .buttons-group,
+    .files-list {
+      padding: 10px;
+    }
+
+    .buttons-group {
+      display: flex;
+      justify-content: center;
+    }
   }
 }

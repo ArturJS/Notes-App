@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 import firebaseProvider from '../../../../providers/firebase-provider';
 import FilesList from '../file-list';
+import Button from '../../../../components/button';
 import './note.scss';
 
 const linkRegexp = /(http[^\s]+)/g;
@@ -197,6 +198,52 @@ export default class Note extends Component {
             '<a href="$1" class="note-link" target="_blank" rel="nofollow noopener">$1</a>'
         );
 
+    removeFile = async storagePath => {
+        await firebaseProvider.storage
+            .ref()
+            .child(storagePath)
+            .delete();
+
+        const { files } = this.props.note;
+        const updatedFilesList = files.filter(
+            file => file.storagePath !== storagePath
+        );
+
+        this.getNoteRef().update({
+            files: updatedFilesList
+        });
+    };
+
+    onRemoveFile = ({ storagePath }) => {
+        this.removeFile(storagePath);
+    };
+
+    uploadFile = async file => {
+        const userEmail = firebaseProvider.auth.currentUser.email;
+        const storagePath = `${userEmail}/${Date.now()}/${file.name}`;
+
+        await firebaseProvider.storage
+            .ref()
+            .child(storagePath)
+            .put(file);
+
+        const { files = [] } = this.props.note;
+        const createdFile = {
+            name: file.name,
+            storagePath
+        };
+
+        this.getNoteRef().update({
+            files: [...files, createdFile]
+        });
+    };
+
+    attachFiles = e => {
+        const additionalFiles = Array.from(e.target.files);
+
+        additionalFiles.forEach(this.uploadFile);
+    };
+
     renderDefaultMode() {
         const {
             note,
@@ -274,6 +321,23 @@ export default class Note extends Component {
                                 autoComplete="off"
                                 placeholder="Note description..."
                             />
+                        </div>
+                        <FilesList
+                            files={note.files}
+                            onRemove={this.onRemoveFile}
+                        />
+                        <div className={'buttons-group'}>
+                            <Button
+                                type="button"
+                                className={'btn-file'}
+                                theme="hot">
+                                <input
+                                    type="file"
+                                    multiple
+                                    onChange={this.attachFiles}
+                                />
+                                Attach files
+                            </Button>
                         </div>
                     </form>
                 )}

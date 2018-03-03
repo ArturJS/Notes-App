@@ -248,7 +248,7 @@ export default class AddNoteForm extends Component<Props, State> {
                         <div class="control-field">
                             <Field
                                 name="description"
-                                component="input"
+                                component="textarea"
                                 class="form-control"
                                 autoComplete="off"
                                 placeholder="Note description..."
