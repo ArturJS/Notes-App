@@ -237,16 +237,16 @@ export default class AddNoteForm extends Component<Props, State> {
                         onSubmit={handleSubmit}
                         className={'add-note-form'}
                         noValidate>
-                        <div class="control-field">
+                        <div className="control-field">
                             <Field
                                 name="title"
                                 component="input"
-                                class="form-control"
+                                className="form-control"
                                 autoComplete="off"
                                 placeholder="Note title..."
                             />
                         </div>
-                        <div class="control-field">
+                        <div className="control-field">
                             <Field
                                 name="description"
                                 component={MultilineInput}

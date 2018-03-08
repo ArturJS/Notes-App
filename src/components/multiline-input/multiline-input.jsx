@@ -25,13 +25,14 @@ export default class MultilineInput extends Component {
     };
 
     render() {
-        const { input, className } = this.props;
+        const { input, className, placeholder } = this.props;
         const { onChange, value } = input;
 
         return (
             <textarea
                 ref={this.setTextareaRef}
                 className={classNames('multiline-input', className)}
+                placeholder={placeholder}
                 onChange={onChange}
                 onInput={this.autofitContent}
                 value={value}

@@ -30,13 +30,13 @@ export default class Button extends Component {
         return (
             <button
                 type="button"
-                class={classNames(
+                className={classNames(
                     'btn btn-gradient-basis',
                     themeClass,
                     ...otherClassNames
                 )}
                 {...restProps}>
-                <span class={'btn-content'}>{children}</span>
+                <span className={'btn-content'}>{children}</span>
             </button>
         );
     }
