@@ -10,6 +10,7 @@ import _ from 'lodash';
 import firebaseProvider from '../../../../providers/firebase-provider';
 import FilesList from '../file-list';
 import Button from '../../../../components/button';
+import MultilineInput from '../../../../components/multiline-input';
 import './note.scss';
 
 const linkRegexp = /(http[^\s]+)/g;
@@ -178,20 +179,6 @@ export default class Note extends Component {
         return errors;
     };
 
-    setTextareaRef = node => {
-        if (!node || !node.base) {
-            return;
-        }
-        const descriptionEl = node.base;
-
-        this.descriptionEl = descriptionEl;
-
-        window.requestAnimationFrame(() => {
-            descriptionEl.style.height = '0px';
-            descriptionEl.style.height = `${descriptionEl.scrollHeight}px`;
-        });
-    };
-
     wrapUrlLinks = text =>
         _.escape(text).replace(
             linkRegexp,
@@ -315,8 +302,7 @@ export default class Note extends Component {
                         <div className={'note-description is-editing'}>
                             <Field
                                 name="description"
-                                component="textarea"
-                                ref={this.setTextareaRef}
+                                component={MultilineInput}
                                 className={'note-description-control'}
                                 autoComplete="off"
                                 placeholder="Note description..."

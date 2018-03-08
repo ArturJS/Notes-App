@@ -9,6 +9,7 @@ import _ from 'lodash';
 
 import firebaseProvider from '../../../../providers/firebase-provider';
 import Button from '../../../../components/button';
+import MultilineInput from '../../../../components/multiline-input';
 import FilesList from '../file-list';
 import './add-note-form.scss';
 
@@ -248,8 +249,8 @@ export default class AddNoteForm extends Component<Props, State> {
                         <div class="control-field">
                             <Field
                                 name="description"
-                                component="textarea"
-                                class="form-control"
+                                component={MultilineInput}
+                                className="form-control"
                                 autoComplete="off"
                                 placeholder="Note description..."
                             />
