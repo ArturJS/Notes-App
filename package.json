@@ -88,6 +88,7 @@
         "classnames": "2.2.5",
         "final-form": "3.0.0",
         "firebase": "4.8.2",
+        "immer": "1.1.3",
         "lodash": "4.17.4",
         "preact": "8.2.7",
         "preact-compat": "3.17.0",
@@ -99,7 +100,10 @@
         "react-final-form": "2.1.1",
         "react-height": "3.0.0",
         "react-motion": "0.5.2",
+        "react-redux": "5.0.7",
         "recompose": "0.26.0",
+        "redux": "3.7.2",
+        "redux-saga": "0.16.0",
         "smoothscroll-polyfill": "0.4.0"
     }
 }

@@ -1,12 +1,33 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { connect } from 'react-redux';
+import { pure } from 'recompose';
 
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
 import firebaseProvider from '../../providers/firebase-provider';
 import './home.scss';
 
+function mapStateToProps(state) {
+    const { isLoggedIn } = state.auth; // todo use auth selector
+
+    return {
+        isLoggedIn
+    };
+}
+
+@connect(mapStateToProps)
+@pure
 export default class Home extends Component {
+    static propTypes = {
+        isLoggedIn: PropTypes.bool
+    };
+
+    static defaultProps = {
+        isLoggedIn: false
+    };
+
     constructor(props) {
         super(props);
 
@@ -16,28 +37,23 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
-        firebaseProvider.auth.onAuthStateChanged(user => {
-            if (user) {
-                this.subscribeOnNotesUpdate();
-            } else {
-                this.clearNotes();
-            }
-        });
-
-        firebaseProvider.updatesQueue.on('empty', this.subscribeOnNotesUpdate);
+        this.updateNotesList(this.props);
     }
 
-    componentWillUnmount() {
-        this.unsubscribeFromNotesUpdate();
-        firebaseProvider.updatesQueue.off('empty', this.subscribeOnNotesUpdate);
+    componentWillReceiveProps(nextProps) {
+        this.updateNotesList(nextProps);
     }
 
-    subscribeOnNotesUpdate = () => {
-        this.getNotesRef().on('value', this.getNotes);
+    updateNotesList = ({ isLoggedIn }) => {
+        if (isLoggedIn) {
+            this.fetchNotes();
+        } else {
+            this.clearNotes();
+        }
     };
 
-    unsubscribeFromNotesUpdate = () => {
-        this.getNotesRef().off('value', this.getNotes);
+    fetchNotes = () => {
+        this.getNotesRef().once('value', this.getNotes);
     };
 
     clearNotes = () => {

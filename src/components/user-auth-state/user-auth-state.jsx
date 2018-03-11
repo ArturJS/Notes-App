@@ -1,41 +1,67 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { pure } from 'recompose';
 
-import firebaseProvider from '../../providers/firebase-provider/index';
-import Button from '../button/index';
+import Button from '../button';
+import { authActions } from '../../features/auth';
 import './user-auth-state.scss';
+import firebaseProvider from '../../providers/firebase-provider';
 
+function mapStateToProps(state) {
+    const { isLoggedIn } = state.auth; // todo: add auth selector and install 'reselect';
+
+    return {
+        isAuthReady: isLoggedIn !== null,
+        isLoggedIn
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        authActions: bindActionCreators(authActions, dispatch)
+    };
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+@pure
 export default class UserAuthState extends Component {
-    state = {
-        isAuthReady: false,
+    static propTypes = {
+        isLoggedIn: PropTypes.bool,
+        isAuthReady: PropTypes.bool.isRequired
+    };
+
+    static defaultProps = {
         isLoggedIn: false
     };
 
     componentDidMount() {
-        firebaseProvider.auth.onAuthStateChanged(user => {
+        const { loginSucceeded, loginFailed } = this.props.authActions;
+
+        const unsubscribe = firebaseProvider.auth.onAuthStateChanged(user => {
             if (user) {
-                this.setState({
-                    isAuthReady: true,
-                    isLoggedIn: true
+                loginSucceeded({
+                    id: user.uid,
+                    email: user.email
                 });
             } else {
-                this.setState({
-                    isAuthReady: true,
-                    isLoggedIn: false
-                });
+                loginFailed();
             }
+            unsubscribe();
         });
     }
 
-    doSignIn = () => {
-        firebaseProvider.login();
+    login = () => {
+        this.props.authActions.login();
     };
 
-    doSignOut = () => {
-        firebaseProvider.logout();
+    logout = () => {
+        this.props.authActions.logout();
     };
 
     render() {
-        const { isAuthReady, isLoggedIn } = this.state;
+        const { isAuthReady, isLoggedIn } = this.props;
 
         if (!isAuthReady) {
             return null;
@@ -44,12 +70,12 @@ export default class UserAuthState extends Component {
         return (
             <div className={'user-auth-state'}>
                 {isLoggedIn ? (
-                    <Button theme="primary" onClick={this.doSignOut}>
+                    <Button theme="primary" onClick={this.logout}>
                         Sign out &nbsp;
                         <i className={'icon icon-exit'} />
                     </Button>
                 ) : (
-                    <Button theme={'hot'} onClick={this.doSignIn}>
+                    <Button theme={'hot'} onClick={this.login}>
                         Sign in &nbsp;
                         <i className={'icon icon-enter'} />
                     </Button>
