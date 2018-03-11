@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import { pure } from 'recompose';
 
 import Button from '../button';
-import { authActions } from '../../features/auth';
+import { authActions, authSelectors } from '../../features/auth';
 import './user-auth-state.scss';
 import firebaseProvider from '../../providers/firebase-provider';
 
 function mapStateToProps(state) {
-    const { isLoggedIn } = state.auth; // todo: add auth selector and install 'reselect';
+    const { isLoggedIn } = authSelectors.getAuthState(state);
 
     return {
         isAuthReady: isLoggedIn !== null,

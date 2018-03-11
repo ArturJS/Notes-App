@@ -20,7 +20,7 @@ const initialState = {
     }
 };
 
-export default (state = initialState, action) => {
+export default function authReducer(state = initialState, action) {
     const { type, payload } = action;
     const produceState = callback => produce(state, callback);
 
@@ -68,4 +68,4 @@ export default (state = initialState, action) => {
     }
 
     /* eslint-enable no-param-reassign */
-};
+}

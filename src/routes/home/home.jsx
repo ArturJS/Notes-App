@@ -4,13 +4,14 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
 
+import { authSelectors } from '../../features/auth';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
 import firebaseProvider from '../../providers/firebase-provider';
 import './home.scss';
 
 function mapStateToProps(state) {
-    const { isLoggedIn } = state.auth; // todo use auth selector
+    const { isLoggedIn } = authSelectors.getAuthState(state);
 
     return {
         isLoggedIn

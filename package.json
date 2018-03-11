@@ -37,6 +37,7 @@
             "react/jsx-indent": 0,
             "react/jsx-indent-props": 0,
             "import/no-extraneous-dependencies": 0,
+            "import/prefer-default-export": 0,
             "linebreak-style": 0,
             "jsx-quotes": [
                 "error",
@@ -104,6 +105,7 @@
         "recompose": "0.26.0",
         "redux": "3.7.2",
         "redux-saga": "0.16.0",
+        "reselect": "3.0.1",
         "smoothscroll-polyfill": "0.4.0"
     }
 }
