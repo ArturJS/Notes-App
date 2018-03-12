@@ -9,6 +9,8 @@ import { authActions, authSelectors } from '../../features/auth';
 import './user-auth-state.scss';
 import firebaseProvider from '../../providers/firebase-provider';
 
+console.log('authActions', (window.authActions = authActions));
+
 function mapStateToProps(state) {
     const { isLoggedIn } = authSelectors.getAuthState(state);
 
@@ -37,27 +39,27 @@ export default class UserAuthState extends Component {
     };
 
     componentDidMount() {
-        const { loginSucceeded, loginFailed } = this.props.authActions;
+        const { loginSuccess, loginFailure } = this.props.authActions;
 
         const unsubscribe = firebaseProvider.auth.onAuthStateChanged(user => {
             if (user) {
-                loginSucceeded({
+                loginSuccess({
                     id: user.uid,
                     email: user.email
                 });
             } else {
-                loginFailed();
+                loginFailure();
             }
             unsubscribe();
         });
     }
 
     login = () => {
-        this.props.authActions.login();
+        this.props.authActions.loginRequest();
     };
 
     logout = () => {
-        this.props.authActions.logout();
+        this.props.authActions.logoutRequest();
     };
 
     render() {

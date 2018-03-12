@@ -3,10 +3,10 @@ import firebaseProvider from '../../providers/firebase-provider';
 import {
     LOGIN_REQUEST,
     LOGOUT_REQUEST,
-    loginSucceeded,
-    loginFailed,
-    logoutSucceeded,
-    logoutFailed
+    loginSuccess,
+    loginFailure,
+    logoutSuccess,
+    logoutFailure
 } from './auth.actions';
 
 function* watchLogin() {
@@ -17,13 +17,13 @@ function* watchLogin() {
             const { user } = yield firebaseProvider.login();
 
             yield put(
-                loginSucceeded({
+                loginSuccess({
                     id: user.uid,
                     email: user.email
                 })
             );
         } catch (error) {
-            yield put(loginFailed);
+            yield put(loginFailure());
         }
     }
 }
@@ -35,9 +35,9 @@ function* watchLogout() {
         try {
             yield firebaseProvider.logout();
 
-            yield put(logoutSucceeded());
+            yield put(logoutSuccess());
         } catch (error) {
-            yield put(logoutFailed);
+            yield put(logoutFailure());
         }
     }
 }

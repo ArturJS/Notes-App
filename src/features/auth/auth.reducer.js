@@ -1,3 +1,4 @@
+import { handleActions } from 'redux-actions';
 import produce from 'immer';
 import {
     LOGIN_REQUEST,
@@ -20,18 +21,16 @@ const initialState = {
     }
 };
 
-export default function authReducer(state = initialState, action) {
-    const { type, payload } = action;
-    const produceState = callback => produce(state, callback);
-
-    /* eslint-disable no-param-reassign */
-    switch (type) {
-        case LOGIN_REQUEST:
-            return produceState(draftState => {
+/* eslint-disable no-param-reassign */
+const authReducer = handleActions(
+    {
+        [LOGIN_REQUEST]: state =>
+            produce(state, draftState => {
                 draftState.isLoginPending = true;
-            });
-        case LOGIN_SUCCESS:
-            return produceState(draftState => {
+            }),
+
+        [LOGIN_SUCCESS]: (state, { payload }) =>
+            produce(state, draftState => {
                 draftState.isLoginPending = false;
                 draftState.isLoginSuccess = true;
                 draftState.isLoggedIn = true;
@@ -39,33 +38,37 @@ export default function authReducer(state = initialState, action) {
                     email: payload.email,
                     id: payload.id
                 };
-            });
-        case LOGIN_FAILURE:
-            return produceState(draftState => {
+            }),
+
+        [LOGIN_FAILURE]: state =>
+            produce(state, draftState => {
                 draftState.isLoggedIn = false;
                 draftState.isLoginPending = false;
                 draftState.isLoginSuccess = false;
-            });
-        case LOGOUT_REQUEST:
-            return produceState(draftState => {
+            }),
+
+        [LOGOUT_REQUEST]: state =>
+            produce(state, draftState => {
                 draftState.isLogoutPending = true;
-            });
-        case LOGOUT_SUCCESS:
-            return produceState(draftState => {
+            }),
+
+        [LOGOUT_SUCCESS]: state =>
+            produce(state, draftState => {
                 draftState.isLogoutPending = false;
                 draftState.isLogoutSuccess = true;
                 draftState.isLoggedIn = false;
                 draftState.authData = initialState.authData;
-            });
-        case LOGOUT_FAILURE:
-            return produceState(draftState => {
+            }),
+
+        [LOGOUT_FAILURE]: state =>
+            produce(state, draftState => {
                 draftState.isLoggedIn = false;
                 draftState.isLogoutPending = false;
                 draftState.isLogoutSuccess = false;
-            });
-        default:
-            return state;
-    }
+            })
+    },
+    initialState
+);
+/* eslint-enable no-param-reassign */
 
-    /* eslint-enable no-param-reassign */
-}
+export default authReducer;

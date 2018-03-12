@@ -1,35 +1,19 @@
+import { createActions } from 'redux-actions';
+
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+export const { loginRequest, loginSuccess, loginFailure } = createActions({
+    [LOGIN_REQUEST]: () => {},
+    [LOGIN_SUCCESS]: ({ email, id }) => ({ email, id }),
+    [LOGIN_FAILURE]: () => {}
+});
 
 export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
-
-export const login = () => ({
-    type: LOGIN_REQUEST
-});
-
-export const loginSucceeded = ({ email, id }) => ({
-    type: LOGIN_SUCCESS,
-    payload: {
-        email,
-        id
-    }
-});
-
-export const loginFailed = () => ({
-    type: LOGIN_FAILURE
-});
-
-export const logout = () => ({
-    type: LOGOUT_REQUEST
-});
-
-export const logoutSucceeded = () => ({
-    type: LOGOUT_SUCCESS
-});
-
-export const logoutFailed = () => ({
-    type: LOGOUT_FAILURE
+export const { logoutRequest, logoutSuccess, logoutFailure } = createActions({
+    [LOGOUT_REQUEST]: () => {},
+    [LOGOUT_SUCCESS]: () => {},
+    [LOGOUT_FAILURE]: () => {}
 });
