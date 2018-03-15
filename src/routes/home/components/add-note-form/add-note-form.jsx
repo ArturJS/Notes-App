@@ -94,9 +94,6 @@ export default class AddNoteForm extends Component<Props, State> {
     }
 
     createNote = async ({ title, description }: Note): Promise<void> => {
-        const notesRef = this.getNotesRef();
-        const newNoteId = notesRef.push().key;
-
         await this.waitForUploading();
 
         const lastNote = this.getLastNote();
@@ -105,6 +102,9 @@ export default class AddNoteForm extends Component<Props, State> {
         if (lastNote) {
             prevNoteId = lastNote.id;
         }
+
+        const notesRef = this.getNotesRef();
+        const newNoteId = notesRef.push().key;
 
         notesRef.child(newNoteId).update({
             title,

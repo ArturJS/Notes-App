@@ -1,4 +1,4 @@
-import { take, all, fork, put } from 'redux-saga/effects';
+import { take, all, fork, put, call } from 'redux-saga/effects';
 import firebaseProvider from '../../providers/firebase-provider';
 import {
     LOGIN_REQUEST,
@@ -14,7 +14,7 @@ function* watchLogin() {
         yield take(LOGIN_REQUEST);
 
         try {
-            const { user } = yield firebaseProvider.login();
+            const { user } = yield call(firebaseProvider.login());
 
             yield put(
                 loginSuccess({
@@ -33,7 +33,7 @@ function* watchLogout() {
         yield take(LOGOUT_REQUEST);
 
         try {
-            yield firebaseProvider.logout();
+            yield call(firebaseProvider.logout());
 
             yield put(logoutSuccess());
         } catch (error) {
