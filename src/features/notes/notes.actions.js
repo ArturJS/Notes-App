@@ -1,4 +1,4 @@
-import { createActions } from 'redux-actions';
+import { createActions, createAction } from 'redux-actions';
 
 export const ADD_NOTE_REQUEST = 'ADD_NOTE_REQUEST';
 export const ADD_NOTE_SUCCESS = 'ADD_NOTE_SUCCESS';
@@ -96,3 +96,6 @@ export const {
     [CHANGE_NOTE_ORDER_SUCCESS]: id => ({ id }),
     [CHANGE_NOTE_ORDER_FAILURE]: id => ({ id })
 });
+
+export const CLEAR_NOTES = 'CLEAR_NOTES';
+export const clearNotes = createAction(CLEAR_NOTES);

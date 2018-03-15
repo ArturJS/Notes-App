@@ -1,171 +1,81 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
 
-import { authSelectors } from '../../features/auth';
+import { notesActions, notesSelectors } from '../../features/notes';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
-import firebaseProvider from '../../providers/firebase-provider';
 import './home.scss';
 
 function mapStateToProps(state) {
-    const { isLoggedIn } = authSelectors.getAuthState(state);
+    const notes = notesSelectors.getNotes(state);
 
     return {
-        isLoggedIn
+        notes
     };
 }
 
-@connect(mapStateToProps)
+function mapDispatchToProps(dispatch) {
+    return {
+        notesActions: bindActionCreators(notesActions, dispatch)
+    };
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 @pure
 export default class Home extends Component {
     static propTypes = {
-        isLoggedIn: PropTypes.bool
+        notes: PropTypes.arrayOf(
+            // todo: move into common propTypes
+            PropTypes.shape({
+                id: PropTypes.string.isRequired,
+                title: PropTypes.string.isRequired,
+                description: PropTypes.string.isRequired,
+                files: PropTypes.array,
+                prev: PropTypes.string,
+                next: PropTypes.string
+            }).isRequired
+        ).isRequired,
+        notesActions: PropTypes.object.isRequired
     };
 
-    static defaultProps = {
-        isLoggedIn: false
-    };
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            notes: []
-        };
-    }
-
-    componentDidMount() {
-        this.updateNotesList(this.props);
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.updateNotesList(nextProps);
-    }
-
-    updateNotesList = ({ isLoggedIn }) => {
-        if (isLoggedIn) {
-            this.fetchNotes();
-        } else {
-            this.clearNotes();
-        }
-    };
-
-    fetchNotes = () => {
-        this.getNotesRef().once('value', this.getNotes);
-    };
-
-    clearNotes = () => {
-        this.setState({
-            notes: []
-        });
-    };
-
-    getNotesRef = () => firebaseProvider.getCurrentUserData().child('notes');
-
-    getNoteRef = id =>
-        firebaseProvider.getCurrentUserData().child(`notes/${id}`);
-
-    mapNotes = initialNotesMap => {
-        // Important! Notes order is reversed!
-        if (_.isEmpty(initialNotesMap)) {
-            return [];
-        }
-
-        const notesMap = _.mapValues(initialNotesMap, (note, id) => ({
-            id,
-            title: note.title,
-            description: note.description,
-            files: note.files || [],
-            prev: note.prev || null,
-            next: note.next || null
-        }));
-        const notes = _.values(notesMap);
-        const firstNote = _.find(notes, note => !note.next);
-        const lastNote = _.find(notes, note => !note.prev);
-
-        if (!firstNote || !lastNote) {
-            // todo create notes validator
-            console.error('Invalid notes data in Database!');
-            console.error(
-                `firstNote: ${JSON.stringify(
-                    firstNote
-                )}, lastNote: ${JSON.stringify(firstNote)}`
-            );
-
-            return [];
-        }
-
-        const result = [firstNote];
-        const passedNotesSet = new Set(result);
-        let nextNote = notesMap[firstNote.prev];
-
-        while (nextNote) {
-            // TODO: move into separate check of circular links
-            if (passedNotesSet.has(nextNote)) {
-                console.error('Circular links in database!');
-                console.error(`note: ${JSON.stringify(nextNote)}`);
-
-                return [];
-            }
-            passedNotesSet.add(nextNote);
-            result.push(nextNote);
-            nextNote = notesMap[nextNote.prev];
-        }
-
-        return result;
-    };
-
-    getNotes = snapshot => {
-        const notesMap = snapshot.val();
-        const notes = this.mapNotes(notesMap);
-
-        this.setState({ notes });
-    };
-
-    setupPrevNextRefs(notes) {
-        const notesWithPrevNextRefs = notes.map((note, index) => ({
-            ...note,
-            prev: notes[index + 1] ? notes[index + 1].id : null,
-            next: notes[index - 1] ? notes[index - 1].id : null
-        }));
-
-        return _.mapKeys(notesWithPrevNextRefs, ({ id }) => id);
-    }
-
-    updateAllNotes = _.debounce(notes => {
-        const notesWithPrevNextRefs = this.setupPrevNextRefs(notes);
-
-        this.getNotesRef().set(notesWithPrevNextRefs);
-    }, 1500);
-
-    onMoveNote = (dragIndex, hoverIndex) => {
-        if (_.isUndefined(dragIndex) || _.isUndefined(hoverIndex)) {
+    changeNoteOrder = ({ oldIndex, newIndex, commitChanges }) => {
+        if (_.isUndefined(oldIndex) || _.isUndefined(newIndex)) {
             return;
         }
-        const notes = [...this.state.notes];
-        const dragNote = notes[dragIndex];
 
-        // remove from dragIndex and insert into hoverIndex
-        [[dragIndex, 1], [hoverIndex, 0, dragNote]].forEach(args => {
-            notes.splice(...args);
-        });
+        const movingNote = this.props.notes[oldIndex];
 
-        this.setState({
-            notes
+        this.props.notesActions.changeNoteOrderRequest({
+            id: movingNote.id,
+            oldIndex,
+            newIndex,
+            commitChanges
         });
     };
 
-    onDropNote = () => {
-        const { notes } = this.state;
+    onMoveNote = (oldIndex, newIndex) => {
+        this.changeNoteOrder({
+            oldIndex,
+            newIndex,
+            commitChanges: false
+        });
+    };
 
-        this.updateAllNotes(notes);
+    onDropNote = (oldIndex, newIndex) => {
+        this.changeNoteOrder({
+            // todo check (why commitChanges not working????)
+            oldIndex,
+            newIndex,
+            commitChanges: false
+        });
     };
 
     render() {
-        const { notes } = this.state;
+        const { notes } = this.props;
 
         return (
             <div className="home-page">

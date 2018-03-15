@@ -161,11 +161,11 @@ function* watchAddNote() {
         try {
             const { title, description, files } = yield take(ADD_NOTE_REQUEST);
             const lastNote = yield select(getLastNote);
-            const newNote = yield call(
+            const newNote = yield call(() =>
                 createNote({ title, description, files }, lastNote)
             );
 
-            yield call(updateLastNoteRef(newNote.id, lastNote));
+            yield call(() => updateLastNoteRef(newNote.id, lastNote));
 
             yield put(
                 addNoteSuccess({
@@ -186,7 +186,7 @@ function* watchUpdateNote() {
         const { id, title, description } = yield take(UPDATE_NOTE_REQUEST);
 
         try {
-            yield call(getNoteRefById(id).update({ title, description }));
+            yield call(() => getNoteRefById(id).update({ title, description }));
             yield put(
                 updateNoteSuccess({
                     id,
@@ -220,7 +220,7 @@ function* watchDeleteNote() {
             }
 
             yield connectSiblings(noteToDelete.prev, noteToDelete.next);
-            yield call(getNoteRefById(id).remove());
+            yield call(() => getNoteRefById(id).remove());
 
             yield put(deleteNoteSuccess(id));
         } catch (error) {
@@ -234,7 +234,7 @@ function* watchGetAllNotes() {
         yield take(GET_ALL_NOTES_REQUEST);
 
         try {
-            const notes = yield call(fetchNotes());
+            const notes = yield call(fetchNotes);
 
             yield put(getAllNotesSuccess(notes));
         } catch (error) {
@@ -254,7 +254,7 @@ function* watchChangeNoteOrder() {
         try {
             const notes = yield select(state => state.notes);
 
-            yield call(updateAllNotes(notes));
+            yield call(() => updateAllNotes(notes));
 
             yield put(changeNoteOrderSuccess(id));
         } catch (error) {

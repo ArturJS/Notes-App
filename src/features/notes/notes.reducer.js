@@ -6,11 +6,12 @@ import {
     UPDATE_NOTE_SUCCESS,
     DELETE_NOTE_SUCCESS,
     GET_ALL_NOTES_SUCCESS,
-    CHANGE_NOTE_ORDER_REQUEST
+    CHANGE_NOTE_ORDER_REQUEST,
+    CLEAR_NOTES
 } from './notes.actions';
 
 const initialState = [];
-
+// todo: use normalized data { [noteId]: note }
 /* eslint-disable no-param-reassign */
 const notesReducer = handleActions(
     {
@@ -61,7 +62,9 @@ const notesReducer = handleActions(
                 [[oldIndex, 1], [newIndex, 0, relatedNote]].forEach(args => {
                     draftState.splice(...args);
                 });
-            })
+            }),
+
+        [CLEAR_NOTES]: () => []
     },
     initialState
 );
