@@ -159,7 +159,8 @@ const updateAllNotes = async notes => {
 function* watchAddNote() {
     while (true) {
         try {
-            const { title, description, files } = yield take(ADD_NOTE_REQUEST);
+            const { payload } = yield take(ADD_NOTE_REQUEST);
+            const { title, description, files } = payload;
             const lastNote = yield select(getLastNote);
             const newNote = yield call(() =>
                 createNote({ title, description, files }, lastNote)
@@ -183,7 +184,8 @@ function* watchAddNote() {
 
 function* watchUpdateNote() {
     while (true) {
-        const { id, title, description } = yield take(UPDATE_NOTE_REQUEST);
+        const { payload } = yield take(UPDATE_NOTE_REQUEST);
+        const { id, title, description } = payload;
 
         try {
             yield call(() => getNoteRefById(id).update({ title, description }));
@@ -202,7 +204,8 @@ function* watchUpdateNote() {
 
 function* watchDeleteNote() {
     while (true) {
-        const { id } = yield take(DELETE_NOTE_REQUEST);
+        const { payload } = yield take(DELETE_NOTE_REQUEST);
+        const { id } = payload;
 
         try {
             const notes = yield select(state => state.notes);
@@ -245,10 +248,11 @@ function* watchGetAllNotes() {
 
 function* watchChangeNoteOrder() {
     while (true) {
-        const { id, commitChanges } = yield take(CHANGE_NOTE_ORDER_REQUEST);
+        const { payload } = yield take(CHANGE_NOTE_ORDER_REQUEST);
+        const { id, commitChanges } = payload;
 
         if (!commitChanges) {
-            return;
+            continue; // eslint-disable-line no-continue
         }
 
         try {

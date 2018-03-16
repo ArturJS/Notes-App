@@ -60,17 +60,15 @@ export default class Home extends Component {
     onMoveNote = (oldIndex, newIndex) => {
         this.changeNoteOrder({
             oldIndex,
-            newIndex,
-            commitChanges: false
+            newIndex
         });
     };
 
     onDropNote = (oldIndex, newIndex) => {
         this.changeNoteOrder({
-            // todo check (why commitChanges not working????)
             oldIndex,
             newIndex,
-            commitChanges: false
+            commitChanges: true
         });
     };
 

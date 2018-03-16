@@ -6,11 +6,15 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 import _ from 'lodash';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { pure } from 'recompose';
 
 import firebaseProvider from '../../../../providers/firebase-provider';
 import Button from '../../../../components/button';
 import MultilineInput from '../../../../components/multiline-input';
 import FilesList from '../file-list';
+import { notesActions } from '../../../../features/notes';
 import './add-note-form.scss';
 
 const FILE_UPLOAD_STATE = {
@@ -41,6 +45,14 @@ type State = {
     filesToUpload: FileToUpload[]
 };
 
+function mapDispatchToProps(dispatch) {
+    return {
+        notesActions: bindActionCreators(notesActions, dispatch)
+    };
+}
+
+@connect(() => {}, mapDispatchToProps)
+@pure
 export default class AddNoteForm extends Component<Props, State> {
     static propTypes = {
         notes: PropTypes.arrayOf(
@@ -52,14 +64,15 @@ export default class AddNoteForm extends Component<Props, State> {
                 prev: PropTypes.string,
                 next: PropTypes.string
             }).isRequired
-        ).isRequired
+        ).isRequired,
+        notesActions: PropTypes.object.isRequired
     };
 
     state: State = {
         filesToUpload: []
     };
 
-    waitForUploading = async (): Promise<void[]> => {
+    waitForFilesUploading = async (): Promise<void[]> => {
         const uploadPromises = this.state.filesToUpload.map(
             ({ uploadPromise }) => uploadPromise
         );
@@ -67,63 +80,26 @@ export default class AddNoteForm extends Component<Props, State> {
         return Promise.all(uploadPromises);
     };
 
-    getNotesRef = () => firebaseProvider.getCurrentUserData().child('notes');
-
-    getLastNote = () => {
-        const { notes } = this.props;
-
-        if (notes.length === 0) {
-            return null;
-        }
-
-        return _.find(notes, note => !note.next);
-    };
-
-    updatePrevNoteRef(newNoteId) {
-        const lastNote = this.getLastNote();
-
-        if (!lastNote) {
-            return;
-        }
-
-        this.getNotesRef()
-            .child(lastNote.id)
-            .update({
-                next: newNoteId
-            });
-    }
-
     createNote = async ({ title, description }: Note): Promise<void> => {
-        await this.waitForUploading();
+        await this.waitForFilesUploading();
 
-        const lastNote = this.getLastNote();
-        let prevNoteId = null;
-
-        if (lastNote) {
-            prevNoteId = lastNote.id;
-        }
-
-        const notesRef = this.getNotesRef();
-        const newNoteId = notesRef.push().key;
-
-        notesRef.child(newNoteId).update({
+        this.props.notesActions.addNoteRequest({
             title,
             description,
             files: this.state.filesToUpload.map(({ file, storagePath }) => ({
                 name: (file: any).name,
                 storagePath
-            })),
-            prev: prevNoteId
+            }))
         });
-        this.updatePrevNoteRef(newNoteId);
     };
 
     onSubmit = async (values: Note, formApi: FormApi) => {
         if (!firebaseProvider.isLoggedIn()) {
+            // todo @connect with authState
             return;
         }
 
-        await firebaseProvider.updatesQueue.add(() => this.createNote(values));
+        await this.createNote(values);
 
         formApi.reset();
         this.setState({ filesToUpload: [] });
@@ -209,7 +185,7 @@ export default class AddNoteForm extends Component<Props, State> {
         );
     };
 
-    onRemove = (fileToRemove: File): void => {
+    onRemoveFile = (fileToRemove: File): void => {
         const relatedFileItem = _.find(
             this.state.filesToUpload,
             ({ file }) => file === fileToRemove
@@ -255,7 +231,10 @@ export default class AddNoteForm extends Component<Props, State> {
                                 placeholder="Note description..."
                             />
                         </div>
-                        <FilesList files={filesList} onRemove={this.onRemove} />
+                        <FilesList
+                            files={filesList}
+                            onRemove={this.onRemoveFile}
+                        />
                         <div className={'buttons-group'}>
                             <Button
                                 type="submit"

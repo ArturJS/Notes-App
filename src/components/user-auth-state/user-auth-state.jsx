@@ -9,8 +9,6 @@ import { authActions, authSelectors } from '../../features/auth';
 import './user-auth-state.scss';
 import firebaseProvider from '../../providers/firebase-provider';
 
-console.log('authActions', (window.authActions = authActions));
-
 function mapStateToProps(state) {
     const { isLoggedIn } = authSelectors.getAuthState(state);
 

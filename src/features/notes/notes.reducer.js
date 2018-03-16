@@ -17,7 +17,7 @@ const notesReducer = handleActions(
     {
         [ADD_NOTE_SUCCESS]: (state, { payload }) =>
             produce(state, draftState => {
-                draftState.push({
+                draftState.unshift({
                     id: payload.id,
                     title: payload.title,
                     description: payload.description,
