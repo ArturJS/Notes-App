@@ -1,6 +1,6 @@
 import 'smoothscroll-polyfill';
 
-import App from './components/app';
-import './style/index.scss';
+import App from './common/components/app';
+import './common/style/index.scss';
 
 export default App;

@@ -3,7 +3,6 @@ import { findDOMNode } from 'preact-compat';
 import PropTypes from 'prop-types';
 import DragLayer from 'react-dnd/lib/DragLayer';
 import _ from 'lodash';
-
 import FilesList from '../file-list';
 import './note-drag-preview.scss';
 

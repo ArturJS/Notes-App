@@ -8,12 +8,11 @@ import classNames from 'classnames';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
-import firebaseProvider from '../../../../providers/firebase-provider';
+import firebaseProvider from '../../../../common/providers/firebase-provider';
+import Button from '../../../../common/components/button';
+import MultilineInput from '../../../../common/components/multiline-input';
+import { notesActions } from '../../../../common/features/notes';
 import FilesList from '../file-list';
-import Button from '../../../../components/button';
-import { notesActions } from '../../../../features/notes';
-import MultilineInput from '../../../../components/multiline-input';
 import './note.scss';
 
 const linkRegexp = /(http[^\s]+)/g;

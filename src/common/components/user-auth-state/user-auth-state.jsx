@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
-
 import Button from '../button';
 import firebaseProvider from '../../providers/firebase-provider';
 import { authActions, authSelectors } from '../../features/auth';

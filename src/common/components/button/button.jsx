@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
 import './button.scss';
 
 export default class Button extends Component {

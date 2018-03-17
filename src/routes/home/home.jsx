@@ -4,8 +4,7 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
-
-import { notesActions, notesSelectors } from '../../features/notes';
+import { notesActions, notesSelectors } from '../../common/features/notes';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
 import './home.scss';

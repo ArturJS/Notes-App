@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
 import DNDBackend from 'react-dnd-touch-backend';
-
 import Note from '../note';
 import NoteDragPreview from '../note-drag-preview';
 import './notes-list.scss';

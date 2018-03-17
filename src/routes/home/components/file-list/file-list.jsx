@@ -1,8 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
-import firebaseProvider from '../../../../providers/firebase-provider';
+import firebaseProvider from '../../../../common/providers/firebase-provider';
 import './file-list.scss';
 
 export default class FilesList extends Component {

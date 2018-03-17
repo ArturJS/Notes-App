@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
 import { Collapse } from 'react-collapse';
-
 import './header.scss';
 
 export default class Header extends Component {

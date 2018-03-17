@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
 import './multiline-input.scss';
 
 export default class MultilineInput extends Component {

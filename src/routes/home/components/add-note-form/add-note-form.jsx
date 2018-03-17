@@ -9,12 +9,11 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
-
-import firebaseProvider from '../../../../providers/firebase-provider';
-import Button from '../../../../components/button';
-import MultilineInput from '../../../../components/multiline-input';
+import firebaseProvider from '../../../../common/providers/firebase-provider';
+import Button from '../../../../common/components/button';
+import MultilineInput from '../../../../common/components/multiline-input';
+import { notesActions } from '../../../../common/features/notes';
 import FilesList from '../file-list';
-import { notesActions } from '../../../../features/notes';
 import './add-note-form.scss';
 
 const FILE_UPLOAD_STATE = {
