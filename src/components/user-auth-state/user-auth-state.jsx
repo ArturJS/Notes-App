@@ -19,8 +19,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-        authActions: bindActionCreators(authActions, dispatch)
-    });
+    authActions: bindActionCreators(authActions, dispatch)
+});
 
 @connect(mapStateToProps, mapDispatchToProps)
 @pure

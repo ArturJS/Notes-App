@@ -85,8 +85,8 @@ const noteTarget = {
     }
 };
 const mapDispatchToProps = dispatch => ({
-        notesActions: bindActionCreators(notesActions, dispatch)
-    });
+    notesActions: bindActionCreators(notesActions, dispatch)
+});
 
 @connect(null, mapDispatchToProps)
 @pure
