@@ -45,13 +45,11 @@ type State = {
     filesToUpload: FileToUpload[]
 };
 
-function mapDispatchToProps(dispatch) {
-    return {
-        notesActions: bindActionCreators(notesActions, dispatch)
-    };
-}
+const mapDispatchToProps = dispatch => ({
+    notesActions: bindActionCreators(notesActions, dispatch)
+});
 
-@connect(() => {}, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 @pure
 export default class AddNoteForm extends Component<Props, State> {
     static propTypes = {

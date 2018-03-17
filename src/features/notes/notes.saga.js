@@ -63,7 +63,8 @@ const createNote = async ({ title, description, files }, lastNote) => {
         id: newNoteId,
         title,
         description,
-        files
+        files,
+        prev: prevNoteId
     };
 };
 const connectSiblings = async (prevId, nextId) => {
@@ -155,6 +156,22 @@ const updateAllNotes = async notes => {
 
     await getNotesRef().set(notesWithPrevNextRefs);
 };
+const removeRelatedFiles = async note => {
+    const { files } = note;
+
+    if (!files) {
+        return Promise.resolve();
+    }
+
+    const removeFilesPromises = files.map(file =>
+        firebaseProvider.storage
+            .ref()
+            .child(file.storagePath)
+            .delete()
+    );
+
+    return Promise.all(removeFilesPromises);
+};
 
 function* watchAddNote() {
     while (true) {
@@ -173,7 +190,14 @@ function* watchAddNote() {
                     id: newNote.id,
                     title: newNote.title,
                     description: newNote.description,
-                    files: newNote.files
+                    files: newNote.files,
+                    prev: newNote.prev
+                })
+            );
+            yield put(
+                updateNoteSuccess({
+                    id: lastNote.id,
+                    next: newNote.id
                 })
             );
         } catch (error) {
@@ -222,7 +246,10 @@ function* watchDeleteNote() {
                 return;
             }
 
-            yield connectSiblings(noteToDelete.prev, noteToDelete.next);
+            yield call(() =>
+                connectSiblings(noteToDelete.prev, noteToDelete.next)
+            );
+            yield call(() => removeRelatedFiles(noteToDelete));
             yield call(() => getNoteRefById(id).remove());
 
             yield put(deleteNoteSuccess(id));

@@ -17,12 +17,7 @@ const notesReducer = handleActions(
     {
         [ADD_NOTE_SUCCESS]: (state, { payload }) =>
             produce(state, draftState => {
-                draftState.unshift({
-                    id: payload.id,
-                    title: payload.title,
-                    description: payload.description,
-                    files: payload.files
-                });
+                draftState.unshift(payload);
             }),
 
         [UPDATE_NOTE_SUCCESS]: (state, { payload }) =>
@@ -43,7 +38,9 @@ const notesReducer = handleActions(
                     return;
                 }
 
-                _.extend(draftState[noteIndex], payload);
+                const isDefined = value => !_.isUndefined(value);
+
+                _.extend(draftState[noteIndex], _.pickBy(payload, isDefined));
             }),
 
         [DELETE_NOTE_SUCCESS]: (state, { payload }) =>

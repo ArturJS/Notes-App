@@ -45,7 +45,9 @@ export default class NoteDragPreview extends Component {
                 id: PropTypes.string.isRequired,
                 title: PropTypes.string.isRequired,
                 description: PropTypes.string.isRequired,
-                files: PropTypes.array
+                files: PropTypes.array,
+                prev: PropTypes.string,
+                next: PropTypes.string
             }).isRequired
         ).isRequired,
         draggingItem: PropTypes.shape({

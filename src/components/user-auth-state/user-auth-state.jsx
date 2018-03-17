@@ -5,24 +5,22 @@ import { connect } from 'react-redux';
 import { pure } from 'recompose';
 
 import Button from '../button';
+import firebaseProvider from '../../providers/firebase-provider';
 import { authActions, authSelectors } from '../../features/auth';
 import './user-auth-state.scss';
-import firebaseProvider from '../../providers/firebase-provider';
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     const { isLoggedIn } = authSelectors.getAuthState(state);
 
     return {
         isAuthReady: isLoggedIn !== null,
         isLoggedIn
     };
-}
+};
 
-function mapDispatchToProps(dispatch) {
-    return {
+const mapDispatchToProps = dispatch => ({
         authActions: bindActionCreators(authActions, dispatch)
-    };
-}
+    });
 
 @connect(mapStateToProps, mapDispatchToProps)
 @pure

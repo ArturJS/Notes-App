@@ -10,19 +10,13 @@ import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
 import './home.scss';
 
-function mapStateToProps(state) {
-    const notes = notesSelectors.getNotes(state);
+const mapStateToProps = state => ({
+    notes: notesSelectors.getNotes(state)
+});
 
-    return {
-        notes
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        notesActions: bindActionCreators(notesActions, dispatch)
-    };
-}
+const mapDispatchToProps = dispatch => ({
+    notesActions: bindActionCreators(notesActions, dispatch)
+});
 
 @connect(mapStateToProps, mapDispatchToProps)
 @pure

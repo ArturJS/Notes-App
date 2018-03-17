@@ -6,10 +6,13 @@ import { Form, Field } from 'react-final-form';
 import { DragSource, DropTarget } from 'react-dnd';
 import classNames from 'classnames';
 import _ from 'lodash';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import firebaseProvider from '../../../../providers/firebase-provider';
 import FilesList from '../file-list';
 import Button from '../../../../components/button';
+import { notesActions } from '../../../../features/notes';
 import MultilineInput from '../../../../components/multiline-input';
 import './note.scss';
 
@@ -81,14 +84,18 @@ const noteTarget = {
         monitor.getItem().index = hoverIndex;
     }
 };
+const mapDispatchToProps = dispatch => ({
+        notesActions: bindActionCreators(notesActions, dispatch)
+    });
 
+@connect(null, mapDispatchToProps)
 @pure
-@DropTarget(DRAG_TYPE, noteTarget, connect => ({
-    connectDropTarget: connect.dropTarget()
+@DropTarget(DRAG_TYPE, noteTarget, dndConnect => ({
+    connectDropTarget: dndConnect.dropTarget()
 }))
-@DragSource(DRAG_TYPE, noteSource, (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview(),
+@DragSource(DRAG_TYPE, noteSource, (dndConnect, monitor) => ({
+    connectDragSource: dndConnect.dragSource(),
+    connectDragPreview: dndConnect.dragPreview(),
     isDragging: monitor.isDragging()
 }))
 export default class Note extends Component {
@@ -97,10 +104,13 @@ export default class Note extends Component {
             id: PropTypes.string.isRequired,
             title: PropTypes.string.isRequired,
             description: PropTypes.string.isRequired,
-            files: PropTypes.array
+            files: PropTypes.array,
+            prev: PropTypes.string,
+            next: PropTypes.string
         }).isRequired,
         onMoveNote: PropTypes.func.isRequired,
-        onDropNote: PropTypes.func.isRequired
+        onDropNote: PropTypes.func.isRequired,
+        notesActions: PropTypes.object.isRequired
     };
 
     state = {
@@ -114,48 +124,15 @@ export default class Note extends Component {
         this.setState({ isEditing: true });
     };
 
-    removeRelatedFiles = () => {
-        const { files } = this.props.note;
-
-        if (!files) {
-            return Promise.resolve();
-        }
-
-        const removeFilesPromises = files.map(file =>
-            firebaseProvider.storage
-                .ref()
-                .child(file.storagePath)
-                .delete()
-        );
-
-        return Promise.all(removeFilesPromises);
-    };
-
-    connectSiblings = () => {
-        const { prev, next } = this.props.note;
-
-        if (prev) {
-            this.getNoteRef(prev).update({
-                next: next || null
-            });
-        }
-
-        if (next) {
-            this.getNoteRef(next).update({
-                prev: prev || null
-            });
-        }
-    };
-
     onRemove = async () => {
-        // TODO: implement optimistic updates with rollback in case of error
-        this.connectSiblings();
-        this.getNoteRef().remove();
-        this.removeRelatedFiles();
+        const { id } = this.props.note;
+
+        this.props.notesActions.deleteNoteRequest(id);
     };
 
     onSave = ({ title, description }) => {
-        this.getNoteRef().update({
+        this.props.notesActions.updateNoteRequest({
+            id: this.props.note.id,
             title,
             description
         });
