@@ -9,6 +9,7 @@ export default (config, env, helpers) => {
         'transform-async-to-promises',
         'syntax-flow',
         'transform-flow-strip-types',
+        'regenerator-transform',
         [
             'transform-react-jsx',
             {
@@ -18,10 +19,20 @@ export default (config, env, helpers) => {
     );
 
     if (env.production) {
-        const {plugin} = helpers.getPluginsByName(config, 'UglifyJsPlugin')[0];
-        plugin.options.sourceMap = false;
+        // TODO : fix the problem when building ssr bundle
+        // const uglifyJsPlugins = helpers.getPluginsByName(config, 'UglifyJsPlugin');
+        //
+        // if (uglifyJsPlugins) {
+        //     console.log(JSON.stringify(uglifyJsPlugins, null, '  '));
+        //     const {plugin} = uglifyJsPlugins[0];
+        //
+        //     if (plugin) {
+        //         plugin.options.sourceMap = false;
+        //     }
+        // }
 
-        config.output.publicPath = '/notes/';
+        // config.output.publicPath = '/notes/';
+
         config.plugins.push(
             new BundleAnalyzerPlugin({
                 analyzerMode: 'static',

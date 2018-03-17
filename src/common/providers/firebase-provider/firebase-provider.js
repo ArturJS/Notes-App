@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import _ from 'lodash';
 
 const config = {
     projectId: 'angulartodo-561d2',
@@ -9,17 +10,23 @@ const config = {
     messagingSenderId: '956700524818'
 };
 
-const googleProvider = new firebase.auth.GoogleAuthProvider();
-const firebaseProvider = {
-    app: firebase.initializeApp(config),
-    auth: firebase.auth(),
-    database: firebase.database(),
-    storage: firebase.storage(),
-    getCurrentUserData: () =>
-        firebase.database().ref(`users/${firebase.auth().currentUser.uid}`),
-    isLoggedIn: () => !!firebase.auth().currentUser,
-    login: () => firebase.auth().signInWithPopup(googleProvider),
-    logout: () => firebase.auth().signOut()
-};
+const firebaseProvider = {};
+
+if (typeof window !== 'undefined') {
+    // firebase throws an error when producing SSR
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+    _.extend(firebaseProvider, {
+        app: firebase.initializeApp(config),
+        auth: firebase.auth(),
+        database: firebase.database(),
+        storage: firebase.storage(),
+        getCurrentUserData: () =>
+            firebase.database().ref(`users/${firebase.auth().currentUser.uid}`),
+        isLoggedIn: () => !!firebase.auth().currentUser,
+        login: () => firebase.auth().signInWithPopup(googleProvider),
+        logout: () => firebase.auth().signOut()
+    });
+}
 
 export default firebaseProvider;
