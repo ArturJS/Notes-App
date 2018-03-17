@@ -1,5 +1,4 @@
 import firebase from 'firebase';
-import PromiseQueueFactory from './promise-queue-factory';
 
 const config = {
     projectId: 'angulartodo-561d2',
@@ -20,8 +19,7 @@ const firebaseProvider = {
         firebase.database().ref(`users/${firebase.auth().currentUser.uid}`),
     isLoggedIn: () => !!firebase.auth().currentUser,
     login: () => firebase.auth().signInWithPopup(googleProvider),
-    logout: () => firebase.auth().signOut(),
-    updatesQueue: PromiseQueueFactory.createPromiseQueue()
+    logout: () => firebase.auth().signOut()
 };
 
 export default firebaseProvider;
