@@ -1,1 +1,1 @@
-export { ssrServer } from './ssr-server.mjs';
+export { ssrServer } from './ssr-server';
