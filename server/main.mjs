@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import mount from 'koa-mount';
-import { ssrServer } from './ssr-server/index';
-import { apiServer } from './api-server/index';
+import { ssrServer } from './ssr-server';
+import { apiServer } from './api-server';
 
 const app = new Koa();
 const { PORT = 3000 } = process.env;
