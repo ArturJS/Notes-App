@@ -4,23 +4,21 @@
     "description": "Very handy notes application!",
     "main": "index.js",
     "scripts": {
-        "test": "eslint src && preact test",
-        "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
-        "server": "node server/index.js",
-        "server:dev": "npx nodemon server/index.js",
         "build": "preact build",
         "build:no-prerender": "preact build --no-prerender",
-        "serve": "preact build && preact serve",
+        "db:create": "npx sequelize db:create",
         "dev": "preact watch",
+        "flow": "node ./scripts/tasks/flow.js",
         "precommit": "lint-staged",
-        "flow": "node ./scripts/tasks/flow.js"
+        "start":
+            "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+        "server": "node server/index.js",
+        "server:dev": "npx nodemon server/index.js",
+        "serve": "preact build && preact serve",
+        "test": "eslint src && preact test"
     },
     "lint-staged": {
-        "src/**/*.{js,jsx}": [
-            "prettier --write",
-            "eslint --fix",
-            "git add"
-        ]
+        "src/**/*.{js,jsx}": ["prettier --write", "eslint --fix", "git add"]
     },
     "keywords": [],
     "author": "",
