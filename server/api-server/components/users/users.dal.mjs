@@ -6,9 +6,9 @@ class UsersDAL {
 
         return users.map(user => ({
             id: user.id,
-            firstName: users.firstName,
-            lastName: users.lastName,
-            email: users.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
         }));
     }
 

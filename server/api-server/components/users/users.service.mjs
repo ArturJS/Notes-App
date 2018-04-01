@@ -1,3 +1,7 @@
+import {
+    ErrorNotFound,
+    ErrorAlreadyExists
+} from '../../common/exceptions';
 import usersDAL from './users.dal';
 
 class UsersService {
@@ -6,9 +10,9 @@ class UsersService {
 
         return users.map(user => ({
             id: user.id,
-            firstName: users.firstName,
-            lastName: users.lastName,
-            email: users.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
         }));
     }
 
@@ -20,7 +24,7 @@ class UsersService {
                 return null;
             }
 
-            throw new Error(`User with email="${email}" not found!`); // TODO: introduce custom errors
+            throw new ErrorNotFound(`User with email="${email}" not found!`);
         }
 
         return {
@@ -33,12 +37,12 @@ class UsersService {
     }
 
     async create(user) {
-        const isUserAlrearyExists = await this.getByEmail(user.email, {
+        const isUserAlreadyExists = await this.getByEmail(user.email, {
             suppressError: true,
         });
 
-        if (isUserAlrearyExists) {
-            throw new Error(`User with email="${user.email}" already exists!`); // TODO: introduce custom errors
+        if (isUserAlreadyExists) {
+            throw new ErrorAlreadyExists(`User with email="${user.email}" already exists!`);
         }
 
         const createdUser = await usersDAL.create({
