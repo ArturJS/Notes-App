@@ -33,6 +33,7 @@ const databaseConfig = {
         host: DB_HOSTNAME,
         port: DB_PORT,
         dialect: 'postgres',
+        operatorsAliases: false
     },
     production: {
         username: DB_USERNAME,
@@ -45,6 +46,7 @@ const databaseConfig = {
         dialectOptions: {
             ssl: true,
         },
+        operatorsAliases: false
     },
 };
 

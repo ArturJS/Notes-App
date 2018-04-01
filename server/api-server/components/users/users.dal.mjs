@@ -1,4 +1,4 @@
-import db from '../../models';
+import db from '../../common/models';
 
 class UsersDAL {
     async getAll() {
