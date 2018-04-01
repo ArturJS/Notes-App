@@ -1,61 +1,46 @@
-import notesService from './notes.service';
+import usersService from './users.service';
 
-class NotesController {
+class UsersController {
     async getAll(ctx) {
-        const notes = await notesService.getAll();
+        const users = await usersService.getAll();
 
-        ctx.body = notes.map(note => ({
-            id: note.id,
-            title: note.title,
-            description: note.description,
-            files: note.files,
+        ctx.body = users.map(user => ({
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
         }));
     }
 
-    async getById(ctx) {
-        const noteId = +ctx.params.id;
-
-        const note = await notesService.getById(noteId);
+    async getByEmail(ctx) {
+        const { email } = ctx.params;
+        const user = await usersService.getByEmail(email);
 
         ctx.body = {
-            id: noteId,
-            title: note.title,
-            description: note.description,
-            files: note.files,
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            notes: user.notes,
         };
     }
 
     async create(ctx) {
-        const note = ctx.request.body;
-
-        const createdNote = await notesService.create(note);
-
-        ctx.body = {
-            id: createdNote.id,
-            title: createdNote.title,
-            description: createdNote.description,
-            files: createdNote.files,
-        };
-    }
-
-    async update(ctx) {
-        const note = ctx.request.body;
-
-        const updatedNote = await notesService.create(note);
+        const { email, firstName, lastName } = ctx.request.body;
+        const createdUser = await usersService.create({
+            email,
+            firstName,
+            lastName,
+        });
 
         ctx.body = {
-            id: updatedNote.id,
-            title: updatedNote.title,
-            description: updatedNote.description,
-            files: updatedNote.files,
+            id: createdUser.id,
+            firstName: createdUser.firstName,
+            lastName: createdUser.lastName,
+            email: createdUser.email,
+            notes: createdUser.notes,
         };
-    }
-
-    async remove(ctx) {
-        const noteId = +ctx.params.id;
-
-        await notesService.remove(noteId);
     }
 }
 
-export default new NotesController();
+export default new UsersController();

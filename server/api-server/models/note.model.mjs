@@ -11,7 +11,7 @@ const Note = (sequelize, DataTypes) => {
             allowNull: false,
         },
         description: {
-            type: Sequelize.TEXT,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         files: {

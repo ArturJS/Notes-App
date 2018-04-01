@@ -7,11 +7,11 @@ const User = (sequelize, DataTypes) => {
             allowNull: false,
         },
         firstName: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: true,
         },
         lastName: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: true,
         },
         email: {

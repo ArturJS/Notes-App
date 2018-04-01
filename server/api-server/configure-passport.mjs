@@ -2,6 +2,7 @@ import passport from 'koa-passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
 import Router from 'koa-router';
 import { withAuth } from './utils/auth.utils';
+import { usersService } from './components/users';
 
 const router = new Router();
 
@@ -55,11 +56,32 @@ export const configurePassport = app => {
                 clientSecret: GOOGLE_OAUTH20_CLIENT_SECRET,
                 callbackURL: `http://${HOST}:${PORT}/api/auth/google/callback`,
             },
-            (accessToken, refreshToken, profile, done) => {
+            async (accessToken, refreshToken, profile, done) => {
+                // TODO move handler under users.controller.mjs
+                const email = profile.emails[0].value; // TODO handle absense of email
+                const firstName = profile.name.givenName;
+                const lastName = profile.name.familyName;
+
+                let relatedUser = await usersService.getByEmail(email, {
+                    suppressError: true,
+                });
+
+                if (!relatedUser) {
+                    relatedUser = await usersService.create({
+                        email,
+                        firstName,
+                        lastName,
+                    });
+                }
+
                 done(null, {
                     accessToken,
                     refreshToken,
-                    profile,
+                    user: {
+                        email: relatedUser.email,
+                        firstName: relatedUser.firstName,
+                        lastName: relatedUser.lastName,
+                    },
                 });
             },
         ),
