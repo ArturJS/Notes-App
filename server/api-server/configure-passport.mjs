@@ -1,6 +1,7 @@
 import passport from 'koa-passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
 import Router from 'koa-router';
+import { withAuth } from './utils/auth.utils';
 
 const router = new Router();
 
@@ -13,15 +14,18 @@ export const configurePassport = app => {
             '/auth/google',
             passport.authenticate('google', { scope: ['email', 'profile'] }),
         )
-        .get(
-            '/auth/google/callback',
-            passport.authenticate('google', {
-                successRedirect: '/api/success',
-                failureRedirect: '/api/failure',
-            }),
-        )
-        .get('/success', async ctx => {
-            ctx.body = 'Success!';
+        .get('/auth/google/callback', async (ctx, next) => {
+            await passport.authenticate('google', async (err, user, info) => {
+                if (user === false) {
+                    ctx.redirect('/api/failure');
+                } else {
+                    await ctx.login(user);
+                    ctx.redirect('/api/success');
+                }
+            })(ctx);
+        })
+        .get('/success', withAuth, async ctx => {
+            ctx.body = `Success!`;
         })
         .get('/failure', async ctx => {
             ctx.body = 'failure!';
@@ -52,7 +56,11 @@ export const configurePassport = app => {
                 callbackURL: `http://${HOST}:${PORT}/api/auth/google/callback`,
             },
             (accessToken, refreshToken, profile, done) => {
-                done(null, profile);
+                done(null, {
+                    accessToken,
+                    refreshToken,
+                    profile,
+                });
             },
         ),
     );

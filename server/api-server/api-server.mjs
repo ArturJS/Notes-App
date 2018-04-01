@@ -5,9 +5,10 @@ import { configurePassport } from './configure-passport';
 
 const app = new Koa();
 
+app.use(bodyParser());
+
 configurePassport(app);
 
-app.use(bodyParser());
 app.use(routes.routes());
 
 export const apiServer = app;
