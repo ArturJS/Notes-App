@@ -43,4 +43,3 @@ app
     });
 
 export const ssrServer = app;
-

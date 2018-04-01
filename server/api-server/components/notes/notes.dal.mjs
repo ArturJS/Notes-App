@@ -16,7 +16,7 @@ class NotesDAL {
     async create(note) {
         const createdNote = {
             id: Math.random(),
-            ...note,
+            ...note
         };
 
         this._notes.push(createdNote);
@@ -26,7 +26,9 @@ class NotesDAL {
 
     async update(note) {
         const noteId = note.id;
-        const relatedNote = this._notes.find(note => note.id === noteId);
+        const relatedNote = this._notes.find(
+            noteItem => noteItem.id === noteId
+        );
 
         if (relatedNote) {
             _.extend(relatedNote, note);

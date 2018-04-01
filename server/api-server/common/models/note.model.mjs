@@ -1,41 +1,41 @@
 const Note = (sequelize, DataTypes) => {
-    const Note = sequelize.define('Note', {
+    const NoteModel = sequelize.define('Note', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
-            allowNull: false,
+            allowNull: false
         },
         title: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         description: {
             type: DataTypes.TEXT,
-            allowNull: false,
+            allowNull: false
         },
         files: {
             type: DataTypes.JSONB,
-            allowNull: true,
+            allowNull: true
         },
         prevId: {
             type: DataTypes.INTEGER,
-            allowNull: true,
+            allowNull: true
         },
         nextId: {
             type: DataTypes.INTEGER,
-            allowNull: true,
-        },
+            allowNull: true
+        }
     });
 
-    Note.associate = models => {
+    NoteModel.associate = models => {
         Note.belongsTo(models.User, {
             foreignKey: 'userId',
-            onDelete: 'CASCADE',
+            onDelete: 'CASCADE'
         });
     };
 
-    return Note;
+    return NoteModel;
 };
 
 export default Note;

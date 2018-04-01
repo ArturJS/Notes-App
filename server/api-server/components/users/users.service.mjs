@@ -1,7 +1,4 @@
-import {
-    ErrorNotFound,
-    ErrorAlreadyExists
-} from '../../common/exceptions';
+import { ErrorNotFound, ErrorAlreadyExists } from '../../common/exceptions';
 import usersDAL from './users.dal';
 
 class UsersService {
@@ -12,7 +9,7 @@ class UsersService {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.email
         }));
     }
 
@@ -32,23 +29,25 @@ class UsersService {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            notes: user.notes,
+            notes: user.notes
         };
     }
 
     async create(user) {
         const isUserAlreadyExists = await this.getByEmail(user.email, {
-            suppressError: true,
+            suppressError: true
         });
 
         if (isUserAlreadyExists) {
-            throw new ErrorAlreadyExists(`User with email="${user.email}" already exists!`);
+            throw new ErrorAlreadyExists(
+                `User with email="${user.email}" already exists!`
+            );
         }
 
         const createdUser = await usersDAL.create({
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.email
         });
 
         return {
@@ -56,7 +55,7 @@ class UsersService {
             firstName: createdUser.firstName,
             lastName: createdUser.lastName,
             email: createdUser.email,
-            notes: createdUser.notes,
+            notes: createdUser.notes
         };
     }
 }

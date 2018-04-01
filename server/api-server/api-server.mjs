@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import {errorMiddleware} from './common/middlewares';
+import { errorMiddleware } from './common/middlewares';
 import routes from './routes';
 import { configurePassport } from './configure-passport';
 

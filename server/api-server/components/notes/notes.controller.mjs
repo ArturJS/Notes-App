@@ -8,7 +8,7 @@ class NotesController {
             id: note.id,
             title: note.title,
             description: note.description,
-            files: note.files,
+            files: note.files
         }));
     }
 
@@ -21,7 +21,7 @@ class NotesController {
             id: noteId,
             title: note.title,
             description: note.description,
-            files: note.files,
+            files: note.files
         };
     }
 
@@ -34,7 +34,7 @@ class NotesController {
             id: createdNote.id,
             title: createdNote.title,
             description: createdNote.description,
-            files: createdNote.files,
+            files: createdNote.files
         };
     }
 
@@ -47,7 +47,7 @@ class NotesController {
             id: updatedNote.id,
             title: updatedNote.title,
             description: updatedNote.description,
-            files: updatedNote.files,
+            files: updatedNote.files
         };
     }
 

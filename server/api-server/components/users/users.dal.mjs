@@ -8,7 +8,7 @@ class UsersDAL {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.email
         }));
     }
 
@@ -24,7 +24,7 @@ class UsersDAL {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            notes: user.notes,
+            notes: user.notes
         };
     }
 
@@ -32,7 +32,7 @@ class UsersDAL {
         const createdUser = await db.User.create({
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.email
         });
 
         return {
@@ -40,7 +40,7 @@ class UsersDAL {
             firstName: createdUser.firstName,
             lastName: createdUser.lastName,
             email: createdUser.email,
-            notes: createdUser.notes,
+            notes: createdUser.notes
         };
     }
 }

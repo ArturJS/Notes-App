@@ -1,6 +1,6 @@
 require('dotenv-safe').config({
     example: './.env.example',
-    path: './.env',
+    path: './.env'
 });
 
 const { DATABASE_URL } = process.env;
@@ -12,8 +12,8 @@ const dbParamsRegExp = new RegExp(
         '([^@]+)@', // password
         '([^:]+):', // host
         '([^/]+)\\/', // port
-        '(.+)$', // database
-    ].join(''),
+        '(.+)$' // database
+    ].join('')
 );
 
 const [
@@ -22,7 +22,7 @@ const [
     DB_PASSWORD,
     DB_HOSTNAME,
     DB_PORT,
-    DB_NAME,
+    DB_NAME
 ] = dbParamsRegExp.exec(DATABASE_URL);
 
 const databaseConfig = {
@@ -44,10 +44,10 @@ const databaseConfig = {
         dialect: 'postgres',
         ssl: true,
         dialectOptions: {
-            ssl: true,
+            ssl: true
         },
         operatorsAliases: false
-    },
+    }
 };
 
 module.exports = databaseConfig;

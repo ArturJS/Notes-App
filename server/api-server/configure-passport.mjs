@@ -12,10 +12,10 @@ export const configurePassport = app => {
     router
         .get(
             '/auth/google',
-            passport.authenticate('google', { scope: ['email', 'profile'] }),
+            passport.authenticate('google', { scope: ['email', 'profile'] })
         )
-        .get('/auth/google/callback', async (ctx, next) => {
-            await passport.authenticate('google', async (err, user, info) => {
+        .get('/auth/google/callback', async ctx => {
+            await passport.authenticate('google', async (err, user) => {
                 if (user === false) {
                     ctx.redirect('/notes?google-auth-error');
                 } else {
@@ -39,7 +39,7 @@ export const configurePassport = app => {
         HOST,
         PORT,
         GOOGLE_OAUTH20_CLIENT_ID,
-        GOOGLE_OAUTH20_CLIENT_SECRET,
+        GOOGLE_OAUTH20_CLIENT_SECRET
     } = process.env;
 
     passport.use(
@@ -47,9 +47,9 @@ export const configurePassport = app => {
             {
                 clientID: GOOGLE_OAUTH20_CLIENT_ID,
                 clientSecret: GOOGLE_OAUTH20_CLIENT_SECRET,
-                callbackURL: `http://${HOST}:${PORT}/api/auth/google/callback`,
+                callbackURL: `http://${HOST}:${PORT}/api/auth/google/callback`
             },
-            usersController.handleGoogleAuthentication,
-        ),
+            usersController.handleGoogleAuthentication
+        )
     );
 };

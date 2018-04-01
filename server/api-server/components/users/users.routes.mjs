@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import {withAuth} from '../../common/middlewares';
+import { withAuth } from '../../common/middlewares';
 import usersController from './users.controller';
 
 const router = new Router();

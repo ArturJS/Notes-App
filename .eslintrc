@@ -14,7 +14,15 @@
     "react/jsx-indent-props": 0,
     "import/no-extraneous-dependencies": 0,
     "import/prefer-default-export": 0,
-    "import/extensions": 0,
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "js": "never",
+        "jsx": "never",
+        "mjs": "never"
+      }
+    ],
     "linebreak-style": 0,
     "jsx-quotes": [
       "error",
@@ -27,6 +35,16 @@
         "allowAfterThis": true
       }
     ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".js",
+          ".mjs"
+        ]
+      }
+    }
   },
   "globals": {
     "window": true,

@@ -5,38 +5,38 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 autoIncrement: true,
                 primaryKey: true,
-                allowNull: false,
+                allowNull: false
             },
             title: {
                 type: Sequelize.STRING,
-                allowNull: false,
+                allowNull: false
             },
             description: {
                 type: Sequelize.TEXT,
-                allowNull: false,
+                allowNull: false
             },
             files: {
                 type: Sequelize.JSONB,
-                allowNull: true,
+                allowNull: true
             },
             prevId: {
                 type: Sequelize.INTEGER,
-                allowNull: true,
+                allowNull: true
             },
             nextId: {
                 type: Sequelize.INTEGER,
-                allowNull: true,
+                allowNull: true
             },
             createdAt: {
                 allowNull: false,
-                type: Sequelize.DATE,
+                type: Sequelize.DATE
             },
             updatedAt: {
                 allowNull: false,
-                type: Sequelize.DATE,
-            },
+                type: Sequelize.DATE
+            }
         }),
     down: (queryInterface /* , Sequelize */) => {
         queryInterface.dropTable('Notes');
-    },
+    }
 };

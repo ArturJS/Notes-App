@@ -8,7 +8,7 @@ class UsersController {
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email,
+            email: user.email
         }));
     }
 
@@ -21,7 +21,7 @@ class UsersController {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            notes: user.notes,
+            notes: user.notes
         };
     }
 
@@ -30,7 +30,7 @@ class UsersController {
         const createdUser = await usersService.create({
             email,
             firstName,
-            lastName,
+            lastName
         });
 
         ctx.body = {
@@ -38,7 +38,7 @@ class UsersController {
             firstName: createdUser.firstName,
             lastName: createdUser.lastName,
             email: createdUser.email,
-            notes: createdUser.notes,
+            notes: createdUser.notes
         };
     }
 
@@ -48,14 +48,14 @@ class UsersController {
         const lastName = profile.name.familyName;
 
         let relatedUser = await usersService.getByEmail(email, {
-            suppressError: true,
+            suppressError: true
         });
 
         if (!relatedUser) {
             relatedUser = await usersService.create({
                 email,
                 firstName,
-                lastName,
+                lastName
             });
         }
 
@@ -65,8 +65,8 @@ class UsersController {
             user: {
                 email: relatedUser.email,
                 firstName: relatedUser.firstName,
-                lastName: relatedUser.lastName,
-            },
+                lastName: relatedUser.lastName
+            }
         });
     }
 }
