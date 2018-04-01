@@ -41,6 +41,34 @@ class UsersController {
             notes: createdUser.notes,
         };
     }
+
+    async handleGoogleAuthentication(accessToken, refreshToken, profile, done) {
+        const email = profile.emails[0].value; // TODO handle absense of email
+        const firstName = profile.name.givenName;
+        const lastName = profile.name.familyName;
+
+        let relatedUser = await usersService.getByEmail(email, {
+            suppressError: true,
+        });
+
+        if (!relatedUser) {
+            relatedUser = await usersService.create({
+                email,
+                firstName,
+                lastName,
+            });
+        }
+
+        done(null, {
+            accessToken,
+            refreshToken,
+            user: {
+                email: relatedUser.email,
+                firstName: relatedUser.firstName,
+                lastName: relatedUser.lastName,
+            },
+        });
+    }
 }
 
 export default new UsersController();

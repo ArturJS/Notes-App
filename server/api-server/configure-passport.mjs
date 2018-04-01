@@ -2,7 +2,7 @@ import passport from 'koa-passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
 import Router from 'koa-router';
 import { withAuth } from './utils/auth.utils';
-import { usersService } from './components/users';
+import { usersController } from './components/users';
 
 const router = new Router();
 
@@ -18,18 +18,12 @@ export const configurePassport = app => {
         .get('/auth/google/callback', async (ctx, next) => {
             await passport.authenticate('google', async (err, user, info) => {
                 if (user === false) {
-                    ctx.redirect('/api/failure');
+                    ctx.redirect('/notes?google-auth-error');
                 } else {
                     await ctx.login(user);
-                    ctx.redirect('/api/success');
+                    ctx.redirect('/notes');
                 }
             })(ctx);
-        })
-        .get('/success', withAuth, async ctx => {
-            ctx.body = `Success!`;
-        })
-        .get('/failure', async ctx => {
-            ctx.body = 'failure!';
         });
 
     app.use(router.routes());
@@ -56,34 +50,7 @@ export const configurePassport = app => {
                 clientSecret: GOOGLE_OAUTH20_CLIENT_SECRET,
                 callbackURL: `http://${HOST}:${PORT}/api/auth/google/callback`,
             },
-            async (accessToken, refreshToken, profile, done) => {
-                // TODO move handler under users.controller.mjs
-                const email = profile.emails[0].value; // TODO handle absense of email
-                const firstName = profile.name.givenName;
-                const lastName = profile.name.familyName;
-
-                let relatedUser = await usersService.getByEmail(email, {
-                    suppressError: true,
-                });
-
-                if (!relatedUser) {
-                    relatedUser = await usersService.create({
-                        email,
-                        firstName,
-                        lastName,
-                    });
-                }
-
-                done(null, {
-                    accessToken,
-                    refreshToken,
-                    user: {
-                        email: relatedUser.email,
-                        firstName: relatedUser.firstName,
-                        lastName: relatedUser.lastName,
-                    },
-                });
-            },
+            usersController.handleGoogleAuthentication,
         ),
     );
 };
