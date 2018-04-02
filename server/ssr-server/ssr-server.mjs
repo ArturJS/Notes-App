@@ -9,7 +9,12 @@ import serveStatic from 'koa-static';
 import favicon from 'koa-favicon';
 import compress from 'koa-compress';
 import staticCache from 'koa-static-cache';
-import RootComponent from '../../build/ssr-build/ssr-bundle';
+import _ from 'lodash';
+import {
+    RootComponent,
+    ExposeFetchersComponent,
+    configureStore
+} from '../../build/ssr-build/ssr-bundle';
 
 const app = new Koa();
 const RGX = /<div id="app"[^>]*>.*?(?=<script)/i;
@@ -36,7 +41,38 @@ app
     .use(mount('/build', serveStatic(staticAssetsPath)))
     .use(async ctx => {
         const { url } = ctx.request;
-        const appHtmlMarkup = render(Preact.h(RootComponent, { url }));
+        const fetchInitialState = async () => {
+            const fetchers = [];
+
+            render(
+                Preact.h(
+                    ExposeFetchersComponent,
+                    {
+                        onRegisterFetcher: ({ key, fetcher }) => {
+                            fetchers.push({ key, fetcher });
+                        }
+                    },
+                    Preact.h(RootComponent, { url })
+                )
+            );
+
+            const fetchKeys = fetchers.map(({ key }) => key);
+            const fetchPromises = fetchers.map(({ fetcher }) => fetcher());
+
+            try {
+                const fetchedData = await Promise.all(fetchPromises);
+
+                return _.zipObject(fetchKeys, fetchedData);
+            } catch (err) {
+                // TODO handle error
+                return {};
+            }
+        };
+        const initialState = await fetchInitialState();
+        const serverReduxStore = configureStore(initialState);
+        const appHtmlMarkup = render(
+            Preact.h(RootComponent, { url, serverReduxStore })
+        );
         const renderedPage = template.replace(RGX, appHtmlMarkup);
 
         ctx.body = renderedPage;

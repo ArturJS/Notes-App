@@ -2,7 +2,24 @@ import _ from 'lodash';
 
 class NotesDAL {
     constructor() {
-        this._notes = [];
+        this._notes = [
+            {
+                id: 1,
+                title: 'Note 1',
+                description: 'Some description',
+                files: [],
+                prev: null,
+                next: 2
+            },
+            {
+                id: 2,
+                title: 'Note 2',
+                description: 'Some description 123',
+                files: [],
+                prev: 1,
+                next: null
+            }
+        ];
     }
 
     async getAll() {

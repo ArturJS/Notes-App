@@ -4,7 +4,9 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
+import axios from 'axios';
 import { notesActions, notesSelectors } from '../../common/features/notes';
+import { prefetchInitialState } from '../../common/features/ssr-fetcher';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
 import './home.scss';
@@ -17,6 +19,12 @@ const mapDispatchToProps = dispatch => ({
     notesActions: bindActionCreators(notesActions, dispatch)
 });
 
+@prefetchInitialState({
+    key: 'notes',
+    fetcher: () =>
+        axios.get('http://127.0.0.1:3000/api/notes').then(res => res.data),
+    renderContent: true
+})
 @connect(mapStateToProps, mapDispatchToProps)
 @pure
 export default class Home extends Component {

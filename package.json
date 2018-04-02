@@ -61,6 +61,7 @@
     },
     "dependencies": {
         "@std/esm": "0.25.3",
+        "axios": "0.18.0",
         "classnames": "2.2.5",
         "dotenv-safe": "5.0.1",
         "final-form": "3.0.0",
@@ -101,6 +102,7 @@
         "reselect": "3.0.1",
         "sequelize": "4.37.5",
         "sequelize-cli": "4.0.0",
+        "serialize-javascript": "1.4.0",
         "smoothscroll-polyfill": "0.4.0"
     }
 }

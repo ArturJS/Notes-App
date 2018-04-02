@@ -29,7 +29,7 @@ const Note = (sequelize, DataTypes) => {
     });
 
     NoteModel.associate = models => {
-        Note.belongsTo(models.User, {
+        NoteModel.belongsTo(models.User, {
             foreignKey: 'userId',
             onDelete: 'CASCADE'
         });
