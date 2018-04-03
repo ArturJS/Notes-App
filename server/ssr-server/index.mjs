@@ -1,1 +1,1 @@
-export { ssrServer } from './ssr-server';
+export { ssrServer } from './ssr.server';

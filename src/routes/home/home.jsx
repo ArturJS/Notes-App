@@ -22,8 +22,7 @@ const mapDispatchToProps = dispatch => ({
 @prefetchInitialState({
     key: 'notes',
     fetcher: () =>
-        axios.get('http://127.0.0.1:3000/api/notes').then(res => res.data),
-    renderContent: true
+        axios.get('http://127.0.0.1:3000/api/notes').then(res => res.data)
 })
 @connect(mapStateToProps, mapDispatchToProps)
 @pure

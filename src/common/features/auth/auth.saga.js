@@ -33,7 +33,7 @@ function* watchLogin() {
 function* watchLoginSuccess() {
     while (true) {
         yield take(LOGIN_SUCCESS);
-        yield put(notesActions.getAllNotesRequest());
+        // yield put(notesActions.getAllNotesRequest());
     }
 }
 
