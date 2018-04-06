@@ -1,61 +1,147 @@
-import _ from 'lodash';
+import db from '../../common/models';
+import { ErrorNotFound } from '../../common/exceptions';
 
 class NotesDAL {
-    constructor() {
-        this._notes = [
-            {
-                id: 1,
-                title: 'Note 1',
-                description: 'Some description',
-                files: [],
-                prev: null,
-                next: 2
-            },
-            {
-                id: 2,
-                title: 'Note 2',
-                description: 'Some description 123',
-                files: [],
-                prev: 1,
-                next: null
-            }
-        ];
+    async getAll(userEmail) {
+        const notes = await this._getSortedNotesByUserEmail(
+            userEmail,
+            'get notes'
+        );
+
+        return notes.map(note => ({
+            // todo check correctness
+            id: note.id,
+            title: note.title,
+            description: note.description,
+            files: note.files || []
+        }));
     }
 
-    async getAll() {
-        return this._notes;
+    async getById(userEmail, noteId) {
+        const user = await this._getUserByEmail(
+            userEmail,
+            `get note with noteId="${noteId}"`
+        );
+
+        return user.notes.find(note => note.id === noteId);
     }
 
-    async getById(noteId) {
-        return this._notes.find(note => note.id === noteId);
-    }
+    async create(userEmail, note) {
+        const user = await this._getUserByEmail(userEmail, 'create note');
 
-    async create(note) {
-        const createdNote = {
-            id: Math.random(),
-            ...note
-        };
-
-        this._notes.push(createdNote);
+        const createdNote = await db.Note.create({
+            id: note.id,
+            title: note.title,
+            description: note.description,
+            files: note.files || [],
+            prevId: note.prevId,
+            nextId: note.nextId,
+            userId: user.id
+        });
 
         return createdNote;
     }
 
     async update(note) {
         const noteId = note.id;
-        const relatedNote = this._notes.find(
-            noteItem => noteItem.id === noteId
-        );
+        const updatedNote = await db.Note.update(note, {
+            where: {
+                id: noteId
+            }
+        });
 
-        if (relatedNote) {
-            _.extend(relatedNote, note);
-        }
-
-        return relatedNote;
+        return updatedNote;
     }
 
     async remove(noteId) {
-        _.remove(this._notes, note => note.id === noteId);
+        await db.Note.destroy({ where: { id: noteId } });
+    }
+
+    async _getUserByEmail(email, operationDescription) {
+        const user = await db.User.find({
+            where: {
+                email
+            }
+        });
+
+        if (!user) {
+            throw new ErrorNotFound(
+                `Cannot ${operationDescription} by user email="${email}"!`
+            );
+        }
+
+        return user;
+    }
+
+    async _getSortedNotesByUserEmail(email) {
+        const user = await this._getUserByEmail(email, 'get notes');
+        const { notes: notesList } = user;
+
+        if (notesList.length === 0) {
+            return [];
+        }
+
+        const isNotFirstAndLastNotesAvailable = notes => {
+            const firstNote = notes.find(note => !note.nextId);
+            const lastNote = notes.find(note => !note.prevId);
+
+            return !!(firstNote && lastNote);
+        };
+        const isBrokenReference = notes => {
+            const firstNote = notes.find(notes, note => !note.nextId);
+            const passedNotesSet = new Set([firstNote]);
+            const getNoteById = noteId =>
+                notes.find(note => note.id === noteId);
+            let nextNote = getNoteById(firstNote.prevId);
+
+            while (nextNote) {
+                if (passedNotesSet.has(nextNote)) {
+                    return true;
+                }
+
+                passedNotesSet.add(nextNote);
+                nextNote = getNoteById(firstNote.prevId);
+            }
+
+            if (!nextNote && passedNotesSet.size !== notes.length) {
+                return true;
+            }
+
+            return false;
+        };
+
+        if (isNotFirstAndLastNotesAvailable(notesList)) {
+            // todo use logger
+            console.error('Inconsistent data in database!');
+            console.error('Cannot find first or last note!');
+            console.error(
+                `Notes for email="${email}" will be returned as is...`
+            );
+
+            return notesList; // todo: probably we should fix broken references???
+        }
+
+        if (isBrokenReference(notesList)) {
+            console.error('Inconsistent data in database!');
+            console.error('Broken references in database!');
+            console.error(
+                `Notes for email="${email}" will be returned as is...`
+            );
+
+            return notesList; // todo: probably we should fix broken references???
+        }
+
+        const sortedNotesList = [];
+        const getNoteById = noteId =>
+            notesList.find(note => note.id === noteId);
+        let nextNote = notesList.find(note => !note.nextId);
+
+        while (nextNote) {
+            sortedNotesList.push(nextNote);
+            nextNote = getNoteById(nextNote.prevId);
+        }
+
+        return sortedNotesList;
     }
 }
 
