@@ -23,6 +23,9 @@ export const configurePassport = app => {
                     ctx.redirect('/notes');
                 }
             })(ctx);
+        })
+        .post('/auth/logout', async ctx => {
+            await ctx.logout();
         });
 
     app.use(router.routes());

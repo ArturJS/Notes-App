@@ -1,5 +1,5 @@
 import { take, all, fork, put, call } from 'redux-saga/effects';
-import firebaseProvider from '../../providers/firebase-provider';
+import { authApi } from '../../api';
 import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
@@ -16,7 +16,7 @@ function* watchLogin() {
         yield take(LOGIN_REQUEST);
 
         try {
-            const { user } = yield call(firebaseProvider.login);
+            const { user } = yield call(authApi.loginWithGoogle);
 
             yield put(
                 loginSuccess({
@@ -42,7 +42,7 @@ function* watchLogout() {
         yield take(LOGOUT_REQUEST);
 
         try {
-            yield call(firebaseProvider.logout);
+            yield call(authApi.logout);
 
             yield put(logoutSuccess());
             yield put(notesActions.clearNotes());

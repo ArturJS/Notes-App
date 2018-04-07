@@ -6,10 +6,9 @@ export default (config, env, helpers) => {
 
     babelConfig.plugins.push(
         'lodash',
-        'transform-async-to-promises',
         'syntax-flow',
         'transform-flow-strip-types',
-        'regenerator-transform',
+        'transform-regenerator',
         [
             'transform-react-jsx',
             {

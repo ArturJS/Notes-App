@@ -28,7 +28,7 @@ class NotesController {
 
     async create(ctx) {
         const note = ctx.request.body;
-
+        // todo validate with ajv and explicitly map request body
         const createdNote = await notesService.create(note);
 
         ctx.body = mapNote(createdNote);
@@ -36,7 +36,7 @@ class NotesController {
 
     async update(ctx) {
         const note = ctx.request.body;
-
+        // todo validate with ajv and explicitly map request body
         const updatedNote = await notesService.create(note);
 
         ctx.body = mapNote(updatedNote);
