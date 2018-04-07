@@ -1,47 +1,40 @@
 import db from '../../common/models';
 
+const mapUserInfo = user => ({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email
+});
+
 class UsersDAL {
     async getAll() {
-        const users = await db.User.findAll();
+        const users = await db.Users.findAll();
 
-        return users.map(user => ({
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email
-        }));
+        return users.map(mapUserInfo);
     }
 
     async getByEmail(email) {
-        const user = await db.User.findOne({ where: { email } });
+        // here is an error SequelizeDatabaseError: relation "Users" does not exist
+        // (happened after changing notes migrations)
+        // todo probably we should rename models from 'User' to 'Users'
+        const user = await db.Users.findOne({ where: { email } });
 
         if (!user) {
             return null;
         }
 
-        return {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            notes: user.notes
-        };
+        return mapUserInfo(user);
     }
 
     async create(user) {
-        const createdUser = await db.User.create({
+        const createdUser = await db.Users.create({
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email
         });
 
-        return {
-            id: createdUser.id,
-            firstName: createdUser.firstName,
-            lastName: createdUser.lastName,
-            email: createdUser.email,
-            notes: createdUser.notes
-        };
+        return mapUserInfo(createdUser);
     }
 }
 

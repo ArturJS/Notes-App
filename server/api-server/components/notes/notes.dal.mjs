@@ -1,6 +1,13 @@
 import db from '../../common/models';
 import { ErrorNotFound } from '../../common/exceptions';
 
+const mapNote = note => ({
+    id: note.id,
+    title: note.title,
+    description: note.description,
+    files: note.files || []
+});
+
 class NotesDAL {
     async getAll(userEmail) {
         const notes = await this._getSortedNotesByUserEmail(
@@ -8,13 +15,7 @@ class NotesDAL {
             'get notes'
         );
 
-        return notes.map(note => ({
-            // todo check correctness
-            id: note.id,
-            title: note.title,
-            description: note.description,
-            files: note.files || []
-        }));
+        return notes.map(mapNote);
     }
 
     async getById(userEmail, noteId) {
@@ -22,14 +23,17 @@ class NotesDAL {
             userEmail,
             `get note with noteId="${noteId}"`
         );
+        const note = await db.Notes.findOne({
+            where: { id: noteId, userId: user.id }
+        });
 
-        return user.notes.find(note => note.id === noteId);
+        return mapNote(note);
     }
 
     async create(userEmail, note) {
         const user = await this._getUserByEmail(userEmail, 'create note');
 
-        const createdNote = await db.Note.create({
+        const createdNote = await db.Notes.create({
             id: note.id,
             title: note.title,
             description: note.description,
@@ -39,26 +43,30 @@ class NotesDAL {
             userId: user.id
         });
 
-        return createdNote;
+        return mapNote(createdNote);
     }
 
-    async update(note) {
-        const noteId = note.id;
-        const updatedNote = await db.Note.update(note, {
+    async update(userEmail, note) {
+        const user = await this._getUserByEmail(userEmail, 'update note');
+        const noteId = note.id; // todo check user access (and throw an error if it's absent)
+        const updatedNote = await db.Notes.update(note, {
             where: {
-                id: noteId
+                id: noteId,
+                userId: user.id
             }
         });
 
-        return updatedNote;
+        return mapNote(updatedNote);
     }
 
-    async remove(noteId) {
-        await db.Note.destroy({ where: { id: noteId } });
+    async remove(userEmail, noteId) {
+        const user = await this._getUserByEmail(userEmail, 'remove note'); // todo check user access (and throw an error if it's absent)
+
+        await db.Notes.destroy({ where: { id: noteId, userId: user.id } });
     }
 
     async _getUserByEmail(email, operationDescription) {
-        const user = await db.User.find({
+        const user = await db.Users.find({
             where: {
                 email
             }
@@ -75,7 +83,9 @@ class NotesDAL {
 
     async _getSortedNotesByUserEmail(email) {
         const user = await this._getUserByEmail(email, 'get notes');
-        const { notes: notesList } = user;
+        const notesList = await db.Notes.findAll({
+            where: { userId: user.id }
+        });
 
         if (notesList.length === 0) {
             return [];

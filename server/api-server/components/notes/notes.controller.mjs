@@ -1,15 +1,19 @@
+import _ from 'lodash';
 import notesService from './notes.service';
+
+const mapNote = note => ({
+    id: note.id,
+    title: note.title,
+    description: note.description,
+    files: note.files || []
+});
 
 class NotesController {
     async getAll(ctx) {
-        const notes = await notesService.getAll();
+        const userEmail = _.get(ctx, 'session.passport.user.user.email');
+        const notes = await notesService.getAll(userEmail);
 
-        ctx.body = notes.map(note => ({
-            id: note.id,
-            title: note.title,
-            description: note.description,
-            files: note.files
-        }));
+        ctx.body = notes.map(mapNote);
     }
 
     async getById(ctx) {
@@ -17,12 +21,7 @@ class NotesController {
 
         const note = await notesService.getById(noteId);
 
-        ctx.body = {
-            id: noteId,
-            title: note.title,
-            description: note.description,
-            files: note.files
-        };
+        ctx.body = mapNote(note);
     }
 
     async create(ctx) {
@@ -30,12 +29,7 @@ class NotesController {
 
         const createdNote = await notesService.create(note);
 
-        ctx.body = {
-            id: createdNote.id,
-            title: createdNote.title,
-            description: createdNote.description,
-            files: createdNote.files
-        };
+        ctx.body = mapNote(createdNote);
     }
 
     async update(ctx) {
@@ -43,18 +37,15 @@ class NotesController {
 
         const updatedNote = await notesService.create(note);
 
-        ctx.body = {
-            id: updatedNote.id,
-            title: updatedNote.title,
-            description: updatedNote.description,
-            files: updatedNote.files
-        };
+        ctx.body = mapNote(updatedNote);
     }
 
     async remove(ctx) {
         const noteId = +ctx.params.id;
 
         await notesService.remove(noteId);
+
+        ctx.body = { id: noteId };
     }
 }
 

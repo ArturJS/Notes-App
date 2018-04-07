@@ -1,16 +1,26 @@
 import { ErrorNotFound, ErrorAlreadyExists } from '../../common/exceptions';
 import usersDAL from './users.dal';
 
+const mapUserInfo = user => ({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email
+});
+
+const mapUserDetailedInfo = user => ({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    notes: user.notes
+});
+
 class UsersService {
     async getAll() {
         const users = await usersDAL.getAll();
 
-        return users.map(user => ({
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email
-        }));
+        return users.map(mapUserInfo);
     }
 
     async getByEmail(email, { suppressError = false }) {
@@ -24,13 +34,7 @@ class UsersService {
             throw new ErrorNotFound(`User with email="${email}" not found!`);
         }
 
-        return {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            notes: user.notes
-        };
+        return mapUserDetailedInfo(user);
     }
 
     async create(user) {
@@ -50,13 +54,7 @@ class UsersService {
             email: user.email
         });
 
-        return {
-            id: createdUser.id,
-            firstName: createdUser.firstName,
-            lastName: createdUser.lastName,
-            email: createdUser.email,
-            notes: createdUser.notes
-        };
+        return mapUserDetailedInfo(createdUser);
     }
 }
 

@@ -1,5 +1,5 @@
-const Note = (sequelize, DataTypes) => {
-    const NoteModel = sequelize.define('Note', {
+const Notes = (sequelize, DataTypes) => {
+    const NotesModel = sequelize.define('Notes', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
@@ -28,14 +28,14 @@ const Note = (sequelize, DataTypes) => {
         }
     });
 
-    NoteModel.associate = models => {
-        NoteModel.belongsTo(models.User, {
+    NotesModel.associate = models => {
+        NotesModel.belongsTo(models.Users, {
             foreignKey: 'userId',
             onDelete: 'CASCADE'
         });
     };
 
-    return NoteModel;
+    return NotesModel;
 };
 
-export default Note;
+export default Notes;
