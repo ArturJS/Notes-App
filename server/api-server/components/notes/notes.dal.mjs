@@ -1,5 +1,4 @@
 import db from '../../common/models';
-import { ErrorNotFound } from '../../common/exceptions';
 
 const mapNote = note => ({
     id: note.id,
@@ -8,83 +7,207 @@ const mapNote = note => ({
     files: note.files || []
 });
 
+const REORDERING_TYPES = {
+    INSERT_BEFORE: 'INSERT_BEFORE',
+    INSERT_AFTER: 'INSERT_AFTER'
+};
+
 class NotesDAL {
-    async getAll(userEmail) {
-        const notes = await this._getSortedNotesByUserEmail(
-            userEmail,
-            'get notes'
-        );
+    async getAll(userId) {
+        const notes = await this._getSortedNotesByUserId(userId, 'get notes');
 
         return notes.map(mapNote);
     }
 
-    async getById(userEmail, noteId) {
-        const user = await this._getUserByEmail(
-            userEmail,
-            `get note with noteId="${noteId}"`
-        );
+    async getById(userId, noteId) {
         const note = await db.Notes.findOne({
-            where: { id: noteId, userId: user.id }
+            where: { id: noteId, userId }
         });
+
+        if (!note) {
+            return null;
+        }
 
         return mapNote(note);
     }
 
-    async create(userEmail, note) {
-        const user = await this._getUserByEmail(userEmail, 'create note');
-
-        const createdNote = await db.Notes.create({
-            id: note.id,
-            title: note.title,
-            description: note.description,
-            files: note.files || [],
-            prevId: note.prevId,
-            nextId: note.nextId,
-            userId: user.id
+    async create(userId, note) {
+        const lastNote = await db.Notes.findOne({
+            where: { nextId: null }
         });
+        const transaction = await db.sequelize.transaction();
+        const createdNote = await db.Notes.create(
+            {
+                title: note.title,
+                description: note.description,
+                files: note.files || [],
+                prevId: lastNote ? lastNote.id : null,
+                nextId: null,
+                userId
+            },
+            { transaction }
+        );
+
+        if (lastNote) {
+            await db.Notes.update(
+                {
+                    nextId: createdNote.id
+                },
+                { transaction }
+            );
+        }
+
+        await transaction.commit();
 
         return mapNote(createdNote);
     }
 
-    async update(userEmail, note) {
-        const user = await this._getUserByEmail(userEmail, 'update note');
-        const noteId = note.id; // todo check user access (and throw an error if it's absent)
+    async update(userId, note) {
+        const noteId = note.id;
         const updatedNote = await db.Notes.update(note, {
             where: {
                 id: noteId,
-                userId: user.id
+                userId
             }
         });
 
         return mapNote(updatedNote);
     }
 
-    async remove(userEmail, noteId) {
-        const user = await this._getUserByEmail(userEmail, 'remove note'); // todo check user access (and throw an error if it's absent)
+    async reorder({ noteId, reorderingType, anchorNoteId }) {
+        const t = await db.sequelize.transaction();
+        const [note, anchorNote] = await Promise.all([
+            db.Notes.findOne(
+                {
+                    where: {
+                        id: noteId
+                    }
+                },
+                { transaction: t }
+            ),
+            db.Notes.findOne(
+                {
+                    where: {
+                        id: anchorNoteId
+                    }
+                },
+                { transaction: t }
+            )
+        ]);
+        const connectOldSiblings = async (targetNote, { transaction }) => {
+            const { prevId, nextId } = targetNote;
 
-        await db.Notes.destroy({ where: { id: noteId, userId: user.id } });
+            if (prevId) {
+                await db.Notes.update(
+                    { nextId },
+                    {
+                        where: {
+                            id: prevId
+                        }
+                    },
+                    { transaction }
+                );
+            }
+
+            if (nextId) {
+                await db.Notes.update(
+                    { prevId },
+                    {
+                        where: {
+                            id: nextId
+                        }
+                    },
+                    { transaction }
+                );
+            }
+        };
+        const insertBetweenSiblings = async (
+            { targetNoteId, newPrevId = null, newNextId = null },
+            { transaction }
+        ) => {
+            await db.Notes.update(
+                {
+                    prevId: newPrevId,
+                    nextId: newNextId
+                },
+                {
+                    where: {
+                        id: targetNoteId
+                    }
+                },
+                { transaction }
+            );
+
+            if (newNextId) {
+                await db.Notes.update(
+                    { prevId: targetNoteId },
+                    {
+                        where: {
+                            id: newNextId
+                        }
+                    },
+                    { transaction }
+                );
+            }
+
+            if (newPrevId) {
+                await db.Notes.update(
+                    { nextId: targetNoteId },
+                    {
+                        where: {
+                            id: newPrevId
+                        }
+                    },
+                    { transaction }
+                );
+            }
+        };
+        const getNewSiblings = (reorderType, anchorNoteItem) => {
+            if (reorderType === REORDERING_TYPES.INSERT_AFTER) {
+                return {
+                    prevId: anchorNoteItem.id,
+                    nextId: anchorNoteItem.nextId
+                };
+            }
+
+            return {
+                prevId: anchorNoteItem.prevId,
+                nextId: anchorNoteItem.id
+            };
+        };
+
+        await connectOldSiblings(note, { transaction: t });
+
+        const newSiblings = getNewSiblings(reorderingType, anchorNote);
+
+        await insertBetweenSiblings(
+            {
+                targetNoteId: noteId,
+                newPrevId: newSiblings.prevId,
+                newNextId: newSiblings.nextId
+            },
+            { transaction: t }
+        );
     }
 
-    async _getUserByEmail(email, operationDescription) {
-        const user = await db.Users.find({
+    async remove(userId, noteId) {
+        await db.Notes.destroy({ where: { id: noteId, userId } });
+    }
+
+    async hasAccessToNotes(userId, noteIds) {
+        const notes = await db.Notes.findAll({
             where: {
-                email
+                id: noteIds,
+                userId
             }
         });
 
-        if (!user) {
-            throw new ErrorNotFound(
-                `Cannot ${operationDescription} by user email="${email}"!`
-            );
-        }
-
-        return user;
+        return notes.length === noteIds.length;
     }
 
-    async _getSortedNotesByUserEmail(email) {
-        const user = await this._getUserByEmail(email, 'get notes');
+    async _getSortedNotesByUserId(userId) {
         const notesList = await db.Notes.findAll({
-            where: { userId: user.id }
+            where: { userId }
         });
 
         if (notesList.length === 0) {
@@ -122,21 +245,25 @@ class NotesDAL {
 
         if (isNotFirstAndLastNotesAvailable(notesList)) {
             // todo use logger
+            /* eslint-disable no-console */
             console.error('Inconsistent data in database!');
             console.error('Cannot find first or last note!');
             console.error(
-                `Notes for email="${email}" will be returned as is...`
+                `Notes for userId="${userId}" will be returned as is...`
             );
+            /* eslint-enable no-console */
 
             return notesList; // todo: probably we should fix broken references???
         }
 
         if (isBrokenReference(notesList)) {
+            /* eslint-disable no-console */
             console.error('Inconsistent data in database!');
             console.error('Broken references in database!');
             console.error(
-                `Notes for email="${email}" will be returned as is...`
+                `Notes for userId="${userId}" will be returned as is...`
             );
+            /* eslint-enable no-console */
 
             return notesList; // todo: probably we should fix broken references???
         }

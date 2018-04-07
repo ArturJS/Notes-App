@@ -8,9 +8,11 @@ const mapNote = note => ({
     files: note.files || []
 });
 
+const getUserEmail = ctx => _.get(ctx, 'session.passport.user.user.email');
+
 class NotesController {
     async getAll(ctx) {
-        const userEmail = _.get(ctx, 'session.passport.user.user.email');
+        const userEmail = getUserEmail(ctx);
         const notes = await notesService.getAll(userEmail);
 
         ctx.body = notes.map(mapNote);
@@ -40,12 +42,22 @@ class NotesController {
         ctx.body = mapNote(updatedNote);
     }
 
+    async reorder(ctx) {
+        const userEmail = getUserEmail(ctx);
+        const { noteId, reorderingType, anchorNoteId } = ctx.request.body;
+
+        await notesService.reorder({
+            userEmail,
+            noteId,
+            reorderingType,
+            anchorNoteId
+        });
+    }
+
     async remove(ctx) {
         const noteId = +ctx.params.id;
 
         await notesService.remove(noteId);
-
-        ctx.body = { id: noteId };
     }
 }
 

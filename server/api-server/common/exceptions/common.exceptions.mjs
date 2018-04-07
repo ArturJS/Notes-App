@@ -2,7 +2,11 @@ import HttpStatus from 'http-status-codes';
 
 export class Exception extends Error {
     constructor(statusCode, message) {
-        super(message);
+        const errorMessage = Array.isArray(message)
+            ? message.join('')
+            : message;
+
+        super(errorMessage);
 
         this._statusCode = statusCode;
     }
@@ -28,6 +32,12 @@ export class ErrorNotFound extends Exception {
 export class ErrorAlreadyExists extends Exception {
     constructor(message) {
         super(HttpStatus.CONFLICT, message);
+    }
+}
+
+export class ErrorAccessDenied extends Exception {
+    constructor(message) {
+        super(HttpStatus.FORBIDDEN, message);
     }
 }
 

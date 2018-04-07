@@ -1,0 +1,4 @@
+export const REORDERING_TYPES = {
+    INSERT_BEFORE: Symbol('INSERT_BEFORE'),
+    INSERT_AFTER: Symbol('INSERT_AFTER')
+};
