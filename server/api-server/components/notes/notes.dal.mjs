@@ -248,10 +248,10 @@ class NotesDAL {
             const firstNote = notes.find(note => !note.nextId);
             const lastNote = notes.find(note => !note.prevId);
 
-            return !!(firstNote && lastNote);
+            return !(firstNote && lastNote);
         };
         const isBrokenReference = notes => {
-            const firstNote = notes.find(notes, note => !note.nextId);
+            const firstNote = notes.find(note => !note.nextId);
             const passedNotesSet = new Set([firstNote]);
             const getNoteById = noteId =>
                 notes.find(note => note.id === noteId);
@@ -263,10 +263,10 @@ class NotesDAL {
                 }
 
                 passedNotesSet.add(nextNote);
-                nextNote = getNoteById(firstNote.prevId);
+                nextNote = getNoteById(nextNote.prevId);
             }
 
-            if (!nextNote && passedNotesSet.size !== notes.length) {
+            if (passedNotesSet.size !== notes.length) {
                 return true;
             }
 

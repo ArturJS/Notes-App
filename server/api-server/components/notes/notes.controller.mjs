@@ -56,7 +56,7 @@ class NotesController {
             anchorNoteId
         });
 
-        ctx.body = '';
+        ctx.body = 0;
     }
 
     async remove(ctx) {
@@ -65,7 +65,7 @@ class NotesController {
 
         await notesService.remove(userId, noteId);
 
-        ctx.body = '';
+        ctx.body = 0;
     }
 }
 
