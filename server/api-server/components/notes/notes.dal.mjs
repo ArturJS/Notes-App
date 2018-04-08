@@ -7,6 +7,23 @@ const mapNote = note => ({
     files: note.files || []
 });
 
+const withinTransaction = async processingCallback => {
+    const transaction = await db.sequelize.transaction({
+        isolationLevel: db.Sequelize.Transaction.SERIALIZABLE
+    });
+
+    try {
+        const result = await processingCallback(transaction);
+
+        await transaction.commit();
+
+        return result;
+    } catch (err) {
+        await transaction.rollback();
+        throw err;
+    }
+};
+
 const REORDERING_TYPES = {
     INSERT_BEFORE: 'INSERT_BEFORE',
     INSERT_AFTER: 'INSERT_AFTER'
@@ -32,37 +49,42 @@ class NotesDAL {
     }
 
     async create(userId, note) {
-        const lastNote = await db.Notes.findOne({
-            where: { nextId: null }
-        });
-        const transaction = await db.sequelize.transaction();
-        const createdNote = await db.Notes.create(
-            {
-                title: note.title,
-                description: note.description,
-                files: note.files || [],
-                prevId: lastNote ? lastNote.id : null,
-                nextId: null,
-                userId
-            },
-            { transaction }
-        );
-
-        if (lastNote) {
-            await db.Notes.update(
+        const createdNote = await withinTransaction(async transaction => {
+            const lastNote = await db.Notes.findOne(
                 {
-                    nextId: createdNote.id
+                    where: { nextId: null }
                 },
-                {
-                    where: {
-                        id: lastNote.id
-                    }
-                },
-                { transaction }
+                { transaction, lock: transaction.LOCK.UPDATE }
             );
-        }
+            // eslint-disable-next-line no-shadow
+            const createdNote = await db.Notes.create(
+                {
+                    title: note.title,
+                    description: note.description,
+                    files: note.files || [],
+                    prevId: lastNote ? lastNote.id : null,
+                    nextId: null,
+                    userId
+                },
+                { transaction, lock: transaction.LOCK.UPDATE }
+            );
 
-        await transaction.commit();
+            if (lastNote) {
+                await db.Notes.update(
+                    {
+                        nextId: createdNote.id
+                    },
+                    {
+                        where: {
+                            id: lastNote.id
+                        }
+                    },
+                    { transaction, lock: transaction.LOCK.UPDATE }
+                );
+            }
+
+            return createdNote;
+        });
 
         return mapNote(createdNote);
     }
@@ -80,120 +102,126 @@ class NotesDAL {
     }
 
     async reorder({ noteId, reorderingType, anchorNoteId }) {
-        const transaction = await db.sequelize.transaction();
-        const [note, anchorNote] = await Promise.all([
-            db.Notes.findOne(
+        await withinTransaction(async transaction => {
+            const transactionParams = {
+                transaction,
+                lock: transaction.LOCK.UPDATE
+            };
+            const [note, anchorNote] = await Promise.all([
+                db.Notes.findOne(
+                    {
+                        where: {
+                            id: noteId
+                        }
+                    },
+                    transactionParams
+                ),
+                db.Notes.findOne(
+                    {
+                        where: {
+                            id: anchorNoteId
+                        }
+                    },
+                    transactionParams
+                )
+            ]);
+            const insertBetweenSiblings = async (
+                { targetNoteId, newPrevId = null, newNextId = null },
+                transactionParams // eslint-disable-line no-shadow
+            ) => {
+                await db.Notes.update(
+                    {
+                        prevId: newPrevId,
+                        nextId: newNextId
+                    },
+                    {
+                        where: {
+                            id: targetNoteId
+                        }
+                    },
+                    transactionParams
+                );
+
+                if (newNextId) {
+                    await db.Notes.update(
+                        { prevId: targetNoteId },
+                        {
+                            where: {
+                                id: newNextId
+                            }
+                        },
+                        transactionParams
+                    );
+                }
+
+                if (newPrevId) {
+                    await db.Notes.update(
+                        { nextId: targetNoteId },
+                        {
+                            where: {
+                                id: newPrevId
+                            }
+                        },
+                        transactionParams
+                    );
+                }
+            };
+            const getNewSiblings = (reorderType, anchorNoteItem) => {
+                if (reorderType === REORDERING_TYPES.INSERT_AFTER) {
+                    return {
+                        prevId: anchorNoteItem.id,
+                        nextId: anchorNoteItem.nextId
+                    };
+                }
+
+                return {
+                    prevId: anchorNoteItem.prevId,
+                    nextId: anchorNoteItem.id
+                };
+            };
+
+            await this._connectOldSiblings(note, transactionParams);
+
+            const newSiblings = getNewSiblings(reorderingType, anchorNote);
+
+            await insertBetweenSiblings(
+                {
+                    targetNoteId: noteId,
+                    newPrevId: newSiblings.prevId,
+                    newNextId: newSiblings.nextId
+                },
+                transactionParams
+            );
+        });
+    }
+
+    async remove(userId, noteId) {
+        await withinTransaction(async transaction => {
+            const transactionParams = {
+                transaction,
+                lock: transaction.LOCK.UPDATE
+            };
+            const targetNote = await db.Notes.findOne(
                 {
                     where: {
                         id: noteId
                     }
                 },
-                { transaction }
-            ),
-            db.Notes.findOne(
-                {
-                    where: {
-                        id: anchorNoteId
-                    }
-                },
-                { transaction }
-            )
-        ]);
-        const insertBetweenSiblings = async (
-            { targetNoteId, newPrevId = null, newNextId = null },
-            { transaction } // eslint-disable-line no-shadow
-        ) => {
-            await db.Notes.update(
-                {
-                    prevId: newPrevId,
-                    nextId: newNextId
-                },
-                {
-                    where: {
-                        id: targetNoteId
-                    }
-                },
-                { transaction }
+                transactionParams
             );
 
-            if (newNextId) {
-                await db.Notes.update(
-                    { prevId: targetNoteId },
-                    {
-                        where: {
-                            id: newNextId
-                        }
-                    },
-                    { transaction }
-                );
-            }
+            await this._connectOldSiblings(targetNote, transactionParams);
 
-            if (newPrevId) {
-                await db.Notes.update(
-                    { nextId: targetNoteId },
-                    {
-                        where: {
-                            id: newPrevId
-                        }
-                    },
-                    { transaction }
-                );
-            }
-        };
-        const getNewSiblings = (reorderType, anchorNoteItem) => {
-            if (reorderType === REORDERING_TYPES.INSERT_AFTER) {
-                return {
-                    prevId: anchorNoteItem.id,
-                    nextId: anchorNoteItem.nextId
-                };
-            }
-
-            return {
-                prevId: anchorNoteItem.prevId,
-                nextId: anchorNoteItem.id
-            };
-        };
-
-        await this._connectOldSiblings(note, { transaction });
-
-        const newSiblings = getNewSiblings(reorderingType, anchorNote);
-
-        await insertBetweenSiblings(
-            {
-                targetNoteId: noteId,
-                newPrevId: newSiblings.prevId,
-                newNextId: newSiblings.nextId
-            },
-            { transaction }
-        );
-
-        await transaction.commit();
-    }
-
-    async remove(userId, noteId) {
-        const transaction = await db.sequelize.transaction();
-        const targetNote = await db.Notes.findOne(
-            {
-                where: {
-                    id: noteId
-                }
-            },
-            { transaction }
-        );
-
-        await this._connectOldSiblings(targetNote, { transaction });
-
-        await db.Notes.destroy(
-            {
-                where: {
-                    id: noteId,
-                    userId
-                }
-            },
-            { transaction }
-        );
-
-        await transaction.commit();
+            await db.Notes.destroy(
+                {
+                    where: {
+                        id: noteId,
+                        userId
+                    }
+                },
+                transactionParams
+            );
+        });
     }
 
     async hasAccessToNotes(userId, noteIds) {
@@ -207,7 +235,7 @@ class NotesDAL {
         return notes.length === noteIds.length;
     }
 
-    async _connectOldSiblings(targetNote, { transaction }) {
+    async _connectOldSiblings(targetNote, transactionParams) {
         const { prevId, nextId } = targetNote;
 
         if (prevId) {
@@ -218,7 +246,7 @@ class NotesDAL {
                         id: prevId
                     }
                 },
-                { transaction }
+                transactionParams
             );
         }
 
@@ -230,7 +258,7 @@ class NotesDAL {
                         id: nextId
                     }
                 },
-                { transaction }
+                transactionParams
             );
         }
     }
