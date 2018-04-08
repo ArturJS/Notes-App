@@ -5,7 +5,7 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const { loginRequest, loginSuccess, loginFailure } = createActions({
     [LOGIN_REQUEST]: () => {},
-    [LOGIN_SUCCESS]: ({ email, id }) => ({ email, id }),
+    [LOGIN_SUCCESS]: ({ email }) => ({ email }),
     [LOGIN_FAILURE]: () => {}
 });
 

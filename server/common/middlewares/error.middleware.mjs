@@ -1,4 +1,4 @@
-import { Exception } from '../exceptions';
+import { Exception } from '../../api-server/common/exceptions';
 
 export const errorMiddleware = async (ctx, next) => {
     try {

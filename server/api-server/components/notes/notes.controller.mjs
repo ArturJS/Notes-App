@@ -19,9 +19,10 @@ class NotesController {
     }
 
     async getById(ctx) {
+        const userEmail = getUserEmail(ctx);
         const noteId = +ctx.params.id;
 
-        const note = await notesService.getById(noteId);
+        const note = await notesService.getById(userEmail, noteId);
 
         ctx.body = mapNote(note);
     }
@@ -29,7 +30,8 @@ class NotesController {
     async create(ctx) {
         const note = ctx.request.body;
         // todo validate with ajv and explicitly map request body
-        const createdNote = await notesService.create(note);
+        const userEmail = getUserEmail(ctx);
+        const createdNote = await notesService.create(userEmail, note);
 
         ctx.body = mapNote(createdNote);
     }
@@ -37,7 +39,8 @@ class NotesController {
     async update(ctx) {
         const note = ctx.request.body;
         // todo validate with ajv and explicitly map request body
-        const updatedNote = await notesService.create(note);
+        const userEmail = getUserEmail(ctx);
+        const updatedNote = await notesService.create(userEmail, note);
 
         ctx.body = mapNote(updatedNote);
     }
@@ -56,8 +59,9 @@ class NotesController {
 
     async remove(ctx) {
         const noteId = +ctx.params.id;
+        const userEmail = getUserEmail(ctx);
 
-        await notesService.remove(noteId);
+        await notesService.remove(userEmail, noteId);
     }
 }
 

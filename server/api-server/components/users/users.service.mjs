@@ -23,7 +23,7 @@ class UsersService {
         return users.map(mapUserInfo);
     }
 
-    async getByEmail(email, { suppressError = false }) {
+    async getByEmail(email, { suppressError = false } = {}) {
         const user = await usersDAL.getByEmail(email);
 
         if (!user) {

@@ -13,10 +13,11 @@ const REORDERING_TYPES = {
 };
 
 export const notesApi = {
-    async getAll() {
+    async getAll(options) {
         const { data: notes } = await baseApi.ajax({
             method: 'get',
-            url: '/notes'
+            url: '/notes',
+            ...options
         });
 
         return notes.map(mapNote);

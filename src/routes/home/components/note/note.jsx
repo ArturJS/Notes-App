@@ -8,11 +8,10 @@ import classNames from 'classnames';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import firebaseProvider from '../../../../common/providers/firebase-provider';
 import Button from '../../../../common/components/button';
 import MultilineInput from '../../../../common/components/multiline-input';
 import { notesActions } from '../../../../common/features/notes';
-import FilesList from '../file-list';
+// import FilesList from '../file-list';
 import './note.scss';
 
 const linkRegexp = /(http[^\s]+)/g;
@@ -116,9 +115,6 @@ export default class Note extends Component {
         isEditing: false
     };
 
-    getNoteRef = (id = this.props.note.id) =>
-        firebaseProvider.getCurrentUserData().child(`notes/${id}`);
-
     onEdit = () => {
         this.setState({ isEditing: true });
     };
@@ -161,52 +157,6 @@ export default class Note extends Component {
             '<a href="$1" class="note-link" target="_blank" rel="nofollow noopener">$1</a>'
         );
 
-    removeFile = async storagePath => {
-        await firebaseProvider.storage
-            .ref()
-            .child(storagePath)
-            .delete();
-
-        const { files } = this.props.note;
-        const updatedFilesList = files.filter(
-            file => file.storagePath !== storagePath
-        );
-
-        this.getNoteRef().update({
-            files: updatedFilesList
-        });
-    };
-
-    onRemoveFile = ({ storagePath }) => {
-        this.removeFile(storagePath);
-    };
-
-    uploadFile = async file => {
-        const userEmail = firebaseProvider.auth.currentUser.email;
-        const storagePath = `${userEmail}/${Date.now()}/${file.name}`;
-
-        await firebaseProvider.storage
-            .ref()
-            .child(storagePath)
-            .put(file);
-
-        const { files = [] } = this.props.note;
-        const createdFile = {
-            name: file.name,
-            storagePath
-        };
-
-        this.getNoteRef().update({
-            files: [...files, createdFile]
-        });
-    };
-
-    attachFiles = e => {
-        const additionalFiles = Array.from(e.target.files);
-
-        additionalFiles.forEach(this.uploadFile);
-    };
-
     renderDefaultMode() {
         const {
             note,
@@ -238,7 +188,7 @@ export default class Note extends Component {
                             __html: this.wrapUrlLinks(note.description)
                         }}
                     />
-                    <FilesList files={note.files} />
+                    {/* <FilesList files={note.files} /> */}
                 </div>
             )
         );
@@ -284,10 +234,10 @@ export default class Note extends Component {
                                 placeholder="Note description..."
                             />
                         </div>
-                        <FilesList
+                        {/* <FilesList
                             files={note.files}
                             onRemove={this.onRemoveFile}
-                        />
+                        /> */}
                         <div className={'buttons-group'}>
                             <Button
                                 type="button"

@@ -53,6 +53,11 @@ class NotesDAL {
                 {
                     nextId: createdNote.id
                 },
+                {
+                    where: {
+                        id: lastNote.id
+                    }
+                },
                 { transaction }
             );
         }
@@ -191,7 +196,7 @@ class NotesDAL {
     }
 
     async remove(userId, noteId) {
-        await db.Notes.destroy({ where: { id: noteId, userId } });
+        await db.Notes.destroy({ where: { id: noteId, userId } }); // todo fix sibling references
     }
 
     async hasAccessToNotes(userId, noteIds) {

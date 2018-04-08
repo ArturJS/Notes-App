@@ -16,8 +16,7 @@ const initialState = {
     isLogoutPending: false,
     isLogoutSuccess: null,
     authData: {
-        email: null,
-        id: null
+        email: null
     }
 };
 
@@ -35,8 +34,7 @@ const authReducer = handleActions(
                 draftState.isLoginSuccess = true;
                 draftState.isLoggedIn = true;
                 draftState.authData = {
-                    email: payload.email,
-                    id: payload.id
+                    email: payload.email
                 };
             }),
 

@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import firebaseProvider from '../../../../common/providers/firebase-provider';
 import './file-list.scss';
 
 export default class FilesList extends Component {
@@ -33,18 +32,15 @@ export default class FilesList extends Component {
 
 FilesList.Item = class extends Component {
     downloadFile = async () => {
-        const { file } = this.props;
-
-        if (!file.storagePath) {
-            return;
-        }
-
-        const downloadUrl = await firebaseProvider.storage
-            .ref()
-            .child(file.storagePath)
-            .getDownloadURL();
-
-        this.openUrlInNewTab(downloadUrl);
+        // const { file } = this.props;
+        // if (!file.storagePath) {
+        //     return;
+        // }
+        // const downloadUrl = await firebaseProvider.storage
+        //     .ref()
+        //     .child(file.storagePath)
+        //     .getDownloadURL();
+        // this.openUrlInNewTab(downloadUrl);
     };
 
     openUrlInNewTab(url) {

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
-import axios from 'axios';
+import { notesApi } from '../../common/api';
 import { notesActions, notesSelectors } from '../../common/features/notes';
 import { prefetchInitialState } from '../../common/features/ssr-fetcher';
 import AddNoteForm from './components/add-note-form';
@@ -21,8 +21,7 @@ const mapDispatchToProps = dispatch => ({
 
 @prefetchInitialState({
     key: 'notes',
-    fetcher: () =>
-        axios.get('http://127.0.0.1:3000/api/notes').then(res => res.data)
+    fetcher: options => notesApi.getAll(options)
 })
 @connect(mapStateToProps, mapDispatchToProps)
 @pure

@@ -9,8 +9,7 @@ export const getAuthState = createSelector(
         isLogoutPending: auth.isLogoutPending,
         isLogoutSuccess: auth.isLogoutSuccess,
         authData: {
-            email: auth.authData.email,
-            id: auth.authData.id
+            email: auth.authData.email
         }
     })
 );

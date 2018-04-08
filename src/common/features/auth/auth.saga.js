@@ -20,7 +20,6 @@ function* watchLogin() {
 
             yield put(
                 loginSuccess({
-                    id: user.uid,
                     email: user.email
                 })
             );

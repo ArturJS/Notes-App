@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
 import Button from '../button';
-import firebaseProvider from '../../providers/firebase-provider';
 import { authActions, authSelectors } from '../../features/auth';
 import './user-auth-state.scss';
 
@@ -32,22 +31,6 @@ export default class UserAuthState extends Component {
     static defaultProps = {
         isLoggedIn: false
     };
-
-    componentDidMount() {
-        const { loginSuccess, loginFailure } = this.props.authActions;
-
-        const unsubscribe = firebaseProvider.auth.onAuthStateChanged(user => {
-            if (user) {
-                loginSuccess({
-                    id: user.uid,
-                    email: user.email
-                });
-            } else {
-                loginFailure();
-            }
-            unsubscribe();
-        });
-    }
 
     login = () => {
         this.props.authActions.loginRequest();

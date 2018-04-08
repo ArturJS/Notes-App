@@ -1,7 +1,7 @@
 import passport from 'koa-passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
 import Router from 'koa-router';
-import { usersController } from './components/users';
+import { usersController } from '../api-server/components/users';
 
 const router = new Router();
 

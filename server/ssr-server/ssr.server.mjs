@@ -26,6 +26,7 @@ const template = fs.readFileSync(
 const staticAssetsPath = path.resolve(__dirname, '../../build');
 const faviconPath = path.resolve(__dirname, '../../build/favicon.ico');
 
+// todo simplify and split into several modules
 const getFetchersByUrl = url => {
     const fetchers = [];
 
@@ -44,9 +45,15 @@ const getFetchersByUrl = url => {
     return fetchers;
 };
 
-const fetchInitialState = async fetchers => {
+const fetchInitialState = async (fetchers, cookies) => {
     const fetchKeys = fetchers.map(({ key }) => key);
-    const fetchPromises = fetchers.map(({ fetcher }) => fetcher());
+    const fetchPromises = fetchers.map(({ fetcher }) =>
+        fetcher({
+            headers: {
+                Cookie: cookies
+            }
+        })
+    );
 
     try {
         const fetchedData = await Promise.all(fetchPromises);
@@ -56,6 +63,22 @@ const fetchInitialState = async fetchers => {
         // TODO handle error
         return {};
     }
+};
+
+const getUserEmail = ctx => _.get(ctx, 'session.passport.user.user.email');
+
+const addAuthState = (initialState, ctx) => {
+    // eslint-disable-next-line no-param-reassign
+    initialState.auth = {
+        isLoggedIn: true,
+        isLoginPending: false,
+        isLoginSuccess: null,
+        isLogoutPending: false,
+        isLogoutSuccess: null,
+        authData: {
+            email: getUserEmail(ctx)
+        }
+    };
 };
 
 app
@@ -73,9 +96,16 @@ app
     )
     .use(mount('/build', serveStatic(staticAssetsPath)))
     .use(async ctx => {
+        // todo simplify and split method
         const { url } = ctx.request;
+        const { cookie } = ctx.request.header;
         const fetchersList = getFetchersByUrl(url);
-        const initialState = await fetchInitialState(fetchersList);
+        const initialState = await fetchInitialState(fetchersList, cookie);
+
+        if (ctx.isAuthenticated()) {
+            addAuthState(initialState, ctx);
+        }
+
         const serverReduxStore = configureStore(initialState);
         const appHtmlMarkup = render(
             Preact.h(RootComponent, { url, serverReduxStore })
