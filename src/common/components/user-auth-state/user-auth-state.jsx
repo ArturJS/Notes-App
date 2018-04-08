@@ -11,7 +11,6 @@ const mapStateToProps = state => {
     const { isLoggedIn } = authSelectors.getAuthState(state);
 
     return {
-        isAuthReady: isLoggedIn !== null,
         isLoggedIn
     };
 };
@@ -41,11 +40,7 @@ export default class UserAuthState extends Component {
     };
 
     render() {
-        const { isAuthReady, isLoggedIn } = this.props;
-
-        if (!isAuthReady) {
-            return null;
-        }
+        const { isLoggedIn } = this.props;
 
         return (
             <div className={'user-auth-state'}>

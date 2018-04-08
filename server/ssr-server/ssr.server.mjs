@@ -65,7 +65,7 @@ const fetchInitialState = async (fetchers, cookies) => {
     }
 };
 
-const getUserEmail = ctx => _.get(ctx, 'session.passport.user.user.email');
+const getUserEmail = ctx => _.get(ctx, 'session.passport.user.email');
 
 const addAuthState = (initialState, ctx) => {
     // eslint-disable-next-line no-param-reassign

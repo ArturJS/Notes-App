@@ -8,14 +8,6 @@ const mapUserInfo = user => ({
     email: user.email
 });
 
-const mapUserDetailedInfo = user => ({
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    notes: user.notes
-});
-
 class UsersService {
     async getAll() {
         const users = await usersDAL.getAll();
@@ -34,7 +26,7 @@ class UsersService {
             throw new ErrorNotFound(`User with email="${email}" not found!`);
         }
 
-        return mapUserDetailedInfo(user);
+        return mapUserInfo(user);
     }
 
     async create(user) {
@@ -54,7 +46,7 @@ class UsersService {
             email: user.email
         });
 
-        return mapUserDetailedInfo(createdUser);
+        return mapUserInfo(createdUser);
     }
 }
 

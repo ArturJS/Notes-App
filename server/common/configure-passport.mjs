@@ -11,21 +11,22 @@ export const configurePassport = app => {
 
     router
         .get(
-            '/auth/google',
+            '/api/auth/google',
             passport.authenticate('google', { scope: ['email', 'profile'] })
         )
-        .get('/auth/google/callback', async ctx => {
+        .get('/api/auth/google/callback', async ctx => {
             await passport.authenticate('google', async (err, user) => {
-                if (user === false) {
-                    ctx.redirect('/notes?google-auth-error');
+                if (!user) {
+                    ctx.redirect('/?google-auth-error');
                 } else {
                     await ctx.login(user);
-                    ctx.redirect('/notes');
+                    ctx.redirect('/');
                 }
             })(ctx);
         })
-        .post('/auth/logout', async ctx => {
+        .post('/api/auth/logout', async ctx => {
             await ctx.logout();
+            ctx.body = 0;
         });
 
     app.use(router.routes());

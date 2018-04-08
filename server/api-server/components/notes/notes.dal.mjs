@@ -80,7 +80,7 @@ class NotesDAL {
     }
 
     async reorder({ noteId, reorderingType, anchorNoteId }) {
-        const t = await db.sequelize.transaction();
+        const transaction = await db.sequelize.transaction();
         const [note, anchorNote] = await Promise.all([
             db.Notes.findOne(
                 {
@@ -88,7 +88,7 @@ class NotesDAL {
                         id: noteId
                     }
                 },
-                { transaction: t }
+                { transaction }
             ),
             db.Notes.findOne(
                 {
@@ -96,39 +96,12 @@ class NotesDAL {
                         id: anchorNoteId
                     }
                 },
-                { transaction: t }
+                { transaction }
             )
         ]);
-        const connectOldSiblings = async (targetNote, { transaction }) => {
-            const { prevId, nextId } = targetNote;
-
-            if (prevId) {
-                await db.Notes.update(
-                    { nextId },
-                    {
-                        where: {
-                            id: prevId
-                        }
-                    },
-                    { transaction }
-                );
-            }
-
-            if (nextId) {
-                await db.Notes.update(
-                    { prevId },
-                    {
-                        where: {
-                            id: nextId
-                        }
-                    },
-                    { transaction }
-                );
-            }
-        };
         const insertBetweenSiblings = async (
             { targetNoteId, newPrevId = null, newNextId = null },
-            { transaction }
+            { transaction } // eslint-disable-line no-shadow
         ) => {
             await db.Notes.update(
                 {
@@ -181,7 +154,7 @@ class NotesDAL {
             };
         };
 
-        await connectOldSiblings(note, { transaction: t });
+        await this._connectOldSiblings(note, { transaction });
 
         const newSiblings = getNewSiblings(reorderingType, anchorNote);
 
@@ -191,12 +164,36 @@ class NotesDAL {
                 newPrevId: newSiblings.prevId,
                 newNextId: newSiblings.nextId
             },
-            { transaction: t }
+            { transaction }
         );
+
+        await transaction.commit();
     }
 
     async remove(userId, noteId) {
-        await db.Notes.destroy({ where: { id: noteId, userId } }); // todo fix sibling references
+        const transaction = await db.sequelize.transaction();
+        const targetNote = await db.Notes.findOne(
+            {
+                where: {
+                    id: noteId
+                }
+            },
+            { transaction }
+        );
+
+        await this._connectOldSiblings(targetNote, { transaction });
+
+        await db.Notes.destroy(
+            {
+                where: {
+                    id: noteId,
+                    userId
+                }
+            },
+            { transaction }
+        );
+
+        await transaction.commit();
     }
 
     async hasAccessToNotes(userId, noteIds) {
@@ -208,6 +205,34 @@ class NotesDAL {
         });
 
         return notes.length === noteIds.length;
+    }
+
+    async _connectOldSiblings(targetNote, { transaction }) {
+        const { prevId, nextId } = targetNote;
+
+        if (prevId) {
+            await db.Notes.update(
+                { nextId },
+                {
+                    where: {
+                        id: prevId
+                    }
+                },
+                { transaction }
+            );
+        }
+
+        if (nextId) {
+            await db.Notes.update(
+                { prevId },
+                {
+                    where: {
+                        id: nextId
+                    }
+                },
+                { transaction }
+            );
+        }
     }
 
     async _getSortedNotesByUserId(userId) {

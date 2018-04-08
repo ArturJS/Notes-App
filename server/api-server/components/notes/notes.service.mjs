@@ -4,7 +4,6 @@ import {
     ErrorBadRequest
 } from '../../common/exceptions';
 import { REORDERING_TYPES } from './notes.enums';
-import { usersService } from '../users';
 import notesDAL from './notes.dal';
 
 const mapNote = note => ({
@@ -15,16 +14,13 @@ const mapNote = note => ({
 });
 
 class NotesService {
-    async getAll(userEmail) {
-        const userId = await this._getUserId(userEmail);
+    async getAll(userId) {
         const notes = await notesDAL.getAll(userId);
 
         return notes.map(mapNote);
     }
 
-    async getById(userEmail, noteId) {
-        const userId = await this._getUserId(userEmail);
-
+    async getById(userId, noteId) {
         await this._checkAccessToNotes(userId, [noteId]);
 
         const note = await notesDAL.getById(userId, noteId);
@@ -36,16 +32,13 @@ class NotesService {
         return mapNote(note);
     }
 
-    async create(userEmail, note) {
-        const userId = await this._getUserId(userEmail);
+    async create(userId, note) {
         const createdNote = await notesDAL.create(userId, note);
 
         return mapNote(createdNote);
     }
 
-    async update(userEmail, note) {
-        const userId = await this._getUserId(userEmail);
-
+    async update(userId, note) {
         await this._checkAccessToNotes(userId, [note.id]);
 
         const updatedNote = await notesDAL.update(userId, note);
@@ -53,7 +46,7 @@ class NotesService {
         return mapNote(updatedNote);
     }
 
-    async reorder({ userEmail, noteId, reorderingType, anchorNoteId }) {
+    async reorder({ userId, noteId, reorderingType, anchorNoteId }) {
         // todo introduce validators
         const checkReorderingType = reorderType => {
             const wrongReorderingType =
@@ -72,8 +65,6 @@ class NotesService {
 
         checkReorderingType(reorderingType);
 
-        const userId = await this._getUserId(userEmail);
-
         await this._checkAccessToNotes(userId, [noteId, anchorNoteId]);
 
         await notesDAL.reorder({
@@ -83,8 +74,8 @@ class NotesService {
         });
     }
 
-    async remove(userEmail, noteId) {
-        await notesDAL.remove(userEmail, noteId);
+    async remove(userId, noteId) {
+        await notesDAL.remove(userId, noteId);
     }
 
     async _checkAccessToNotes(userId, noteIds) {
@@ -100,12 +91,6 @@ class NotesService {
                 `by ids=${JSON.stringify(noteIds)}`
             ]);
         }
-    }
-
-    async _getUserId(userEmail) {
-        const { id: userId } = await usersService.getByEmail(userEmail);
-
-        return userId;
     }
 }
 

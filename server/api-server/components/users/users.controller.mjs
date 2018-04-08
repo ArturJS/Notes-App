@@ -7,14 +7,6 @@ const mapUserInfo = user => ({
     email: user.email
 });
 
-const mapUserDetailedInfo = user => ({
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    notes: user.notes
-});
-
 class UsersController {
     async getAll(ctx) {
         const users = await usersService.getAll();
@@ -26,7 +18,7 @@ class UsersController {
         const { email } = ctx.params;
         const user = await usersService.getByEmail(email);
 
-        ctx.body = mapUserDetailedInfo(user);
+        ctx.body = mapUserInfo(user);
     }
 
     async create(ctx) {
@@ -37,11 +29,11 @@ class UsersController {
             lastName
         });
 
-        ctx.body = mapUserDetailedInfo(createdUser);
+        ctx.body = mapUserInfo(createdUser);
     }
 
     async handleGoogleAuthentication(accessToken, refreshToken, profile, done) {
-        const email = profile.emails[0].value; // TODO handle absense of email
+        const email = profile.emails[0].value; // TODO handle absence of email
         const firstName = profile.name.givenName;
         const lastName = profile.name.familyName;
 
@@ -58,13 +50,10 @@ class UsersController {
         }
 
         done(null, {
-            accessToken,
-            refreshToken,
-            user: {
-                email: relatedUser.email,
-                firstName: relatedUser.firstName,
-                lastName: relatedUser.lastName
-            }
+            id: relatedUser.id,
+            email: relatedUser.email,
+            firstName: relatedUser.firstName,
+            lastName: relatedUser.lastName
         });
     }
 }
