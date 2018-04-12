@@ -17,7 +17,8 @@
         "server": "node server/index.js",
         "server:dev": "npx nodemon server/index.js",
         "serve": "npx preact build && npx preact serve",
-        "test": "eslint src && preact test"
+        "test": "npx jest --env=jsdom",
+        "test:coverage": "npx jest --coverage --env=jsdom"
     },
     "lint-staged": {
         "src/**/*.{js,jsx}": [
@@ -31,11 +32,49 @@
             "git add"
         ]
     },
+    "jest": {
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx}",
+            "!src/**/*.test.{js,jsx}",
+            "!src/**/*index.{js,jsx}"
+        ],
+        "setupFiles": [
+            "<rootDir>/scripts/jest/__mocks__/browser-mocks.js"
+        ],
+        "testURL": "http://localhost:8080",
+        "transform": {
+            "\\.(js|jsx)$": "./scripts/jest/transform-preprocessor.js",
+            "^.+\\.scss$": "./scripts/jest/css-transform.js"
+        },
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(jsx?)$",
+        "transformIgnorePatterns": [
+            "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+        ],
+        "moduleFileExtensions": [
+            "js",
+            "jsx"
+        ],
+        "moduleDirectories": [
+            "node_modules"
+        ],
+        "moduleNameMapper": {
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/__mocks__/fileMock.js",
+            "\\.(css|less|scss)$": "identity-obj-proxy",
+            "^./style$": "identity-obj-proxy",
+            "^preact$": "<rootDir>/node_modules/preact/dist/preact.min.js",
+            "^react$": "preact-compat",
+            "^react-dom$": "preact-compat",
+            "^create-react-class$": "preact-compat/lib/create-react-class",
+            "^react-addons-css-transition-group$": "preact-css-transition-group"
+        },
+        "verbose": true
+    },
     "keywords": [],
-    "author": "",
+    "author": "ArturJS",
     "license": "ISC",
     "devDependencies": {
         "babel-eslint": "8.1.2",
+        "babel-jest": "22.4.3",
         "babel-plugin-lodash": "3.3.2",
         "babel-plugin-syntax-flow": "6.18.0",
         "babel-plugin-transform-async-to-promises": "0.4.0",
@@ -52,9 +91,11 @@
         "flow-bin": "0.63.1",
         "husky": "0.14.3",
         "if-env": "1.0.0",
+        "jest": "22.4.3",
         "lint-staged": "6.0.0",
         "node-sass": "4.7.2",
         "nodemon": "1.17.2",
+        "preact-cli": "2.2.1",
         "prettier": "1.9.2",
         "prop-types": "15.6.0",
         "sass-loader": "6.0.6",
