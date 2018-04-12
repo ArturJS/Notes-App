@@ -2,10 +2,12 @@
   "extends": [
     "airbnb-base",
     "prettier",
-    "standard-preact"
+    "standard-preact",
+    "plugin:jest/recommended"
   ],
   "plugins": [
-    "flowtype"
+    "flowtype",
+    "jest"
   ],
   "parser": "babel-eslint",
   "rules": {
