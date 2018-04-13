@@ -1,6 +1,6 @@
 // @flow
 // @jsx h
-import type { FormApi } from 'final-form';
+import type { FormApi } from 'final-form/dist/types.js.flow';
 
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
@@ -28,6 +28,11 @@ type FileToUpload = {
 type Note = {
     title: string,
     description: string
+};
+
+type NoteValidate = {
+    title?: string,
+    description?: string
 };
 
 type Props = {};
@@ -86,7 +91,7 @@ export default class AddNoteForm extends Component<Props, State> {
         this.setState({ filesToUpload: [] });
     };
 
-    validate = ({ title, description }: Note) => {
+    validate = ({ title, description }: NoteValidate) => {
         const errors = {};
 
         if (!title || !title.trim()) {

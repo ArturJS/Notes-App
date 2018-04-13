@@ -2,6 +2,7 @@
     "name": "notes-app",
     "version": "1.0.0",
     "description": "Very handy notes application!",
+    "repository": "https://github.com/ArturJS/ArturJS.github.io",
     "main": "index.js",
     "scripts": {
         "build": "preact build",
@@ -77,6 +78,7 @@
     "devDependencies": {
         "babel-eslint": "8.1.2",
         "babel-jest": "22.4.3",
+        "babel-plugin-flow-runtime": "0.17.0",
         "babel-plugin-lodash": "3.3.2",
         "babel-plugin-syntax-flow": "6.18.0",
         "babel-plugin-transform-async-to-promises": "0.4.0",
@@ -92,6 +94,7 @@
         "eslint-plugin-jest": "21.15.0",
         "eslint-plugin-prettier": "2.4.0",
         "flow-bin": "0.63.1",
+        "flow-runtime": "0.17.0",
         "husky": "0.14.3",
         "if-env": "1.0.0",
         "jest": "22.4.3",
@@ -110,7 +113,7 @@
         "axios": "0.18.0",
         "classnames": "2.2.5",
         "dotenv-safe": "5.0.1",
-        "final-form": "3.0.0",
+        "final-form": "4.5.2",
         "http-status-codes": "1.3.0",
         "immer": "1.1.3",
         "koa": "2.5.0",
