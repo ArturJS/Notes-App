@@ -55,8 +55,12 @@ describe('auth.actions.js', () => {
 
     describe('"loginFailure" action creator', () => {
         it('should return object with correct "type"', () => {
-            expect(loginFailure()).toEqual({
-                type: LOGIN_FAILURE
+            const error = new Error('loginFailure');
+
+            expect(loginFailure(error)).toEqual({
+                type: LOGIN_FAILURE,
+                payload: error,
+                error: true
             });
         });
     });
@@ -79,8 +83,12 @@ describe('auth.actions.js', () => {
 
     describe('"logoutFailure" action creator', () => {
         it('should return object with correct "type"', () => {
-            expect(logoutFailure()).toEqual({
-                type: LOGOUT_FAILURE
+            const error = new Error('logoutFailure');
+
+            expect(logoutFailure(error)).toEqual({
+                type: LOGOUT_FAILURE,
+                payload: error,
+                error: true
             });
         });
     });

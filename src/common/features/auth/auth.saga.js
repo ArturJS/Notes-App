@@ -11,7 +11,7 @@ import {
 } from './auth.actions';
 import { notesActions } from '../notes';
 
-function* watchLogin() {
+export function* watchLogin() {
     while (true) {
         yield take(LOGIN_REQUEST);
 
@@ -24,19 +24,19 @@ function* watchLogin() {
                 })
             );
         } catch (error) {
-            yield put(loginFailure());
+            yield put(loginFailure(error));
         }
     }
 }
 
-function* watchLoginSuccess() {
+export function* watchLoginSuccess() {
     while (true) {
         yield take(LOGIN_SUCCESS);
-        // yield put(notesActions.getAllNotesRequest());
+        yield put(notesActions.getAllNotesRequest());
     }
 }
 
-function* watchLogout() {
+export function* watchLogout() {
     while (true) {
         yield take(LOGOUT_REQUEST);
 
@@ -46,7 +46,7 @@ function* watchLogout() {
             yield put(logoutSuccess());
             yield put(notesActions.clearNotes());
         } catch (error) {
-            yield put(logoutFailure());
+            yield put(logoutFailure(error));
         }
     }
 }
