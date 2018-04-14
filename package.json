@@ -76,12 +76,15 @@
     "author": "ArturJS",
     "license": "ISC",
     "devDependencies": {
+        "@babel/preset-env": "7.0.0-beta.44",
+        "@babel/preset-flow": "7.0.0-beta.44",
         "babel-eslint": "8.1.2",
         "babel-jest": "22.4.3",
         "babel-plugin-flow-runtime": "0.17.0",
         "babel-plugin-lodash": "3.3.2",
         "babel-plugin-syntax-flow": "6.18.0",
         "babel-plugin-transform-async-to-promises": "0.4.0",
+        "babel-plugin-transform-decorators-legacy": "1.3.4",
         "babel-plugin-transform-flow-strip-types": "6.22.0",
         "babel-plugin-transform-react-jsx": "6.24.1",
         "babel-plugin-transform-regenerator": "6.26.0",
@@ -108,6 +111,8 @@
         "webpack-bundle-analyzer": "2.9.1"
     },
     "dependencies": {
+        "@babel/core": "7.0.0-beta.44",
+        "@babel/register": "7.0.0-beta.44",
         "@koa/cors": "2.2.1",
         "@std/esm": "0.25.3",
         "axios": "0.18.0",

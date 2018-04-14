@@ -1,3 +1,4 @@
+require('@babel/register');
 require('dotenv-safe').config({
     example: './.env.example',
     path: './.env'
@@ -7,4 +8,5 @@ require('dotenv-safe').config({
 require = require('@std/esm')(module, {
     cjs: true
 });
+
 module.exports = require('./main.mjs').default;

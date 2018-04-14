@@ -13,8 +13,13 @@ const mapNote = note => ({
     files: note.files || []
 });
 
+type NoteRequest = {
+    title: string,
+    description: string
+};
+
 class NotesService {
-    async getAll(userId) {
+    async getAll(userId: number) {
         const notes = await notesDAL.getAll(userId);
 
         return notes.map(mapNote);
@@ -32,7 +37,7 @@ class NotesService {
         return mapNote(note);
     }
 
-    async create(userId, note) {
+    async create(userId, note: NoteRequest) {
         const createdNote = await notesDAL.create(userId, note);
 
         return mapNote(createdNote);
