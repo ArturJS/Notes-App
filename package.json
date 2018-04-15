@@ -37,7 +37,9 @@
     },
     "jest": {
         "collectCoverageFrom": [
+            "server/**/*.mjs",
             "src/**/*.{js,jsx}",
+            "!server/**/index.mjs",
             "!src/**/*.test.{js,jsx}",
             "!src/**/*index.{js,jsx}"
         ],
@@ -46,16 +48,17 @@
         ],
         "testURL": "http://localhost:8080",
         "transform": {
-            "\\.(js|jsx)$": "./scripts/jest/transform-preprocessor.js",
+            "\\.(js|jsx|mjs)$": "./scripts/jest/transform-preprocessor.js",
             "^.+\\.scss$": "./scripts/jest/css-transform.js"
         },
-        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(jsx?)$",
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(m?jsx?)$",
         "transformIgnorePatterns": [
             "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
         ],
         "moduleFileExtensions": [
             "js",
-            "jsx"
+            "jsx",
+            "mjs"
         ],
         "moduleDirectories": [
             "node_modules"
@@ -88,6 +91,7 @@
         "babel-plugin-transform-flow-strip-types": "6.22.0",
         "babel-plugin-transform-react-jsx": "6.24.1",
         "babel-plugin-transform-regenerator": "6.26.0",
+        "babel-preset-flow": "6.23.0",
         "eslint": "4.14.0",
         "eslint-config-airbnb-base": "12.1.0",
         "eslint-config-prettier": "2.9.0",
@@ -101,6 +105,7 @@
         "husky": "0.14.3",
         "if-env": "1.0.0",
         "jest": "22.4.3",
+        "jest-runtime": "22.4.3",
         "lint-staged": "6.0.0",
         "node-sass": "4.7.2",
         "nodemon": "1.17.2",
