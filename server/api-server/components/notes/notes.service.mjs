@@ -1,31 +1,39 @@
+// @flow
 import {
     ErrorNotFound,
     ErrorAccessDenied,
     ErrorBadRequest
 } from '../../common/exceptions';
 import { REORDERING_TYPES } from './notes.enums';
+import type { REORDERING_TYPES_TYPE } from './notes.enums';
 import notesDAL from './notes.dal';
 
-const mapNote = note => ({
+type NoteEssential = {|
+    title: string,
+    description: string
+|};
+
+type NoteFull = {|
+    ...NoteEssential,
+    id: number,
+    files: string[]
+|};
+
+const mapNote = (note): NoteFull => ({
     id: note.id,
     title: note.title,
     description: note.description,
     files: note.files || []
 });
 
-type NoteRequest = {
-    title: string,
-    description: string
-};
-
 class NotesService {
-    async getAll(userId: number) {
+    async getAll(userId: number): Promise<NoteFull> {
         const notes = await notesDAL.getAll(userId);
 
         return notes.map(mapNote);
     }
 
-    async getById(userId, noteId) {
+    async getById(userId: number, noteId: number): Promise<NoteFull> {
         await this._checkAccessToNotes(userId, [noteId]);
 
         const note = await notesDAL.getById(userId, noteId);
@@ -37,13 +45,13 @@ class NotesService {
         return mapNote(note);
     }
 
-    async create(userId, note: NoteRequest) {
+    async create(userId: number, note: NoteEssential): Promise<NoteFull> {
         const createdNote = await notesDAL.create(userId, note);
 
         return mapNote(createdNote);
     }
 
-    async update(userId, note) {
+    async update(userId: number, note: NoteFull): Promise<NoteFull> {
         await this._checkAccessToNotes(userId, [note.id]);
 
         const updatedNote = await notesDAL.update(userId, note);
@@ -51,9 +59,18 @@ class NotesService {
         return mapNote(updatedNote);
     }
 
-    async reorder({ userId, noteId, reorderingType, anchorNoteId }) {
+    async reorder(params: {
+        userId: number,
+        noteId: number,
+        reorderingType: REORDERING_TYPES_TYPE,
+        anchorNoteId: number
+    }): Promise<void> {
+        // todo: use params destructuring when
+        // todo:    the issue https://github.com/codemix/flow-runtime/issues/201
+        // todo:    is fixed
+        const { userId, noteId, reorderingType, anchorNoteId } = params;
         // todo introduce validators
-        const checkReorderingType = reorderType => {
+        const checkReorderingType = (reorderType: string) => {
             const wrongReorderingType =
                 [
                     REORDERING_TYPES.INSERT_BEFORE,
@@ -79,11 +96,14 @@ class NotesService {
         });
     }
 
-    async remove(userId, noteId) {
+    async remove(userId: number, noteId: number): Promise<void> {
         await notesDAL.remove(userId, noteId);
     }
 
-    async _checkAccessToNotes(userId, noteIds) {
+    async _checkAccessToNotes(
+        userId: number,
+        noteIds: number[]
+    ): Promise<void> {
         const userHasAccessToNotes = await notesDAL.hasAccessToNotes(
             userId,
             noteIds

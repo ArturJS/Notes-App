@@ -3,7 +3,8 @@
     "airbnb-base",
     "prettier",
     "standard-preact",
-    "plugin:jest/recommended"
+    "plugin:jest/recommended",
+    "plugin:flowtype/recommended"
   ],
   "plugins": [
     "flowtype",
