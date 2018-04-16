@@ -40,7 +40,7 @@ class NotesController {
         const note = ctx.request.body;
         // todo validate with ajv and explicitly map request body
         const userId = getUserId(ctx);
-        const updatedNote = await notesService.create(userId, note);
+        const updatedNote = await notesService.update(userId, note);
 
         ctx.body = mapNote(updatedNote);
     }
