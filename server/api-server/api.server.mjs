@@ -7,13 +7,15 @@ const app = new Koa();
 // docker run --name redis -p 6379:6379 -d redis:alpine
 // docker stop $(docker ps -a -q)
 
+const { REDIS_HOST, REDIS_PORT } = process.env; // todo: move all "process.env" to common server config
+
 app
     .use(
         cache({
             expire: 5,
             redis: {
-                host: '192.168.99.100', // todo: move to .env file and create service in docker-compose.yml
-                port: 6379
+                host: REDIS_HOST,
+                port: REDIS_PORT
             }
         })
     )
