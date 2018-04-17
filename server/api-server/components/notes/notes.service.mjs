@@ -27,7 +27,7 @@ const mapNote = (note): NoteFull => ({
 });
 
 class NotesService {
-    async getAll(userId: number): Promise<NoteFull> {
+    async getAll(userId: number): Promise<NoteFull[]> {
         const notes = await notesDAL.getAll(userId);
 
         return notes.map(mapNote);
