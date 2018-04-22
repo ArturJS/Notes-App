@@ -113,7 +113,7 @@ export default class AddNoteForm extends Component<Props, State> {
 
     removeFile = (fileToRemove: File): void => {
         this.setState(({ filesList }) => ({
-            filesList: filesList.filter(({ file }) => file !== fileToRemove)
+            filesList: filesList.filter(file => file !== fileToRemove)
         }));
     };
 
@@ -137,7 +137,7 @@ export default class AddNoteForm extends Component<Props, State> {
                 ...prevState.fileUploadPromises,
                 ...fileUploadPromises
             ],
-            filesList: [...prevState.filesList, files]
+            filesList: [...prevState.filesList, ...files]
         }));
 
         this.setState({
@@ -177,7 +177,7 @@ export default class AddNoteForm extends Component<Props, State> {
                         </div>
                         <FilesList
                             files={filesList}
-                            onRemove={this.onRemoveFile}
+                            onRemove={this.removeFile}
                         />
                         <div className={'buttons-group'}>
                             <Button

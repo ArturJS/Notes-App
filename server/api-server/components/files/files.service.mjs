@@ -14,6 +14,8 @@ type TDownloadFile = {|
     downloadStream: Readable
 |};
 
+// todo: implement garbage collector for unused filed
+
 class FilesService {
     // todo add validation
     async getAll(userId: number): Promise<string[]> {
