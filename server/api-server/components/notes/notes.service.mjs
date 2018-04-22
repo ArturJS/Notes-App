@@ -8,15 +8,22 @@ import { REORDERING_TYPES } from './notes.enums';
 import type { REORDERING_TYPES_TYPE } from './notes.enums';
 import notesDAL from './notes.dal';
 
+type TFile = {|
+    id: number,
+    downloadPath: string,
+    filename: string
+|};
+
 type NoteEssential = {|
     title: string,
-    description: string
+    description: string,
+    files?: TFile[]
 |};
 
 type NoteFull = {|
     ...NoteEssential,
     id: number,
-    files: string[]
+    files: TFile[]
 |};
 
 const mapNote = (note): NoteFull => ({

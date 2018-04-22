@@ -55,6 +55,7 @@
     "$Exact": true,
     "File": true,
     "SyntheticInputEvent": true,
-    "HTMLInputElement": true
+    "HTMLInputElement": true,
+    "FormData": true
   }
 }
