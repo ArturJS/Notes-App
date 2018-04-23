@@ -42,7 +42,7 @@ class FilesDAL {
         return new Promise(async resolve => {
             const { filename, mimetype } = meta;
             const fileExtension = mimeType.extension(mimetype);
-            const downloadPath = `filename-${uuidV4()}.${fileExtension}`;
+            const downloadPath = `${filename}-${uuidV4()}.${fileExtension}`;
             const file = await db.Files.create({
                 name: filename,
                 downloadPath,
@@ -70,6 +70,7 @@ class FilesDAL {
                 userId
             }
         });
+        // todo: remove from file system
     }
 }
 

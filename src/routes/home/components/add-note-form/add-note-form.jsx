@@ -8,6 +8,7 @@ import { Form, Field } from 'react-final-form';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
+import _ from 'lodash';
 import { filesApi } from '../../../../common/api'; // todo: use redux actions
 import Button from '../../../../common/components/button';
 import MultilineInput from '../../../../common/components/multiline-input';
@@ -115,6 +116,17 @@ export default class AddNoteForm extends Component<Props, State> {
         this.setState(({ filesList }) => ({
             filesList: filesList.filter(file => file !== fileToRemove)
         }));
+
+        const uploadedFile = _.find(
+            this.state.uploadedFiles,
+            file => file.filename === fileToRemove.name
+        );
+
+        if (!uploadedFile) {
+            return;
+        }
+
+        filesApi.remove(uploadedFile.id);
     };
 
     uploadFile = async (file: File) => {
