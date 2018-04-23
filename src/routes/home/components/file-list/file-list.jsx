@@ -31,22 +31,6 @@ export default class FilesList extends Component {
 }
 
 FilesList.Item = class extends Component {
-    downloadFile = async () => {
-        // const { file } = this.props;
-        // if (!file.storagePath) {
-        //     return;
-        // }
-        // const downloadUrl = await firebaseProvider.storage
-        //     .ref()
-        //     .child(file.storagePath)
-        //     .getDownloadURL();
-        // this.openUrlInNewTab(downloadUrl);
-    };
-
-    openUrlInNewTab(url) {
-        window.open(url, '_blank').focus();
-    }
-
     splitFileName({ fileName, splitPosition }) {
         return [
             fileName.slice(0, splitPosition),
@@ -66,27 +50,34 @@ FilesList.Item = class extends Component {
             fileName,
             splitPosition: fileName.length - ENDING_LENGTH
         });
-        const hasDownloadLink = !!this.props.file.storagePath;
+        const { file } = this.props;
+        const hasDownloadLink = !!file.downloadPath;
 
         return (
-            <div
+            <a
                 className={classNames('files-list__item-name', {
-                    cp: hasDownloadLink
+                    '--done': hasDownloadLink
                 })}
-                onClick={this.downloadFile}>
+                title={fileName}
+                href={file.downloadPath}
+                target="_blank">
                 <span className="files-list__item-name-start">
                     {fileNameStart}
                 </span>
                 <span className="files-list__item-name-end">{fileNameEnd}</span>
-            </div>
+            </a>
         );
     }
 
     render() {
         const { onRemove, file } = this.props;
+        const hasDownloadLink = !!file.downloadPath;
 
         return (
-            <li className={'files-list__item'}>
+            <li
+                className={classNames('files-list__item', {
+                    '--done': hasDownloadLink
+                })}>
                 {this.renderFileName(file.name)}
                 &nbsp;
                 {onRemove && (

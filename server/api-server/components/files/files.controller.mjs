@@ -52,7 +52,9 @@ class FilesController {
 
         ctx.set({
             'Content-Type': 'application/force-download',
-            'Content-disposition': `attachment; filename=${filename}`
+            'Content-disposition': `attachment; filename=${encodeURIComponent(
+                filename
+            )}`
         });
         ctx.body = downloadStream;
     }

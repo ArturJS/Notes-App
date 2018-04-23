@@ -24,7 +24,7 @@ export const filesApi = {
         return {
             id: fileData.id,
             downloadPath: fileData.downloadPath,
-            filename: fileData.filename
+            name: fileData.filename
         };
     },
 

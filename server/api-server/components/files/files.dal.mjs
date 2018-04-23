@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { promisify } from 'util';
 import uuidV4 from 'uuid/v4';
 import mimeType from 'mime-types';
 import db from '../../common/models';
+
+const fsUnlinkAsync = promisify(fs.unlink);
 
 class FilesDAL {
     async getAll(userId) {
@@ -64,13 +67,16 @@ class FilesDAL {
     }
 
     async remove(userId, fileId) {
-        await db.Files.destroy({
+        const ormQuery = {
             where: {
                 id: fileId,
                 userId
             }
-        });
-        // todo: remove from file system
+        };
+        const fileToRemove = await db.Files.findOne(ormQuery);
+
+        await fsUnlinkAsync(path.resolve(__dirname, fileToRemove.downloadPath));
+        await db.Files.destroy(ormQuery);
     }
 }
 

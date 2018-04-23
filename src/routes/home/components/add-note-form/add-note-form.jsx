@@ -19,7 +19,7 @@ import './add-note-form.scss';
 type TFile = {|
     id: number,
     downloadPath: string,
-    filename: string
+    name: string
 |};
 
 type Note = {
@@ -78,9 +78,9 @@ export default class AddNoteForm extends Component<Props, State> {
             title,
             description,
             files: this.state.uploadedFiles.map(
-                ({ downloadPath, filename, id }) => ({
+                ({ downloadPath, name, id }) => ({
                     downloadPath,
-                    filename,
+                    name,
                     id
                 })
             )
@@ -113,14 +113,17 @@ export default class AddNoteForm extends Component<Props, State> {
     };
 
     removeFile = (fileToRemove: File): void => {
-        this.setState(({ filesList }) => ({
-            filesList: filesList.filter(file => file !== fileToRemove)
-        }));
-
+        // todo split method
         const uploadedFile = _.find(
             this.state.uploadedFiles,
-            file => file.filename === fileToRemove.name
+            file => file.name === fileToRemove.name
         );
+
+        this.setState(({ filesList, uploadedFiles }) => ({
+            // todo cancel requests for not uploaded files
+            filesList: filesList.filter(file => file !== fileToRemove),
+            uploadedFiles: uploadedFiles.filter(file => file !== fileToRemove)
+        }));
 
         if (!uploadedFile) {
             return;
@@ -130,12 +133,12 @@ export default class AddNoteForm extends Component<Props, State> {
     };
 
     uploadFile = async (file: File) => {
-        const { id, downloadPath, filename } = await filesApi.create(file);
+        const { id, downloadPath, name } = await filesApi.create(file);
 
         return {
             id,
             downloadPath,
-            filename
+            name
         };
     };
 
@@ -152,13 +155,16 @@ export default class AddNoteForm extends Component<Props, State> {
             filesList: [...prevState.filesList, ...files]
         }));
 
+        const uploadedFiles = await Promise.all(fileUploadPromises);
+
         this.setState({
-            uploadedFiles: await Promise.all(fileUploadPromises)
+            uploadedFiles: [...this.state.uploadedFiles, ...uploadedFiles],
+            filesList: []
         });
     };
 
     render() {
-        const { filesList } = this.state;
+        const { filesList, uploadedFiles } = this.state;
 
         return (
             <Form
@@ -187,6 +193,10 @@ export default class AddNoteForm extends Component<Props, State> {
                                 placeholder="Note description..."
                             />
                         </div>
+                        <FilesList
+                            files={uploadedFiles}
+                            onRemove={this.removeFile}
+                        />
                         <FilesList
                             files={filesList}
                             onRemove={this.removeFile}
