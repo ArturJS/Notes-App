@@ -19,7 +19,7 @@ type TDownloadFile = {|
 class FilesService {
     // todo add validation
     async getAll(userId: number): Promise<string[]> {
-        const filePaths: string[] = await filesDAL.getAll(userId);
+        const filePaths = await filesDAL.getAll(userId);
 
         return filePaths;
     }

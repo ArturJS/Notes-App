@@ -1,5 +1,7 @@
+// @flow
 import fs from 'fs';
 import path from 'path';
+import { Readable } from 'stream';
 import { promisify } from 'util';
 import uuidV4 from 'uuid/v4';
 import mimeType from 'mime-types';
@@ -7,8 +9,14 @@ import db from '../../common/models';
 
 const fsUnlinkAsync = promisify(fs.unlink);
 
+type TGetFile = null | {|
+    id: number,
+    downloadStream: Readable,
+    filename: string
+|};
+
 class FilesDAL {
-    async getAll(userId) {
+    async getAll(userId: number): Promise<string[]> {
         const files = await db.Files.findAll({
             where: { userId }
         });
@@ -16,7 +24,7 @@ class FilesDAL {
         return files.map(({ id }) => `/api/files/${id}`);
     }
 
-    async getById(userId, fileId) {
+    async getById(userId: number, fileId: number): Promise<TGetFile> {
         const file = await db.Files.findOne({
             where: { id: fileId, userId }
         });
@@ -31,6 +39,7 @@ class FilesDAL {
             );
 
             return {
+                id: fileId,
                 filename: file.name,
                 downloadStream
             };
@@ -41,17 +50,27 @@ class FilesDAL {
         }
     }
 
-    async create(userId, { uploadStream, meta }) {
-        return new Promise(async resolve => {
-            const { filename, mimetype } = meta;
-            const fileExtension = mimeType.extension(mimetype);
-            const downloadPath = `${filename}-${uuidV4()}.${fileExtension}`;
-            const file = await db.Files.create({
-                name: filename,
-                downloadPath,
-                userId
-            });
+    async create(userId: number, params): Promise<TGetFile> {
+        const {
+            uploadStream,
+            meta
+        }: {
+            uploadStream: Readable,
+            meta: {
+                mimetype: string,
+                filename: string
+            }
+        } = params;
+        const { filename, mimetype } = meta;
+        const fileExtension = mimeType.extension(mimetype);
+        const downloadPath = `${filename}-${uuidV4()}.${fileExtension}`;
+        const file = await db.Files.create({
+            name: filename,
+            downloadPath,
+            userId
+        });
 
+        return new Promise(resolve => {
             uploadStream
                 .pipe(
                     fs.createWriteStream(path.resolve(__dirname, downloadPath))
@@ -66,7 +85,7 @@ class FilesDAL {
         });
     }
 
-    async remove(userId, fileId) {
+    async remove(userId: number, fileId: number): Promise<void> {
         const ormQuery = {
             where: {
                 id: fileId,
