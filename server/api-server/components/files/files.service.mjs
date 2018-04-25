@@ -25,14 +25,13 @@ class FilesService {
     }
 
     async getById(userId: number, fileId: number): Promise<TDownloadFile> {
-        const { filename, downloadStream } = await filesDAL.getById(
-            userId,
-            fileId
-        );
+        const fileData = await filesDAL.getById(userId, fileId);
 
-        if (!downloadStream) {
+        if (!fileData || !fileData.downloadStream) {
             throw new ErrorNotFound(`File by id="${fileId}" not found!`);
         }
+
+        const { filename, downloadStream } = fileData;
 
         return {
             filename,

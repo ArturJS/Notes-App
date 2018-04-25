@@ -1,19 +1,23 @@
 // @flow
-import fs from 'fs';
-import path from 'path';
 import { Readable } from 'stream';
-import { promisify } from 'util';
 import uuidV4 from 'uuid/v4';
 import mimeType from 'mime-types';
+import axios from 'axios';
 import db from '../../common/models';
-
-const fsUnlinkAsync = promisify(fs.unlink);
 
 type TGetFile = null | {|
     id: number,
     downloadStream: Readable,
     filename: string
 |};
+
+type TCreateFile = null | {|
+    id: number,
+    downloadPath: string,
+    filename: string
+|};
+
+const { DROPBOX_TOKEN } = process.env;
 
 class FilesDAL {
     async getAll(userId: number): Promise<string[]> {
@@ -34,9 +38,20 @@ class FilesDAL {
         }
 
         try {
-            const downloadStream = fs.createReadStream(
-                path.resolve(__dirname, file.downloadPath)
-            );
+            const { data: downloadStream } = await axios({
+                method: 'POST',
+                url: 'https://content.dropboxapi.com/2/files/download',
+                headers: {
+                    Authorization: `Bearer ${DROPBOX_TOKEN}`,
+                    'Content-Type': 'text/plain',
+                    'Dropbox-API-Arg': JSON.stringify({
+                        path: `/users-files/${encodeURIComponent(
+                            file.downloadPath
+                        )}`
+                    })
+                },
+                responseType: 'stream'
+            });
 
             return {
                 id: fileId,
@@ -44,13 +59,14 @@ class FilesDAL {
                 downloadStream
             };
         } catch (err) {
+            // eslint-disable-next-line no-console
             console.log(err); // todo: use logger
 
             return null;
         }
     }
 
-    async create(userId: number, params): Promise<TGetFile> {
+    async create(userId: number, params): Promise<TCreateFile> {
         const {
             uploadStream,
             meta
@@ -70,19 +86,27 @@ class FilesDAL {
             userId
         });
 
-        return new Promise(resolve => {
-            uploadStream
-                .pipe(
-                    fs.createWriteStream(path.resolve(__dirname, downloadPath))
-                )
-                .on('finish', () => {
-                    resolve({
-                        id: file.id,
-                        downloadPath: `/api/files/${file.id}`,
-                        filename
-                    });
-                });
+        await axios({
+            method: 'POST',
+            url: 'https://content.dropboxapi.com/2/files/upload',
+            headers: {
+                'Content-Type': 'application/octet-stream',
+                Authorization: `Bearer ${DROPBOX_TOKEN}`,
+                'Dropbox-API-Arg': JSON.stringify({
+                    path: `/users-files/${encodeURIComponent(downloadPath)}`,
+                    mode: 'overwrite',
+                    autorename: true,
+                    mute: false
+                })
+            },
+            data: uploadStream
         });
+
+        return {
+            id: file.id,
+            downloadPath: `/api/files/${file.id}`,
+            filename
+        };
     }
 
     async remove(userId: number, fileId: number): Promise<void> {
@@ -94,7 +118,25 @@ class FilesDAL {
         };
         const fileToRemove = await db.Files.findOne(ormQuery);
 
-        await fsUnlinkAsync(path.resolve(__dirname, fileToRemove.downloadPath));
+        try {
+            await axios({
+                method: 'POST',
+                url: 'https://api.dropboxapi.com/2/files/delete_v2',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${DROPBOX_TOKEN}`
+                },
+                data: {
+                    path: `/users-files/${encodeURIComponent(
+                        fileToRemove.downloadPath
+                    )}`
+                }
+            });
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.error(err);
+        }
+
         await db.Files.destroy(ormQuery);
     }
 }
