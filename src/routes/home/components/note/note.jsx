@@ -8,10 +8,10 @@ import classNames from 'classnames';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Button from '../../../../common/components/button';
+// import Button from '../../../../common/components/button';
 import MultilineInput from '../../../../common/components/multiline-input';
 import { notesActions } from '../../../../common/features/notes';
-// import FilesList from '../file-list';
+import FilesList from '../file-list';
 import './note.scss';
 
 const linkRegexp = /(http[^\s]+)/g;
@@ -188,7 +188,7 @@ export default class Note extends Component {
                             __html: this.wrapUrlLinks(note.description)
                         }}
                     />
-                    {/* <FilesList files={note.files} /> */}
+                    <FilesList files={note.files} />
                 </div>
             )
         );
@@ -238,6 +238,7 @@ export default class Note extends Component {
                             files={note.files}
                             onRemove={this.onRemoveFile}
                         /> */}
+                        {/*
                         <div className={'buttons-group'}>
                             <Button
                                 type="button"
@@ -251,6 +252,7 @@ export default class Note extends Component {
                                 Attach files
                             </Button>
                         </div>
+                        */}
                     </form>
                 )}
             />

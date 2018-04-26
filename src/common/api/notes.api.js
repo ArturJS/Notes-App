@@ -38,7 +38,8 @@ export const notesApi = {
             url: '/notes',
             data: {
                 title: note.title,
-                description: note.description
+                description: note.description,
+                files: note.files
             }
         });
 

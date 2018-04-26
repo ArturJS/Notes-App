@@ -11,7 +11,7 @@ import notesDAL from './notes.dal';
 type TFile = {|
     id: number,
     downloadPath: string,
-    filename: string
+    name: string
 |};
 
 type NoteEssential = {|
