@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
 import _ from 'lodash';
+import FieldError from './components/field-error';
 import { filesApi } from '../../../../common/api'; // todo: use redux actions
 import Button from '../../../../common/components/button';
 import MultilineInput from '../../../../common/components/multiline-input';
@@ -183,6 +184,7 @@ export default class AddNoteForm extends Component<Props, State> {
                                 autoComplete="off"
                                 placeholder="Note title..."
                             />
+                            <FieldError name="title" />
                         </div>
                         <div className="control-field">
                             <Field
@@ -192,6 +194,7 @@ export default class AddNoteForm extends Component<Props, State> {
                                 autoComplete="off"
                                 placeholder="Note description..."
                             />
+                            <FieldError name="description" />
                         </div>
                         <FilesList
                             files={uploadedFiles}
