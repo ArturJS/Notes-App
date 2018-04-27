@@ -15,9 +15,6 @@ class UsersDAL {
     }
 
     async getByEmail(email) {
-        // here is an error SequelizeDatabaseError: relation "Users" does not exist
-        // (happened after changing notes migrations)
-        // todo probably we should rename models from 'User' to 'Users'
         const user = await db.Users.findOne({ where: { email } });
 
         if (!user) {

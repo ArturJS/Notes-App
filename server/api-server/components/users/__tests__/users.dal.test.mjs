@@ -37,4 +37,78 @@ describe('UsersDAL', () => {
             expect(resultUsersList).toEqual(expectedUsersList);
         });
     });
+
+    describe('getByEmail()', () => {
+        it('should return null if there is no such user', async () => {
+            _.extend(db, {
+                Users: {
+                    findOne: jest.fn(async () => undefined)
+                }
+            });
+
+            const testEmail = 'wrong@email.com';
+            const resultUser = await usersDal.getByEmail(testEmail);
+
+            expect(db.Users.findOne).toBeCalledWith({
+                where: {
+                    email: testEmail
+                }
+            });
+            expect(resultUser).toBe(null);
+        });
+
+        it('should return exact user data', async () => {
+            const testEmail = 'john-doe@email.com';
+
+            _.extend(db, {
+                Users: {
+                    findOne: jest.fn(async () => ({
+                        id: 1,
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        email: testEmail,
+                        extraInfo: 'some extra info'
+                    }))
+                }
+            });
+
+            const resultUser = await usersDal.getByEmail(testEmail);
+
+            expect(db.Users.findOne).toBeCalledWith({
+                where: {
+                    email: testEmail
+                }
+            });
+            expect(resultUser).toEqual({
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                email: testEmail
+            });
+        });
+    });
+
+    describe('create()', () => {
+        it('should return exact user data', async () => {
+            const testUser = {
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john-doe@email.com'
+            };
+
+            _.extend(db, {
+                Users: {
+                    create: jest.fn(async () => testUser)
+                }
+            });
+
+            const resultUser = await usersDal.create({
+                ...testUser,
+                extraInfo: 'some extra info'
+            });
+
+            expect(db.Users.create).toBeCalledWith(testUser);
+            expect(resultUser).toEqual(testUser);
+        });
+    });
 });
