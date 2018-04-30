@@ -5,7 +5,7 @@ export default class MyDocument extends Document {
     render() {
         // const { dir } = this.props;
 
-        console.log(this.props);
+        // console.log(this.props);
 
         return (
             <html lang="en">

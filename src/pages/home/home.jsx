@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { pure } from 'recompose';
+import { pure, setStatic } from 'recompose';
 import { notesApi } from '../../common/api';
 import { notesActions, notesSelectors } from '../../common/features/notes';
 import withReduxStore from '../../common/hocs/with-redux-store';
@@ -21,6 +21,29 @@ const mapDispatchToProps = dispatch => ({
     notesActions: bindActionCreators(notesActions, dispatch)
 });
 
+@setStatic('getInitialProps', async ({ isServer, req, session }) => {
+    if (!isServer && typeof window !== 'undefined') {
+        return _.get(window, '__NEXT_DATA__.props.initialProps.notes');
+    }
+
+    try {
+        setTimeout(() => {
+            console.log('req.headers.cookie', req.headers.cookie);
+        }, 500);
+
+        const notes = await notesApi.getAll({
+            headers: {
+                Cookie: req.headers.cookie
+            }
+        });
+
+        return {
+            notes
+        };
+    } catch (err) {
+        return [];
+    }
+})
 @withReduxStore
 @withRootLayout
 @connect(mapStateToProps, mapDispatchToProps)

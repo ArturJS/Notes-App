@@ -5,47 +5,38 @@ import './button.scss';
 
 export default class Button extends Component {
     static propTypes = {
-        theme: PropTypes.oneOf(['primary', 'hot'])
+        theme: PropTypes.oneOf(['primary', 'hot']),
+        type: PropTypes.string,
+        className: PropTypes.string
     };
 
     static defaultProps = {
         children: null,
-        theme: 'primary'
+        theme: 'primary',
+        type: 'button',
+        className: ''
     };
 
     getThemeClass() {
         const { theme } = this.props;
+
         return `btn-${theme}`;
     }
 
     render() {
-        // todo fix
-        return (
-            <button
-                type="button"
-                className={classNames('btn btn-gradient-basis', 'btn-primary')}>
-                <span className={'btn-content'}>{this.props.children}</span>
-            </button>
-        );
-
-        /* const {
-            children,
-            className: otherClassNames,
-            ...restProps = {}
-        } = this.props;
+        const { children, className, type } = this.props;
         const themeClass = this.getThemeClass();
 
         return (
             <button
-                type="button"
+                type={type}
                 className={classNames(
                     'btn btn-gradient-basis',
                     themeClass,
-                    ...otherClassNames
-                )}
-                {...restProps}>
+                    className
+                )}>
                 <span className={'btn-content'}>{children}</span>
             </button>
-        ); */
+        );
     }
 }
