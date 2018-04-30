@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
@@ -6,9 +6,11 @@ import { connect } from 'react-redux';
 import { pure } from 'recompose';
 import { notesApi } from '../../common/api';
 import { notesActions, notesSelectors } from '../../common/features/notes';
-import { prefetchInitialState } from '../../common/features/ssr-fetcher';
+// import { prefetchInitialState } from '../../common/features/ssr-fetcher';
+import withReduxStore from '../../common/hocs/with-redux-store';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
+import '../../common/style/index.scss';
 import './home.scss';
 
 const mapStateToProps = state => ({
@@ -19,10 +21,11 @@ const mapDispatchToProps = dispatch => ({
     notesActions: bindActionCreators(notesActions, dispatch)
 });
 
-@prefetchInitialState({
-    key: 'notes',
-    fetcher: options => notesApi.getAll(options)
-})
+@withReduxStore
+// @prefetchInitialState({
+//     key: 'notes',
+//     fetcher: options => notesApi.getAll(options)
+// })
 @connect(mapStateToProps, mapDispatchToProps)
 @pure
 export default class Home extends Component {

@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import { findDOMNode } from 'preact-compat';
 import PropTypes from 'prop-types';
 import DragLayer from 'react-dnd/lib/DragLayer';

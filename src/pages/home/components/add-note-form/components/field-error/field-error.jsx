@@ -1,6 +1,5 @@
 // @flow
-// @jsx h
-import { h } from 'preact';
+import React, { Component } from 'react';
 import { Field } from 'react-final-form';
 import './field-error.scss';
 

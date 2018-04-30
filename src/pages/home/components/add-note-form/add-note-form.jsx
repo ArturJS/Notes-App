@@ -1,8 +1,7 @@
 // @flow
-// @jsx h
-import type { FormApi } from 'final-form/dist/types.js.flow';
+// import type { FormApi } from 'final-form/dist/types.js.flow';
 
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 import { bindActionCreators } from 'redux';
@@ -62,7 +61,7 @@ export default class AddNoteForm extends Component<Props, State> {
         notesActions: PropTypes.object.isRequired
     };
 
-    state: State = {
+    state = {
         uploadedFiles: [],
         filesList: [],
         fileUploadPromises: []
@@ -88,7 +87,7 @@ export default class AddNoteForm extends Component<Props, State> {
         });
     };
 
-    onSubmit = async (values: Note, formApi: FormApi) => {
+    onSubmit = async (values: Note, formApi) => {
         // if (!firebaseProvider.isLoggedIn()) {
         //     // todo @connect with authState
         //     return;

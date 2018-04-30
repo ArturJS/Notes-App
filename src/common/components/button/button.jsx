@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './button.scss';
@@ -19,10 +19,19 @@ export default class Button extends Component {
     }
 
     render() {
-        const {
+        // todo fix
+        return (
+            <button
+                type="button"
+                className={classNames('btn btn-gradient-basis', 'btn-primary')}>
+                <span className={'btn-content'}>{this.props.children}</span>
+            </button>
+        );
+
+        /* const {
             children,
             className: otherClassNames,
-            ...restProps
+            ...restProps = {}
         } = this.props;
         const themeClass = this.getThemeClass();
 
@@ -37,6 +46,6 @@ export default class Button extends Component {
                 {...restProps}>
                 <span className={'btn-content'}>{children}</span>
             </button>
-        );
+        ); */
     }
 }

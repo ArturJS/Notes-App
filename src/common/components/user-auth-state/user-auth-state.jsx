@@ -1,10 +1,11 @@
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
 import Button from '../button';
 import { authActions, authSelectors } from '../../features/auth';
+import withReduxStore from '../../hocs/with-redux-store';
 import './user-auth-state.scss';
 
 const mapStateToProps = state => {
@@ -19,6 +20,7 @@ const mapDispatchToProps = dispatch => ({
     authActions: bindActionCreators(authActions, dispatch)
 });
 
+@withReduxStore
 @connect(mapStateToProps, mapDispatchToProps)
 @pure
 export default class UserAuthState extends Component {

@@ -1,12 +1,10 @@
-:global {
-  .field-error {
+.field-error {
     background-color: rgba(255, 17, 0, 0.75);
     border-radius: 3px;
-    box-shadow: -1px 1px 5px rgba(0,0,0,0.5);
+    box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.5);
     color: #ffffff;
     display: inline-block;
     font-size: 16px;
     font-weight: bold;
     padding: 5px 10px;
-  }
 }

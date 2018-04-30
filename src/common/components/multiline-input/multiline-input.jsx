@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './multiline-input.scss';
@@ -8,7 +8,7 @@ export default class MultilineInput extends Component {
         input: PropTypes.shape({
             onChange: PropTypes.func.isRequired,
             value: PropTypes.string.isRequired,
-            className: PropTypes.string.isRequired
+            className: PropTypes.string
         }).isRequired
     };
 

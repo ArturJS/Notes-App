@@ -1,36 +1,36 @@
-@import "icons";
+@import 'icons';
 
 html,
 body {
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  background: #fafafa;
-  font-family: sans-serif, arial;
-  font-weight: 400;
-  color: #444;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: #fafafa;
+    font-family: sans-serif, arial;
+    font-weight: 400;
+    color: #444;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 *,
 *:before,
 *:after {
-  box-sizing: border-box;
-  font-family: inherit;
+    box-sizing: border-box;
+    font-family: inherit;
 }
 
 #app {
-  height: 100%;
+    height: 100%;
 }
 
 .list-unstyled {
-  padding-left: 0;
-  list-style: none;
-  margin: 0;
+    padding-left: 0;
+    list-style: none;
+    margin: 0;
 }
 
 .cp {
-  cursor: pointer;
+    cursor: pointer;
 }

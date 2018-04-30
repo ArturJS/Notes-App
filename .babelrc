@@ -1,0 +1,38 @@
+{
+    "presets": [
+        "next/babel",
+        "flow",
+        [
+            "env",
+            {
+                "targets": {
+                    "node": "8.9.1"
+                },
+                "useBuiltIns": "usage"
+            }
+        ]
+    ],
+    "plugins": [
+        "transform-decorators-legacy",
+        "transform-class-properties",
+        "babel-plugin-transform-object-rest-spread",
+        "syntax-flow",
+        "transform-flow-strip-types"
+    ],
+    "env": {
+        "production": {
+            "plugins": ["transform-flow-strip-types"]
+        },
+        "development": {
+            "plugins": [
+                [
+                    "flow-runtime",
+                    {
+                        "assert": true,
+                        "annotate": true
+                    }
+                ]
+            ]
+        }
+    }
+}
