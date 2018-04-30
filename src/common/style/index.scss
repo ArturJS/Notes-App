@@ -1,9 +1,16 @@
 @import 'icons';
 
 html,
-body {
+body,
+body > div:first-child,
+#__next,
+#app {
     height: 100%;
     width: 100%;
+}
+
+html,
+body {
     padding: 0;
     margin: 0;
     background: #fafafa;
@@ -19,10 +26,6 @@ body {
 *:after {
     box-sizing: border-box;
     font-family: inherit;
-}
-
-#app {
-    height: 100%;
 }
 
 .list-unstyled {

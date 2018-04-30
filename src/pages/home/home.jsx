@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import { pure } from 'recompose';
 import { notesApi } from '../../common/api';
 import { notesActions, notesSelectors } from '../../common/features/notes';
-// import { prefetchInitialState } from '../../common/features/ssr-fetcher';
 import withReduxStore from '../../common/hocs/with-redux-store';
+import withRootLayout from '../../common/hocs/with-root-layout';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
 import '../../common/style/index.scss';
@@ -22,10 +22,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 @withReduxStore
-// @prefetchInitialState({
-//     key: 'notes',
-//     fetcher: options => notesApi.getAll(options)
-// })
+@withRootLayout
 @connect(mapStateToProps, mapDispatchToProps)
 @pure
 export default class Home extends Component {

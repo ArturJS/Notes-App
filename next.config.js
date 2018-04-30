@@ -56,7 +56,8 @@ const withStyles = (config, { dev, isServer }) => {
         );
         config.plugins.push(
             new ExtractTextPlugin({
-                filename: '[name]-[chunkhash].css',
+                // filename: '[name]-[chunkhash].css',
+                filename: 'static/style.css',
                 allChunks: true
             })
         );
