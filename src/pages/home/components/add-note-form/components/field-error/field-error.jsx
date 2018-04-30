@@ -1,5 +1,6 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import './field-error.scss';
 
@@ -12,5 +13,9 @@ const FieldError = ({ name }) => (
         }
     />
 );
+
+FieldError.propTypes = {
+    name: PropTypes.string.isRequired
+};
 
 export default FieldError;

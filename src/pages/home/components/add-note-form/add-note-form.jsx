@@ -163,8 +163,9 @@ export default class AddNoteForm extends Component<Props, State> {
                 render={({ handleSubmit, pristine }) => (
                     <form
                         onSubmit={handleSubmit}
-                        className={'add-note-form'}
-                        noValidate>
+                        className="add-note-form"
+                        noValidate
+                    >
                         <div className="control-field">
                             <Field
                                 name="title"
@@ -193,18 +194,20 @@ export default class AddNoteForm extends Component<Props, State> {
                             files={filesList}
                             onRemove={this.removeFile}
                         />
-                        <div className={'buttons-group'}>
+                        <div className="buttons-group">
                             <Button
                                 type="submit"
                                 theme="primary"
-                                disabled={pristine}>
+                                disabled={pristine}
+                            >
                                 Submit
                             </Button>
 
                             <Button
                                 type="button"
-                                className={'btn-file'}
-                                theme="hot">
+                                className="btn-file"
+                                theme="hot"
+                            >
                                 <input
                                     type="file"
                                     multiple

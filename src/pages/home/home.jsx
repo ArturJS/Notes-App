@@ -9,8 +9,8 @@ import {
     notesActionsPropType,
     notesListPropType
 } from '../../common/prop-types/notes.prop-types';
-import withReduxStore from '../../common/hocs/with-redux-store';
-import withRootLayout from '../../common/hocs/with-root-layout';
+import withReduxStore from '../../common/hocs/with-redux-store.jsx';
+import withRootLayout from '../../common/hocs/with-root-layout.jsx';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
 import '../../common/style/index.scss';
@@ -70,21 +70,6 @@ export default class Home extends Component {
         notesActions: notesActionsPropType.isRequired
     };
 
-    changeNoteOrder = ({ oldIndex, newIndex, commitChanges }) => {
-        if (_.isUndefined(oldIndex) || _.isUndefined(newIndex)) {
-            return;
-        }
-
-        const movingNote = this.props.notes[oldIndex];
-
-        this.props.notesActions.changeNoteOrderRequest({
-            id: movingNote.id,
-            oldIndex,
-            newIndex,
-            commitChanges
-        });
-    };
-
     onMoveNote = (oldIndex, newIndex) => {
         this.changeNoteOrder({
             oldIndex,
@@ -97,6 +82,21 @@ export default class Home extends Component {
             oldIndex,
             newIndex,
             commitChanges: true
+        });
+    };
+
+    changeNoteOrder = ({ oldIndex, newIndex, commitChanges }) => {
+        if (_.isUndefined(oldIndex) || _.isUndefined(newIndex)) {
+            return;
+        }
+
+        const movingNote = this.props.notes[oldIndex];
+
+        this.props.notesActions.changeNoteOrderRequest({
+            id: movingNote.id,
+            oldIndex,
+            newIndex,
+            commitChanges
         });
     };
 

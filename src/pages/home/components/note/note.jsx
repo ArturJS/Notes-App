@@ -109,7 +109,11 @@ export default class Note extends Component {
         onMoveNote: PropTypes.func.isRequired,
         // eslint-disable-next-line react/no-unused-prop-types
         onDropNote: PropTypes.func.isRequired,
-        notesActions: notesActionsPropType.isRequired
+        notesActions: notesActionsPropType.isRequired,
+        isDragging: PropTypes.bool.isRequired,
+        connectDropTarget: PropTypes.func.isRequired,
+        connectDragPreview: PropTypes.func.isRequired,
+        connectDragSource: PropTypes.func.isRequired
     };
 
     state = {
@@ -172,19 +176,26 @@ export default class Note extends Component {
                 <div className={classNames('note', { isDragging })}>
                     <div>
                         <i
-                            className={'icon icon-left icon-pencil'}
+                            className="icon icon-left icon-pencil"
                             onClick={this.onEdit}
+                            onKeyPress={this.onEdit}
+                            role="button"
+                            tabIndex="0"
                         />
                         <i
-                            className={'icon icon-right icon-bin'}
+                            className="icon icon-right icon-bin"
                             onClick={this.onRemove}
+                            onKeyPress={this.onRemove}
+                            role="button"
+                            tabIndex="0"
                         />
                     </div>
                     {connectDragSource(
-                        <div className={'note-title'}>{note.title}</div>
+                        <div className="note-title">{note.title}</div>
                     )}
                     <div
-                        className={'note-description'}
+                        className="note-description"
+                        // eslint-disable-next-line react/no-danger
                         dangerouslySetInnerHTML={{
                             __html: this.wrapUrlLinks(note.description)
                         }}
@@ -204,20 +215,24 @@ export default class Note extends Component {
                 validate={this.validate}
                 initialValues={note}
                 render={({ handleSubmit, invalid }) => (
-                    <form className={'note'} onSubmit={handleSubmit} noValidate>
+                    <form className="note" onSubmit={handleSubmit} noValidate>
                         <div>
                             <button
                                 type="submit"
-                                className={' icon-submit'}
-                                disabled={invalid}>
-                                <i className={'icon icon-checkmark'} />
+                                className="icon-submit"
+                                disabled={invalid}
+                            >
+                                <i className="icon icon-checkmark" />
                             </button>
                             <i
-                                className={'icon icon-right icon-cross'}
+                                className="icon icon-right icon-cross"
                                 onClick={this.onCancel}
+                                onKeyPress={this.onCancel}
+                                role="button"
+                                tabIndex="0"
                             />
                         </div>
-                        <div className={'note-title'}>
+                        <div className="note-title">
                             <Field
                                 name="title"
                                 component="input"
@@ -226,11 +241,11 @@ export default class Note extends Component {
                                 placeholder="Note title..."
                             />
                         </div>
-                        <div className={'note-description is-editing'}>
+                        <div className="note-description is-editing">
                             <Field
                                 name="description"
                                 component={MultilineInput}
-                                className={'note-description-control'}
+                                className="note-description-control"
                                 autoComplete="off"
                                 placeholder="Note description..."
                             />

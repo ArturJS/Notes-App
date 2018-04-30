@@ -9,7 +9,14 @@ export default class MultilineInput extends Component {
             onChange: PropTypes.func.isRequired,
             value: PropTypes.string.isRequired,
             className: PropTypes.string
-        }).isRequired
+        }).isRequired,
+        className: PropTypes.string,
+        placeholder: PropTypes.string
+    };
+
+    static defaultProps = {
+        className: '',
+        placeholder: ''
     };
 
     setTextareaRef = node => {

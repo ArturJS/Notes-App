@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 export default class ExposeFetchers extends Component {
     static propTypes = {
-        onRegisterFetcher: PropTypes.func.isRequired
+        onRegisterFetcher: PropTypes.func.isRequired,
+        children: PropTypes.arrayOf(PropTypes.node.isRequired).isRequired
     };
 
     static childContextTypes = {

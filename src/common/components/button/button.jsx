@@ -7,7 +7,8 @@ export default class Button extends Component {
     static propTypes = {
         theme: PropTypes.oneOf(['primary', 'hot']),
         type: PropTypes.string,
-        className: PropTypes.string
+        className: PropTypes.string,
+        children: PropTypes.arrayOf(PropTypes.node.isRequired)
     };
 
     static defaultProps = {
@@ -34,8 +35,9 @@ export default class Button extends Component {
                     'btn btn-gradient-basis',
                     themeClass,
                     className
-                )}>
-                <span className={'btn-content'}>{children}</span>
+                )}
+            >
+                <span className="btn-content">{children}</span>
             </button>
         );
     }

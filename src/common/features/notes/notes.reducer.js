@@ -29,11 +29,13 @@ const notesReducer = handleActions(
                 );
 
                 if (noteIndex < 0) {
+                    /* eslint-disable no-console */
                     console.warn(`Couldn't find note to update!`);
                     console.warn('id', id);
                     console.warn('typeof id', typeof id);
                     console.warn('draftState', draftState);
                     console.warn();
+                    /* eslint-enable no-console */
 
                     return;
                 }

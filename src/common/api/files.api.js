@@ -17,6 +17,7 @@ export const filesApi = {
                 const progressInPercentage = 100 * loaded / total;
 
                 // todo pass "progressInPercentage" to progress bar
+                // eslint-disable-next-line no-console
                 console.log(progressInPercentage);
             }
         });

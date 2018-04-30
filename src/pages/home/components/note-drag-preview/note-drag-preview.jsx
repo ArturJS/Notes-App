@@ -54,6 +54,7 @@ export default class NoteDragPreview extends Component {
         currentOffset: null
     };
 
+    // eslint-disable-next-line react/no-find-dom-node
     getParentElement = () => findDOMNode(this).parentNode;
 
     wrapUrlLinks = text =>
@@ -81,15 +82,22 @@ export default class NoteDragPreview extends Component {
                     <i
                         className="icon icon-left icon-pencil"
                         onClick={this.onEdit}
+                        onKeyPress={this.onEdit}
+                        role="button"
+                        tabIndex="0"
                     />
                     <i
                         className="icon icon-right icon-bin"
                         onClick={this.onRemove}
+                        onKeyPress={this.onRemove}
+                        role="button"
+                        tabIndex="0"
                     />
                 </div>
-                <div className={'note-title'}>{note.title}</div>
+                <div className="note-title">{note.title}</div>
                 <div
-                    className={'note-description'}
+                    className="note-description"
+                    // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{
                         __html: this.wrapUrlLinks(note.description)
                     }}

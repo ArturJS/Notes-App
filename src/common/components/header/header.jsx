@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Collapse } from 'react-collapse';
 import './header.scss';
 
 export default class Header extends Component {
+    static propTypes = {
+        children: PropTypes.arrayOf(PropTypes.node.isRequired)
+    };
+
+    static defaultProps = {
+        children: null
+    };
+
     state = {
         isExpanded: false
     };
@@ -27,31 +36,41 @@ export default class Header extends Component {
         const { isExpanded } = this.state;
 
         return (
-            <div className={'header'}>
-                <div className={'header-content-wrapper'}>
-                    <div className={'header-content'}>
+            <div className="header">
+                <div className="header-content-wrapper">
+                    <div className="header-content">
                         <i
-                            className={'header-icon icon-arrow-up'}
+                            className="header-icon icon-arrow-up"
                             onClick={this.scrollTop}
+                            onKeyPress={this.scrollTop}
+                            role="button"
+                            tabIndex="0"
                         />
                         <i
-                            className={'header-icon icon-arrow-down'}
+                            className="header-icon icon-arrow-down"
                             onClick={this.scrollBottom}
+                            onKeyPress={this.scrollBottom}
+                            role="button"
+                            tabIndex="0"
                         />
-                        <div className={'header-title'}>Notes app</div>
+                        <div className="header-title">Notes app</div>
                         <div
                             className={classNames(
                                 'hide-from-tablet',
                                 'header-hamburger',
                                 { active: isExpanded }
                             )}
-                            onClick={this.toggleMenu}>
-                            <div className={'header-hamburger-times'} />
-                            <div className={'header-hamburger-line'} />
+                            onClick={this.toggleMenu}
+                            onKeyPress={this.toggleMenu}
+                            role="button"
+                            tabIndex="0"
+                        >
+                            <div className="header-hamburger-times" />
+                            <div className="header-hamburger-line" />
                         </div>
                     </div>
-                    <Collapse className={'header-menu'} isOpened={isExpanded}>
-                        <div className={'header-menu-content'}>{children}</div>
+                    <Collapse className="header-menu" isOpened={isExpanded}>
+                        <div className="header-menu-content">{children}</div>
                     </Collapse>
                 </div>
             </div>

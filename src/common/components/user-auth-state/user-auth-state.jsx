@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { pure } from 'recompose';
 import Button from '../button';
 import { authActions, authSelectors } from '../../features/auth';
-import withReduxStore from '../../hocs/with-redux-store';
+import withReduxStore from '../../hocs/with-redux-store.jsx';
+import { authActionsPropType } from '../../prop-types/auth.prop-types';
 import './user-auth-state.scss';
 
 const mapStateToProps = state => {
@@ -25,7 +26,8 @@ const mapDispatchToProps = dispatch => ({
 @pure
 export default class UserAuthState extends Component {
     static propTypes = {
-        isLoggedIn: PropTypes.bool
+        isLoggedIn: PropTypes.bool,
+        authActions: authActionsPropType.isRequired
     };
 
     static defaultProps = {
@@ -44,16 +46,16 @@ export default class UserAuthState extends Component {
         const { isLoggedIn } = this.props;
 
         return (
-            <div className={'user-auth-state'}>
+            <div className="user-auth-state">
                 {isLoggedIn ? (
                     <Button theme="primary" onClick={this.logout}>
                         Sign out &nbsp;
-                        <i className={'icon icon-exit'} />
+                        <i className="icon icon-exit" />
                     </Button>
                 ) : (
-                    <Button theme={'hot'} onClick={this.login}>
+                    <Button theme="hot" onClick={this.login}>
                         Sign in &nbsp;
-                        <i className={'icon icon-enter'} />
+                        <i className="icon icon-enter" />
                     </Button>
                 )}
             </div>
