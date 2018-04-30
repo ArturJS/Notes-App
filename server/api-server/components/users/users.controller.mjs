@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import usersService from './users.service';
 
 const mapUserInfo = user => ({
@@ -6,6 +7,8 @@ const mapUserInfo = user => ({
     lastName: user.lastName,
     email: user.email
 });
+
+const getUserEmail = ctx => _.get(ctx, 'session.passport.user.email');
 
 class UsersController {
     async getAll(ctx) {
@@ -16,6 +19,13 @@ class UsersController {
 
     async getByEmail(ctx) {
         const { email } = ctx.params;
+        const user = await usersService.getByEmail(email);
+
+        ctx.body = mapUserInfo(user);
+    }
+
+    async getUserData(ctx) {
+        const email = getUserEmail(ctx);
         const user = await usersService.getByEmail(email);
 
         ctx.body = mapUserInfo(user);

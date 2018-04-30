@@ -7,6 +7,7 @@ const router = new Router();
 router
     .get('/users', withAuth, usersController.getAll)
     .get('/users/:email', withAuth, usersController.getByEmail)
-    .post('/users', withAuth, usersController.create);
+    .post('/users', withAuth, usersController.create)
+    .get('/user', withAuth, usersController.getUserData);
 
 export default router;

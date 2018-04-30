@@ -1,14 +1,15 @@
+import _ from 'lodash';
 import configureStore from './configure-store';
 
 /* eslint-disable no-underscore-dangle */
 const getInitialState = () => {
-    if (typeof window === 'undefined' || !window.__INITIAL_APP_STATE__) {
+    if (typeof window === 'undefined') {
         return {};
     }
 
-    const initialAppState = window.__INITIAL_APP_STATE__;
+    const initialAppState = _.get(window, '__NEXT_DATA__.props');
 
-    delete window.__INITIAL_APP_STATE__;
+    delete window.__NEXT_DATA__.props;
 
     return initialAppState;
 };

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure, setStatic } from 'recompose';
-import { notesApi } from '../../common/api';
+import { notesApi, authApi } from '../../common/api';
 import { notesActions, notesSelectors } from '../../common/features/notes';
 import withReduxStore from '../../common/hocs/with-redux-store';
 import withRootLayout from '../../common/hocs/with-root-layout';
@@ -21,29 +21,42 @@ const mapDispatchToProps = dispatch => ({
     notesActions: bindActionCreators(notesActions, dispatch)
 });
 
-@setStatic('getInitialProps', async ({ isServer, req, session }) => {
+const getInitialProps = async ({ isServer, req, session }) => {
     if (!isServer && typeof window !== 'undefined') {
-        return _.get(window, '__NEXT_DATA__.props.initialProps.notes');
+        return _.get(window, '__NEXT_DATA__.props.notes');
     }
 
-    try {
-        setTimeout(() => {
-            console.log('req.headers.cookie', req.headers.cookie);
-        }, 500);
+    const apiParams = {
+        headers: {
+            Cookie: req.headers.cookie
+        }
+    };
 
-        const notes = await notesApi.getAll({
-            headers: {
-                Cookie: req.headers.cookie
-            }
-        });
+    try {
+        const [notes, user] = await Promise.all([
+            notesApi.getAll(apiParams),
+            authApi.getUserData(apiParams)
+        ]);
 
         return {
-            notes
+            notes,
+            auth: {
+                isLoggedIn: true,
+                isLoginPending: false,
+                isLoginSuccess: null,
+                isLogoutPending: false,
+                isLogoutSuccess: null,
+                authData: {
+                    email: user.email
+                }
+            }
         };
     } catch (err) {
         return [];
     }
-})
+};
+
+@setStatic('getInitialProps', getInitialProps)
 @withReduxStore
 @withRootLayout
 @connect(mapStateToProps, mapDispatchToProps)

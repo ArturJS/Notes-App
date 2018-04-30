@@ -11,5 +11,20 @@ export const authApi = {
             method: 'post',
             url: '/auth/logout'
         });
+    },
+
+    async getUserData(options) {
+        const { data: user } = await baseApi.ajax({
+            method: 'get',
+            url: '/user',
+            ...options
+        });
+
+        return {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email
+        };
     }
 };
