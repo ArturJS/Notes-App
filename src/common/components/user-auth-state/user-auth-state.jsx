@@ -25,8 +25,7 @@ const mapDispatchToProps = dispatch => ({
 @pure
 export default class UserAuthState extends Component {
     static propTypes = {
-        isLoggedIn: PropTypes.bool,
-        isAuthReady: PropTypes.bool.isRequired
+        isLoggedIn: PropTypes.bool
     };
 
     static defaultProps = {

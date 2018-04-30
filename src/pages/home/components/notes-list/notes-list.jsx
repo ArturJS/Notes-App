@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
 import DNDBackend from 'react-dnd-touch-backend';
+import { notesListPropType } from '../../../../common/prop-types/notes.prop-types';
 import Note from '../note';
 import NoteDragPreview from '../note-drag-preview';
 import './notes-list.scss';
@@ -14,16 +15,7 @@ import './notes-list.scss';
 )
 export default class NotesList extends Component {
     static propTypes = {
-        notes: PropTypes.arrayOf(
-            PropTypes.shape({
-                id: PropTypes.string.isRequired,
-                title: PropTypes.string.isRequired,
-                description: PropTypes.string.isRequired,
-                files: PropTypes.array,
-                prev: PropTypes.string,
-                next: PropTypes.string
-            }).isRequired
-        ).isRequired,
+        notes: notesListPropType.isRequired,
         onMoveNote: PropTypes.func.isRequired,
         onDropNote: PropTypes.func.isRequired
     };

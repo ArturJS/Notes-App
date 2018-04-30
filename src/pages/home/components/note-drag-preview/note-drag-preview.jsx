@@ -39,29 +39,28 @@ const getItemStyles = (parentElement, currentOffset) => {
 @DragLayer(collect)
 export default class NoteDragPreview extends Component {
     static propTypes = {
-        notes: PropTypes.arrayOf(
-            PropTypes.shape({
-                id: PropTypes.string.isRequired,
-                title: PropTypes.string.isRequired,
-                description: PropTypes.string.isRequired,
-                files: PropTypes.array,
-                prev: PropTypes.string,
-                next: PropTypes.string
-            }).isRequired
-        ).isRequired,
         draggingItem: PropTypes.shape({
-            id: PropTypes.string.isRequired,
+            id: PropTypes.number.isRequired,
             index: PropTypes.number.isRequired
+        }),
+        currentOffset: PropTypes.shape({
+            x: PropTypes.number.isRequired,
+            y: PropTypes.number.isRequired
         })
     };
+
+    static defaultProps = {
+        draggingItem: null,
+        currentOffset: null
+    };
+
+    getParentElement = () => findDOMNode(this).parentNode;
 
     wrapUrlLinks = text =>
         _.escape(text).replace(
             linkRegexp,
             '<a href="$1" class="note-link" target="_blank" rel="nofollow noopener">$1</a>'
         );
-
-    getParentElement = () => findDOMNode(this).parentNode;
 
     render() {
         const { draggingItem, currentOffset } = this.props;
@@ -76,14 +75,15 @@ export default class NoteDragPreview extends Component {
         return (
             <div
                 className="note note-drag-preview"
-                style={getItemStyles(parentElement, currentOffset)}>
+                style={getItemStyles(parentElement, currentOffset)}
+            >
                 <div>
                     <i
-                        className={'icon icon-left icon-pencil'}
+                        className="icon icon-left icon-pencil"
                         onClick={this.onEdit}
                     />
                     <i
-                        className={'icon icon-right icon-bin'}
+                        className="icon icon-right icon-bin"
                         onClick={this.onRemove}
                     />
                 </div>

@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure, setStatic } from 'recompose';
 import { notesApi, authApi } from '../../common/api';
 import { notesActions, notesSelectors } from '../../common/features/notes';
+import {
+    notesActionsPropType,
+    notesListPropType
+} from '../../common/prop-types/notes.prop-types';
 import withReduxStore from '../../common/hocs/with-redux-store';
 import withRootLayout from '../../common/hocs/with-root-layout';
 import AddNoteForm from './components/add-note-form';
@@ -21,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
     notesActions: bindActionCreators(notesActions, dispatch)
 });
 
-const getInitialProps = async ({ isServer, req, session }) => {
+const getInitialProps = async ({ isServer, req }) => {
     if (!isServer && typeof window !== 'undefined') {
         return _.get(window, '__NEXT_DATA__.props.notes');
     }
@@ -63,18 +66,8 @@ const getInitialProps = async ({ isServer, req, session }) => {
 @pure
 export default class Home extends Component {
     static propTypes = {
-        notes: PropTypes.arrayOf(
-            // todo: move into common propTypes
-            PropTypes.shape({
-                id: PropTypes.string.isRequired,
-                title: PropTypes.string.isRequired,
-                description: PropTypes.string.isRequired,
-                files: PropTypes.array,
-                prev: PropTypes.string,
-                next: PropTypes.string
-            }).isRequired
-        ).isRequired,
-        notesActions: PropTypes.object.isRequired
+        notes: notesListPropType.isRequired,
+        notesActions: notesActionsPropType.isRequired
     };
 
     changeNoteOrder = ({ oldIndex, newIndex, commitChanges }) => {

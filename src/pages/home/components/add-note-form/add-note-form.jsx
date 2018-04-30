@@ -2,7 +2,6 @@
 // import type { FormApi } from 'final-form/dist/types.js.flow';
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -11,6 +10,7 @@ import _ from 'lodash';
 import FieldError from './components/field-error';
 import { filesApi } from '../../../../common/api'; // todo: use redux actions
 import Button from '../../../../common/components/button';
+import { notesActionsPropType } from '../../../../common/prop-types/notes.prop-types';
 import MultilineInput from '../../../../common/components/multiline-input';
 import { notesActions } from '../../../../common/features/notes';
 import FilesList from '../file-list';
@@ -48,17 +48,7 @@ const mapDispatchToProps = dispatch => ({
 @pure
 export default class AddNoteForm extends Component<Props, State> {
     static propTypes = {
-        notes: PropTypes.arrayOf(
-            PropTypes.shape({
-                id: PropTypes.string.isRequired,
-                title: PropTypes.string.isRequired,
-                description: PropTypes.string.isRequired,
-                files: PropTypes.array,
-                prev: PropTypes.string,
-                next: PropTypes.string
-            }).isRequired
-        ).isRequired,
-        notesActions: PropTypes.object.isRequired
+        notesActions: notesActionsPropType.isRequired
     };
 
     state = {
@@ -67,8 +57,16 @@ export default class AddNoteForm extends Component<Props, State> {
         fileUploadPromises: []
     };
 
-    waitForFilesUploading = async () => {
-        await Promise.all(this.state.fileUploadPromises);
+    onSubmit = async (values: Note, formApi) => {
+        // if (!firebaseProvider.isLoggedIn()) {
+        //     // todo @connect with authState
+        //     return;
+        // }
+
+        await this.createNote(values);
+
+        formApi.reset();
+        this.setState({ uploadedFiles: [] });
     };
 
     createNote = async ({ title, description }: Note): Promise<void> => {
@@ -87,16 +85,8 @@ export default class AddNoteForm extends Component<Props, State> {
         });
     };
 
-    onSubmit = async (values: Note, formApi) => {
-        // if (!firebaseProvider.isLoggedIn()) {
-        //     // todo @connect with authState
-        //     return;
-        // }
-
-        await this.createNote(values);
-
-        formApi.reset();
-        this.setState({ uploadedFiles: [] });
+    waitForFilesUploading = async () => {
+        await Promise.all(this.state.fileUploadPromises);
     };
 
     validate = ({ title, description }: NoteValidate) => {

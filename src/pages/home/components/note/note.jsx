@@ -9,6 +9,11 @@ import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 // import Button from '../../../../common/components/button';
+
+import {
+    notesActionsPropType,
+    notePropType
+} from '../../../../common/prop-types/notes.prop-types';
 import MultilineInput from '../../../../common/components/multiline-input';
 import { notesActions } from '../../../../common/features/notes';
 import FilesList from '../file-list';
@@ -47,6 +52,7 @@ const noteTarget = {
         }
 
         // Determine rectangle on screen
+        // eslint-disable-next-line react/no-find-dom-node
         const hoverBoundingRect = findDOMNode(
             component
         ).getBoundingClientRect();
@@ -98,17 +104,12 @@ const mapDispatchToProps = dispatch => ({
 }))
 export default class Note extends Component {
     static propTypes = {
-        note: PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            title: PropTypes.string.isRequired,
-            description: PropTypes.string.isRequired,
-            files: PropTypes.array,
-            prev: PropTypes.string,
-            next: PropTypes.string
-        }).isRequired,
+        note: notePropType.isRequired,
+        // eslint-disable-next-line react/no-unused-prop-types
         onMoveNote: PropTypes.func.isRequired,
+        // eslint-disable-next-line react/no-unused-prop-types
         onDropNote: PropTypes.func.isRequired,
-        notesActions: PropTypes.object.isRequired
+        notesActions: notesActionsPropType.isRequired
     };
 
     state = {
