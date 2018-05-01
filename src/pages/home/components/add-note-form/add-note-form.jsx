@@ -102,7 +102,7 @@ export default class AddNoteForm extends Component<Props, State> {
         return errors;
     };
 
-    removeFile = (fileToRemove: File): void => {
+    removeFile = (fileToRemove: File | TFile): void => {
         // todo split method
         const uploadedFile = _.find(
             this.state.uploadedFiles,

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { toClass } from 'recompose';
 import FilesListItem from './components/files-list-item';
 import './file-list.scss';
 
@@ -30,4 +31,4 @@ FilesList.defaultProps = {
     onRemove: null
 };
 
-export default FilesList;
+export default toClass(FilesList);
