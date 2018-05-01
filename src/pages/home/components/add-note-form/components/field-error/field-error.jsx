@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
+import { toClass } from 'recompose';
 import './field-error.scss';
 
 const FieldError = ({ name }) => (
@@ -18,4 +19,4 @@ FieldError.propTypes = {
     name: PropTypes.string.isRequired
 };
 
-export default FieldError;
+export default toClass(FieldError);
