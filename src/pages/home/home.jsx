@@ -26,12 +26,16 @@ const mapDispatchToProps = dispatch => ({
 
 const getInitialProps = async ({ isServer, req }) => {
     if (!isServer && typeof window !== 'undefined') {
-        return _.get(window, '__NEXT_DATA__.props.notes');
+        const notes = _.get(window, '__NEXT_DATA__.props.notes', []);
+
+        return {
+            notes
+        };
     }
 
     const apiParams = {
         headers: {
-            Cookie: req.headers.cookie
+            Cookie: req.headers.cookie || ''
         }
     };
 
@@ -55,7 +59,9 @@ const getInitialProps = async ({ isServer, req }) => {
             }
         };
     } catch (err) {
-        return [];
+        return {
+            notes: []
+        };
     }
 };
 
@@ -105,9 +111,9 @@ export default class Home extends Component {
 
         return (
             <div className="home-page">
-                <AddNoteForm notes={notes} />
+                <AddNoteForm />
                 <NotesList
-                    notes={notes}
+                    notes={notes || []}
                     onMoveNote={this.onMoveNote}
                     onDropNote={this.onDropNote}
                 />
