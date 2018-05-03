@@ -88,7 +88,7 @@
         "postcss-loader": "2.1.4",
         "postcss-scss": "1.0.5",
         "preact-cli": "2.2.1",
-        "preact-render-to-string": "3.7.0",
+        "preact-render-to-json": "3.6.6",
         "prettier": "1.9.2",
         "prop-types": "15.6.0",
         "sass-loader": "6.0.6",

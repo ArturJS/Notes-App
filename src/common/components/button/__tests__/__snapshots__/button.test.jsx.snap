@@ -1,3 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Button /> renders correctly 1`] = `"<button type=\\"submit\\" class=\\"btn btn-gradient-basis btn-hot btn-test-class\\"><span class=\\"btn-content\\"><span>Inner content...</span></span></button>"`;
+exports[`<Button /> renders correctly 1`] = `
+<button
+  class="btn btn-gradient-basis btn-hot btn-test-class"
+  type="submit"
+>
+  <span
+    class="btn-content"
+  >
+    <span>
+      Inner content...
+    </span>
+  </span>
+</button>
+`;

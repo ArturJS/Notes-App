@@ -1,6 +1,5 @@
-/** @jsx h */
-import { h } from 'preact';
-import render from 'preact-render-to-string';
+import React from 'react';
+import render from 'preact-render-to-json';
 import Button from '../button.jsx';
 
 describe('<Button />', () => {
