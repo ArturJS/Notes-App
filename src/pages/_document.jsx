@@ -9,18 +9,18 @@ export default class BaseDocument extends Document {
     }
 
     render() {
-        // const { dir } = this.props;
-
-        // console.log(this.props);
+        const isProduction = process.env.NODE_ENV === 'production';
 
         return (
             <html lang="en">
                 <Head>
-                    <link
-                        rel="stylesheet"
-                        type="text/css"
-                        href="/_next/static/style.css"
-                    />
+                    {isProduction && (
+                        <link
+                            rel="stylesheet"
+                            type="text/css"
+                            href="/_next/static/style.css"
+                        />
+                    )}
                 </Head>
                 <body>
                     <Main />
