@@ -3,6 +3,7 @@
 exports[`<Button /> renders correctly 1`] = `
 <button
   class="btn btn-gradient-basis btn-hot btn-test-class"
+  onClick={[Function]}
   type="submit"
 >
   <span

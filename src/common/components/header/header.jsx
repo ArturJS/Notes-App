@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Collapse } from 'react-collapse';
+import { childrenPropType } from '../../prop-types/components.prop-types';
 import './header.scss';
 
 export default class Header extends Component {
     static propTypes = {
-        children: PropTypes.arrayOf(PropTypes.node.isRequired)
+        children: childrenPropType
     };
 
     static defaultProps = {

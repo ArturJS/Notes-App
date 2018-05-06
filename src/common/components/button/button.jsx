@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import _ from 'lodash';
+import { childrenPropType } from '../../prop-types/components.prop-types';
 import './button.scss';
 
 export default class Button extends Component {
@@ -8,14 +10,16 @@ export default class Button extends Component {
         theme: PropTypes.oneOf(['primary', 'hot']),
         type: PropTypes.string,
         className: PropTypes.string,
-        children: PropTypes.arrayOf(PropTypes.node.isRequired)
+        children: childrenPropType,
+        onClick: PropTypes.func
     };
 
     static defaultProps = {
         children: null,
         theme: 'primary',
         type: 'button',
-        className: ''
+        className: '',
+        onClick: _.noop
     };
 
     getThemeClass() {
@@ -25,7 +29,7 @@ export default class Button extends Component {
     }
 
     render() {
-        const { children, className, type } = this.props;
+        const { children, className, type, onClick } = this.props;
         const themeClass = this.getThemeClass();
 
         return (
@@ -36,6 +40,7 @@ export default class Button extends Component {
                     themeClass,
                     className
                 )}
+                onClick={onClick}
             >
                 <span className="btn-content">{children}</span>
             </button>
