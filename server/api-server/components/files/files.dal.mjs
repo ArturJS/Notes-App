@@ -3,6 +3,7 @@ import { Readable } from 'stream';
 import uuidV4 from 'uuid/v4';
 import mimeType from 'mime-types';
 import axios from 'axios';
+import config from '../../../common/config';
 import db from '../../common/models';
 
 type TGetFile = null | {|
@@ -17,7 +18,7 @@ type TCreateFile = null | {|
     filename: string
 |};
 
-const { DROPBOX_TOKEN } = process.env;
+const { DROPBOX_TOKEN } = config.dropbox;
 
 class FilesDAL {
     async getAll(userId: number): Promise<string[]> {

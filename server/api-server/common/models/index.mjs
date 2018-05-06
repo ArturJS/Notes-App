@@ -1,15 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
+import config from '../../../common/config';
 
 const basename = path.basename(module.filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require('../config/db-config')[env];
+const env = config.env.NODE_ENV;
+const dbConfig = require('../config/db-config')[env];
 
 const db = {};
 
 if (env !== 'test') {
-    const sequelize = new Sequelize(config);
+    const sequelize = new Sequelize(dbConfig);
     const notIndexMJS = filename =>
         filename.indexOf('.') !== 0 &&
         filename !== basename &&

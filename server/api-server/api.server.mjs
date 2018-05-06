@@ -1,13 +1,10 @@
 import Koa from 'koa';
 import cache from 'koa-redis-cache';
+import config from '../common/config';
 import routes from './routes';
 
 const app = new Koa();
-
-// docker run --name redis -p 6379:6379 -d redis:alpine
-// docker stop $(docker ps -a -q)
-
-const { REDIS_HOST, REDIS_PORT } = process.env; // todo: move all "process.env" to common server config
+const { REDIS_HOST, REDIS_PORT } = config.redis;
 
 app
     .use(

@@ -1,6 +1,7 @@
 import passport from 'koa-passport';
 import { OAuth2Strategy } from 'passport-google-oauth';
 import Router from 'koa-router';
+import config from './config';
 import { usersController } from '../api-server/components/users';
 
 const router = new Router();
@@ -39,12 +40,11 @@ export const configurePassport = app => {
         done(null, user);
     });
 
+    const { HOST, PORT } = config.server;
     const {
-        HOST,
-        PORT,
         GOOGLE_OAUTH20_CLIENT_ID,
         GOOGLE_OAUTH20_CLIENT_SECRET
-    } = process.env;
+    } = config.auth;
 
     passport.use(
         new OAuth2Strategy(
