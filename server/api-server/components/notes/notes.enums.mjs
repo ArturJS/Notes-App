@@ -5,4 +5,4 @@ export const REORDERING_TYPES = {
 };
 
 // eslint-disable-next-line no-undef
-export type REORDERING_TYPES_TYPE = $Values<REORDERING_TYPES>;
+export type REORDERING_TYPES_TYPE = $Values<typeof REORDERING_TYPES>;
