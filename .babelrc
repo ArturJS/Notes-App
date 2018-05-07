@@ -15,9 +15,16 @@
     "plugins": [
         "transform-decorators-legacy",
         "transform-class-properties",
-        "babel-plugin-transform-object-rest-spread",
+        "transform-object-rest-spread",
         "syntax-flow",
-        "transform-flow-strip-types"
+        "transform-flow-strip-types",
+        ["module-resolver", {
+            "root": ["./server"],
+            "alias": {
+                "@root": "./server/",
+                "@config": "./server/common/config/"
+            }
+        }]
     ],
     "env": {
         "production": {

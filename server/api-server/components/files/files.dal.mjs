@@ -3,7 +3,7 @@ import { Readable } from 'stream';
 import uuidV4 from 'uuid/v4';
 import mimeType from 'mime-types';
 import axios from 'axios';
-import config from '../../../common/config';
+import config from '@config';
 import db from '../../common/models';
 
 type TGetFile = null | {|

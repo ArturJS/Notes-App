@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import cache from 'koa-redis-cache';
-import config from '../common/config';
+import config from '@config';
 import routes from './routes';
 
 const app = new Koa();

@@ -3,11 +3,11 @@ import mount from 'koa-mount';
 import bodyParser from 'koa-bodyparser';
 import session from 'koa-session';
 import cors from '@koa/cors';
-import config from './common/config';
-import { errorMiddleware } from './common/middlewares';
-import { ssrServer } from './ssr-server';
-import { apiServer } from './api-server';
-import { configurePassport } from './common/configure-passport';
+import config from '@config';
+import { errorMiddleware } from '@root/common/middlewares';
+import { ssrServer } from '@root/ssr-server';
+import { apiServer } from '@root/api-server';
+import { configurePassport } from '@root/common/configure-passport';
 
 const app = new Koa();
 const { PORT } = config.server;

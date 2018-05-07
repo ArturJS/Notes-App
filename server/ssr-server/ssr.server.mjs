@@ -2,8 +2,7 @@ import path from 'path';
 import Koa from 'koa';
 import Router from 'koa-router';
 import next from 'next';
-import config from '../common/config';
-// import { initialStateUtils, ssrRendererUtils } from './utils';
+import config from '@config';
 
 const dev = config.env.NODE_ENV === 'development';
 const uiDirectory = path.resolve(__dirname, '../../src');

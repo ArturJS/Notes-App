@@ -6,7 +6,7 @@
         "plugin:jest/recommended",
         "plugin:flowtype/recommended"
     ],
-    "plugins": ["flowtype", "jest"],
+    "plugins": ["flowtype", "jest", "import"],
     "parser": "babel-eslint",
     "rules": {
         "react/jsx-no-bind": 0,
@@ -14,15 +14,8 @@
         "react/jsx-indent-props": 0,
         "import/no-extraneous-dependencies": 0,
         "import/prefer-default-export": 0,
-        "import/extensions": [
-            "error",
-            "always",
-            {
-                "js": "never",
-                "jsx": "never",
-                "mjs": "never"
-            }
-        ],
+        "import/extensions": 0,
+        "import/no-unresolved": 0,
         "linebreak-style": 0,
         "jsx-quotes": ["error", "prefer-double"],
         "class-methods-use-this": 0,
@@ -35,6 +28,7 @@
     },
     "settings": {
         "import/resolver": {
+            "babel-module": {},
             "node": {
                 "extensions": [".js", ".mjs"]
             }

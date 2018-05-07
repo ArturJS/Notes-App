@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-import config from '../../../common/config';
+import config from '@config';
 
 const basename = path.basename(module.filename);
 const env = config.env.NODE_ENV;
