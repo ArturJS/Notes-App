@@ -28,7 +28,6 @@ class NotesController {
 
     async create(ctx) {
         const note = ctx.request.body;
-        // todo validate with ajv and explicitly map request body
         const userId = getUserId(ctx);
         const createdNote = await notesService.create(userId, note);
 
@@ -37,7 +36,6 @@ class NotesController {
 
     async update(ctx) {
         const note = ctx.request.body;
-        // todo validate with ajv and explicitly map request body
         const userId = getUserId(ctx);
         const updatedNote = await notesService.update(userId, note);
 

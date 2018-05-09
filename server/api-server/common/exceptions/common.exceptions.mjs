@@ -1,10 +1,21 @@
+import _ from 'lodash';
 import HttpStatus from 'http-status-codes';
+
+const formatErrorMessage = message => {
+    if (_.isArray(message)) {
+        return message.join('');
+    }
+
+    if (_.isObject(message)) {
+        return JSON.stringify(message, null, '  ');
+    }
+
+    return message;
+};
 
 export class Exception extends Error {
     constructor({ statusCode, errorCode, message }) {
-        const errorMessage = Array.isArray(message)
-            ? message.join('')
-            : message;
+        const errorMessage = formatErrorMessage(message);
 
         super(errorMessage);
 

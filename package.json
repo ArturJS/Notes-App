@@ -116,7 +116,6 @@
         "joi": "13.2.0",
         "koa": "2.5.0",
         "koa-bodyparser": "4.2.0",
-        "koa-bouncer": "6.0.4",
         "koa-compress": "2.0.0",
         "koa-favicon": "2.0.0",
         "koa-mount": "3.0.0",

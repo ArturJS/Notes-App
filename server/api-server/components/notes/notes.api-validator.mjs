@@ -1,20 +1,76 @@
-class NotesApiValidator {
-    async getById(ctx, next) {
-        ctx
-            .validateParam('id')
+import joi from 'joi';
+import { createApiValidator } from '../../common/utils/validation.utils';
+import { REORDERING_TYPES } from './notes.enums';
+
+const reorderingTypes = Object.values(REORDERING_TYPES);
+const noteEssentialSchema = {
+    title: joi.string().required(),
+    description: joi.string().required(),
+    files: joi.array().items(
+        joi
+            .object({
+                id: joi.number().required(),
+                downloadPath: joi.string().required(),
+                name: joi.string().required()
+            })
             .required()
-            .isNumeric('Url param `id` must be a numeric value');
+    )
+};
 
-        return next();
-    }
+class NotesApiValidator {
+    getById = createApiValidator([
+        {
+            path: 'params',
+            schema: joi
+                .object({
+                    id: joi.number().required()
+                })
+                .required()
+        }
+    ]);
 
-    // async create(ctx) {}
+    create = createApiValidator([
+        {
+            path: 'body',
+            schema: joi.object(noteEssentialSchema).required()
+        }
+    ]);
 
-    // async update(ctx) {}
+    update = createApiValidator([
+        {
+            path: 'body',
+            schema: joi.object({
+                id: joi.number().required(),
+                ...noteEssentialSchema
+            })
+        }
+    ]);
 
-    // async reorder(ctx) {}
+    reorder = createApiValidator([
+        {
+            path: 'body',
+            schema: joi.object({
+                userId: joi.number().required(),
+                noteId: joi.number().required(),
+                reorderingType: joi
+                    .string()
+                    .allow(reorderingTypes)
+                    .required(),
+                anchorNoteId: joi.number().required()
+            })
+        }
+    ]);
 
-    // async remove(ctx) {}
+    remove = createApiValidator([
+        {
+            path: 'params',
+            schema: joi
+                .object({
+                    id: joi.number().required()
+                })
+                .required()
+        }
+    ]);
 }
 
 export default new NotesApiValidator();

@@ -1,4 +1,3 @@
-import bounder from 'koa-bouncer';
 import config from '@config';
 import { Exception } from '../../api-server/common/exceptions';
 
@@ -11,9 +10,6 @@ export const errorMiddleware = async (ctx, next) => {
         if (err instanceof Exception) {
             ctx.body = err.toObject();
             ctx.status = err.statusCode;
-        } else if (err instanceof bounder.ValidationError) {
-            ctx.body = err.message;
-            ctx.status = 400;
         } else {
             const stackTrace = isNotProduction
                 ? `Stack trace: ${err.stack}`
