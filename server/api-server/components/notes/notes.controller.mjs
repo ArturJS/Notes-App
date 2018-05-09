@@ -21,7 +21,6 @@ class NotesController {
     async getById(ctx) {
         const userId = getUserId(ctx);
         const noteId = +ctx.params.id;
-
         const note = await notesService.getById(userId, noteId);
 
         ctx.body = mapNote(note);

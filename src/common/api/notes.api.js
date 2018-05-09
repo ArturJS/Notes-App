@@ -51,7 +51,10 @@ export const notesApi = {
             method: 'put',
             url: '/notes',
             data: {
-                note
+                id: note.id,
+                title: note.title,
+                description: note.description,
+                files: note.files
             }
         });
 
