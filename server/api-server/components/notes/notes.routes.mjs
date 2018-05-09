@@ -14,8 +14,18 @@ router
         notesController.getById
     )
     .post('/notes', withAuth, notesController.create)
-    .post('/notes/reorder', withAuth, notesController.reorder)
-    .put('/notes', withAuth, notesController.update)
-    .delete('/notes/:id', withAuth, notesController.remove);
+    .post(
+        '/notes/reorder',
+        withAuth,
+        noteApiValidator.reorder,
+        notesController.reorder
+    )
+    .put('/notes', withAuth, noteApiValidator.update, notesController.update)
+    .delete(
+        '/notes/:id',
+        withAuth,
+        noteApiValidator.remove,
+        notesController.remove
+    );
 
 export default router;
