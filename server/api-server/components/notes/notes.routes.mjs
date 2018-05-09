@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import { withAuth } from '../../common/middlewares/auth.middleware';
-import noteApiValidator from './notes.api-validator';
+import notesApiValidator from './notes.api-validator';
 import notesController from './notes.controller';
 
 const router = new Router();
@@ -10,21 +10,21 @@ router
     .get(
         '/notes/:id',
         withAuth,
-        noteApiValidator.getById,
+        notesApiValidator.getById,
         notesController.getById
     )
     .post('/notes', withAuth, notesController.create)
     .post(
         '/notes/reorder',
         withAuth,
-        noteApiValidator.reorder,
+        notesApiValidator.reorder,
         notesController.reorder
     )
-    .put('/notes', withAuth, noteApiValidator.update, notesController.update)
+    .put('/notes', withAuth, notesApiValidator.update, notesController.update)
     .delete(
         '/notes/:id',
         withAuth,
-        noteApiValidator.remove,
+        notesApiValidator.remove,
         notesController.remove
     );
 
