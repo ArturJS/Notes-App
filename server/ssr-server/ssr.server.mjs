@@ -1,14 +1,16 @@
 import path from 'path';
 import Koa from 'koa';
 import Router from 'koa-router';
-import next from 'next';
+import mount from 'koa-mount';
+import serveStatic from 'koa-static';
+import nextInit from 'next';
 import WebpackIsomorphicTools from 'webpack-isomorphic-tools';
 import config from '@config';
 import webpackIsomorphicToolsConfig from '../../scripts/webpack-isomorphic-tools/webpack-isomorphic-tools.config';
 
 const dev = config.env.NODE_ENV === 'development';
 const uiDirectory = path.resolve(__dirname, '../../src');
-const app = next({ dir: uiDirectory, dev });
+const app = nextInit({ dir: uiDirectory, dev });
 const handle = app.getRequestHandler();
 const server = new Koa();
 const router = new Router();
@@ -18,6 +20,7 @@ global.webpackIsomorphicTools = new WebpackIsomorphicTools(
 );
 
 const rootDir = path.resolve(__dirname, '../../src');
+const staticAssetsPath = path.resolve(rootDir, './.next');
 
 Promise.all([app.prepare(), webpackIsomorphicTools.server(rootDir)]).then(
     () => {
@@ -26,16 +29,16 @@ Promise.all([app.prepare(), webpackIsomorphicTools.server(rootDir)]).then(
             ctx.respond = false;
         });
 
-        // eslint-disable-next-line no-shadow
-        server.use(async (ctx, next) => {
-            ctx.res.statusCode = 200;
-            await next();
-        });
-
-        server.use(router.routes());
+        server
+            .use(mount('/static', serveStatic(staticAssetsPath))) // here's better to use nginx
+            .use(async (ctx, next) => {
+                ctx.res.statusCode = 200;
+                await next();
+            })
+            .use(router.routes());
 
         // eslint-disable-next-line no-console
-        console.log('SSR server is ready');
+        console.log('SSR server is ready'); // todo use logger
     }
 );
 

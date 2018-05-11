@@ -41,6 +41,7 @@
         "File": true,
         "SyntheticInputEvent": true,
         "HTMLInputElement": true,
-        "FormData": true
+        "FormData": true,
+        "webpackIsomorphicTools": true
     }
 }

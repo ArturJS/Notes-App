@@ -16,10 +16,10 @@ export default class BaseDocument extends Document {
             <html lang="en">
                 <Head>
                     {isProduction &&
-                        Object.keys(assets.styles).map((style, key) => (
+                        Object.keys(assets.styles).map(style => (
                             <link
-                                href={'/_next/' + assets.styles[style]}
-                                key={key}
+                                href={`/static/${assets.styles[style]}`}
+                                key={style}
                                 rel="stylesheet"
                                 type="text/css"
                                 charSet="UTF-8"
@@ -27,7 +27,6 @@ export default class BaseDocument extends Document {
                         ))}
                 </Head>
                 <body>
-                    <pre>{JSON.stringify(assets.styles, null, '  ')}</pre>
                     <Main />
                     <NextScript />
                 </body>
