@@ -25,7 +25,11 @@
             "jest --bail --findRelatedTests --env=jsdom",
             "git add"
         ],
-        "server/**/*.{js,mjs}": ["prettier --write", "eslint --fix", "git add"]
+        "server/**/*.{js,mjs}": [
+            "prettier --write",
+            "eslint --fix",
+            "git add"
+        ]
     },
     "keywords": [],
     "author": "ArturJS",
@@ -149,6 +153,7 @@
         "sequelize-cli": "4.0.0",
         "serialize-javascript": "1.4.0",
         "smoothscroll-polyfill": "0.4.0",
-        "uuid": "3.2.1"
+        "uuid": "3.2.1",
+        "webpack-isomorphic-tools": "3.0.5"
     }
 }

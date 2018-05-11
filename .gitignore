@@ -5,3 +5,5 @@ build/
 .env
 coverage/
 .next
+webpack-stats.json
+webpack-assets.json

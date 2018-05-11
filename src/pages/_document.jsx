@@ -10,19 +10,24 @@ export default class BaseDocument extends Document {
 
     render() {
         const isProduction = process.env.NODE_ENV === 'production';
+        const assets = webpackIsomorphicTools.assets();
 
         return (
             <html lang="en">
                 <Head>
-                    {isProduction && (
-                        <link
-                            rel="stylesheet"
-                            type="text/css"
-                            href="/_next/static/style.css"
-                        />
-                    )}
+                    {isProduction &&
+                        Object.keys(assets.styles).map((style, key) => (
+                            <link
+                                href={'/_next/' + assets.styles[style]}
+                                key={key}
+                                rel="stylesheet"
+                                type="text/css"
+                                charSet="UTF-8"
+                            />
+                        ))}
                 </Head>
                 <body>
+                    <pre>{JSON.stringify(assets.styles, null, '  ')}</pre>
                     <Main />
                     <NextScript />
                 </body>

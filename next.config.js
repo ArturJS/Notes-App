@@ -1,5 +1,11 @@
 const withPreact = require('@zeit/next-preact');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpackIsomorphicToolsConfig = require('./scripts/webpack-isomorphic-tools/webpack-isomorphic-tools.config');
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(
+    webpackIsomorphicToolsConfig
+);
 
 const withExludeModule = (config, excludeRegExp) => {
     config.module.rules.push({
@@ -23,7 +29,7 @@ const withFonts = config => {
     );
 };
 
-const withStyles = (config, { dev, isServer }) => {
+const oldWithStyles = (config, { dev, isServer }) => {
     const production = !dev;
 
     if (dev) {
@@ -60,6 +66,39 @@ const withStyles = (config, { dev, isServer }) => {
                 filename: 'static/style.css',
                 allChunks: true
             })
+        );
+    }
+};
+
+const withStyles = (config, { dev, isServer }) => {
+    const production = !dev;
+
+    if (dev) {
+        if (isServer) {
+            withExludeModule(config, /\.s?css$/);
+        } else {
+            config.module.rules.push({
+                test: /\.s?css$/,
+                loader:
+                    'style-loader!css-loader?importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]!postcss-loader?parser=postcss-scss&sourceMap=true!sass-loader?outputStyle=expanded&sourceMap'
+            });
+            config.plugins.push(webpackIsomorphicToolsPlugin.development());
+        }
+    } else if (production) {
+        config.module.rules.push({
+            test: /\.scss$/,
+            loader: ExtractTextPlugin.extract({
+                fallback: 'style-loader',
+                use:
+                    'css-loader?importLoaders=2&minimize=true!postcss-loader?parser=postcss-scss!sass-loader?outputStyle=expanded'
+            })
+        });
+        config.plugins.push(
+            new ExtractTextPlugin({
+                filename: '[name]-[chunkhash].css',
+                allChunks: true
+            }),
+            webpackIsomorphicToolsPlugin
         );
     }
 };
