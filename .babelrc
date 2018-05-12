@@ -24,6 +24,9 @@
                 "@root": "./server/",
                 "@config": "./server/common/config/"
             }
+        }],
+        ["transform-react-jsx", {
+            "pragmaFrag": "\"div\""
         }]
     ],
     "env": {

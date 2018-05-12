@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { findDOMNode } from 'preact-compat';
 import PropTypes from 'prop-types';
 import { pure } from 'recompose';
 import { Form, Field } from 'react-final-form';
-import { DragSource, DropTarget } from 'react-dnd';
 import classNames from 'classnames';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
@@ -20,100 +18,23 @@ import FilesList from '../file-list';
 import './note.scss';
 
 const linkRegexp = /(http[^\s]+)/g;
-const DRAG_TYPE = 'NOTE';
-let dragStartIndex;
 
-const noteSource = {
-    beginDrag(props) {
-        const { note } = props;
-        dragStartIndex = props.index;
-
-        return {
-            note
-        };
-    },
-    endDrag(props, monitor) {
-        const dragIndex = monitor.getItem().index;
-        const hoverIndex = props.index;
-
-        if (dragIndex === dragStartIndex) return;
-
-        props.onDropNote(dragIndex, hoverIndex);
-    }
-};
-const noteTarget = {
-    hover(props, monitor, component) {
-        const dragIndex = monitor.getItem().index;
-        const hoverIndex = props.index;
-
-        // Don't replace items with themselves
-        if (dragIndex === hoverIndex) {
-            return;
-        }
-
-        // Determine rectangle on screen
-        // eslint-disable-next-line react/no-find-dom-node
-        const hoverBoundingRect = findDOMNode(
-            component
-        ).getBoundingClientRect();
-
-        // Get vertical middle
-        const hoverMiddleY =
-            (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-        // Determine mouse position
-        const clientOffset = monitor.getClientOffset();
-
-        // Get pixels to the left
-        const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-        // Dragging right
-        if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-            return;
-        }
-
-        // Dragging left
-        if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-            return;
-        }
-
-        // Time to actually perform the action
-        props.onMoveNote(dragIndex, hoverIndex);
-
-        // Task: we're mutating the monitor item here!
-        // Generally it's better to avoid mutations,
-        // but it's good here for the sake of performance
-        // to avoid expensive index searches.
-        // eslint-disable-next-line no-param-reassign
-        monitor.getItem().index = hoverIndex;
-    }
-};
 const mapDispatchToProps = dispatch => ({
     notesActions: bindActionCreators(notesActions, dispatch)
 });
 
 @connect(null, mapDispatchToProps)
 @pure
-@DropTarget(DRAG_TYPE, noteTarget, dndConnect => ({
-    connectDropTarget: dndConnect.dropTarget()
-}))
-@DragSource(DRAG_TYPE, noteSource, (dndConnect, monitor) => ({
-    connectDragSource: dndConnect.dragSource(),
-    connectDragPreview: dndConnect.dragPreview(),
-    isDragging: monitor.isDragging()
-}))
 export default class Note extends Component {
     static propTypes = {
         note: notePropType.isRequired,
-        // eslint-disable-next-line react/no-unused-prop-types
-        onMoveNote: PropTypes.func.isRequired,
-        // eslint-disable-next-line react/no-unused-prop-types
-        onDropNote: PropTypes.func.isRequired,
         notesActions: notesActionsPropType.isRequired,
         isDragging: PropTypes.bool.isRequired,
-        connectDropTarget: PropTypes.func.isRequired,
-        connectDragPreview: PropTypes.func.isRequired,
-        connectDragSource: PropTypes.func.isRequired
+        provided: PropTypes.shape({
+            innerRef: PropTypes.func.isRequired,
+            draggableProps: PropTypes.object.isRequired,
+            dragHandleProps: PropTypes.object.isRequired
+        }).isRequired
     };
 
     state = {
@@ -165,55 +86,59 @@ export default class Note extends Component {
     renderDefaultMode() {
         const {
             note,
-            connectDropTarget,
-            connectDragPreview,
-            connectDragSource,
-            isDragging
+            // isDragging,
+            provided
         } = this.props;
 
-        return connectDropTarget(
-            connectDragPreview(
-                <div className={classNames('note', { isDragging })}>
-                    <div>
-                        <i
-                            className="icon icon-left icon-pencil"
-                            onClick={this.onEdit}
-                            onKeyPress={this.onEdit}
-                            role="button"
-                            tabIndex="0"
-                        />
-                        <i
-                            className="icon icon-right icon-bin"
-                            onClick={this.onRemove}
-                            onKeyPress={this.onRemove}
-                            role="button"
-                            tabIndex="0"
-                        />
-                    </div>
-                    {connectDragSource(
-                        <div className="note-title">{note.title}</div>
-                    )}
-                    <div
-                        className="note-description"
-                        // eslint-disable-next-line react/no-danger
-                        dangerouslySetInnerHTML={{
-                            __html: this.wrapUrlLinks(note.description)
-                        }}
+        const isDragging = false;
+
+        return (
+            <div
+                className={classNames('note', { isDragging })}
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+            >
+                <div>
+                    <i
+                        className="icon icon-left icon-pencil"
+                        onClick={this.onEdit}
+                        onKeyPress={this.onEdit}
+                        role="button"
+                        tabIndex="0"
                     />
-                    <FilesList files={note.files} />
+                    <i
+                        className="icon icon-right icon-bin"
+                        onClick={this.onRemove}
+                        onKeyPress={this.onRemove}
+                        role="button"
+                        tabIndex="0"
+                    />
                 </div>
-            )
+                <div className="note-title">{note.title}</div>
+                <div
+                    className="note-description"
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{
+                        __html: this.wrapUrlLinks(note.description)
+                    }}
+                />
+                <FilesList files={note.files} />
+            </div>
         );
     }
 
     renderEditMode() {
-        const { note } = this.props;
+        const { note, provided } = this.props;
 
         return (
             <Form
                 onSubmit={this.onSave}
                 validate={this.validate}
                 initialValues={note}
+                innerRef={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
                 render={({ handleSubmit, invalid }) => (
                     <form className="note" onSubmit={handleSubmit} noValidate>
                         <div>
