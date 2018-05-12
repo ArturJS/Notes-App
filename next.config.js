@@ -29,47 +29,6 @@ const withFonts = config => {
     );
 };
 
-const oldWithStyles = (config, { dev, isServer }) => {
-    const production = !dev;
-
-    if (dev) {
-        if (isServer) {
-            withExludeModule(config, /\.s?css$/);
-        } else {
-            config.module.rules.push({
-                test: /\.s?css$/,
-                loader:
-                    'style-loader!css-loader?importLoaders=1!postcss-loader!sass-loader'
-            });
-        }
-    } else if (production) {
-        config.module.rules.push(
-            {
-                test: /\.(css|scss)/,
-                loader: 'emit-file-loader',
-                options: {
-                    name: 'dist/[path][name].[ext]'
-                }
-            },
-            {
-                test: /\.s?css$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use:
-                        'css-loader?importLoaders=2&minimize=true!postcss-loader?parser=postcss-scss!sass-loader?outputStyle=expanded'
-                })
-            }
-        );
-        config.plugins.push(
-            new ExtractTextPlugin({
-                // filename: '[name]-[chunkhash].css',
-                filename: 'static/style.css',
-                allChunks: true
-            })
-        );
-    }
-};
-
 const withStyles = (config, { dev, isServer }) => {
     const production = !dev;
 
