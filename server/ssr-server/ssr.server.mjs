@@ -6,7 +6,7 @@ import serveStatic from 'koa-static';
 import nextInit from 'next';
 import WebpackIsomorphicTools from 'webpack-isomorphic-tools';
 import config from '@config';
-import webpackIsomorphicToolsConfig from '../../scripts/webpack-isomorphic-tools/webpack-isomorphic-tools.config';
+import webpackIsomorphicToolsConfig from '../../scripts/tools/webpack-isomorphic-tools/config';
 
 const dev = config.env.NODE_ENV === 'development';
 const uiDirectory = path.resolve(__dirname, '../../src');

@@ -1,6 +1,6 @@
 const withPreact = require('@zeit/next-preact');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const webpackIsomorphicToolsConfig = require('./scripts/webpack-isomorphic-tools/webpack-isomorphic-tools.config');
+const webpackIsomorphicToolsConfig = require('./scripts/tools/webpack-isomorphic-tools/config');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(
