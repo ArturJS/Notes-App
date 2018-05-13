@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { pure, setStatic } from 'recompose';
+import { pure } from 'recompose';
 import { notesApi, authApi } from '../../common/api';
 import { notesActions, notesSelectors } from '../../common/features/notes';
 import {
@@ -24,49 +24,40 @@ const mapDispatchToProps = dispatch => ({
     notesActions: bindActionCreators(notesActions, dispatch)
 });
 
-const getInitialProps = async ({ isServer, req }) => {
-    if (!isServer && typeof window !== 'undefined') {
-        const notes = _.get(window, '__NEXT_DATA__.props.notes', []);
-
-        return {
-            notes
-        };
-    }
-
-    const apiParams = {
-        headers: {
-            Cookie: req.headers.cookie || ''
-        }
-    };
-
-    try {
-        const [notes, user] = await Promise.all([
-            notesApi.getAll(apiParams),
-            authApi.getUserData(apiParams)
-        ]);
-
-        return {
-            notes,
-            auth: {
-                isLoggedIn: true,
-                isLoginPending: false,
-                isLoginSuccess: null,
-                isLogoutPending: false,
-                isLogoutSuccess: null,
-                authData: {
-                    email: user.email
-                }
+@withReduxStore({
+    async getInitialReduxState({ req }) {
+        const apiParams = {
+            headers: {
+                Cookie: req.headers.cookie || ''
             }
         };
-    } catch (err) {
-        return {
-            notes: []
-        };
-    }
-};
 
-@setStatic('getInitialProps', getInitialProps)
-@withReduxStore
+        try {
+            const [notes, user] = await Promise.all([
+                notesApi.getAll(apiParams),
+                authApi.getUserData(apiParams)
+            ]);
+
+            return {
+                notes,
+                auth: {
+                    isLoggedIn: true,
+                    isLoginPending: false,
+                    isLoginSuccess: null,
+                    isLogoutPending: false,
+                    isLogoutSuccess: null,
+                    authData: {
+                        email: user.email
+                    }
+                }
+            };
+        } catch (err) {
+            return {
+                notes: []
+            };
+        }
+    }
+})
 @withRootLayout
 @connect(mapStateToProps, mapDispatchToProps)
 @pure

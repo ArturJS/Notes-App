@@ -7,7 +7,10 @@ const getInitialState = () => {
         return {};
     }
 
-    const initialAppState = _.get(window, '__NEXT_DATA__.props');
+    const initialAppState = _.get(
+        window,
+        '__NEXT_DATA__.props.__INITIAL_REDUX_STATE__'
+    );
 
     delete window.__NEXT_DATA__.props;
 

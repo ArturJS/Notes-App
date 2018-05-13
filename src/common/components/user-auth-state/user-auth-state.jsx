@@ -21,7 +21,7 @@ const mapDispatchToProps = dispatch => ({
     authActions: bindActionCreators(authActions, dispatch)
 });
 
-@withReduxStore
+@withReduxStore()
 @connect(mapStateToProps, mapDispatchToProps)
 @pure
 export default class UserAuthState extends Component {
