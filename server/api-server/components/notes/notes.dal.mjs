@@ -180,8 +180,6 @@ class NotesDAL {
                 };
             };
 
-            await this._connectOldSiblings(note, transactionParams);
-
             const newSiblings = getNewSiblings(reorderingType, anchorNote);
 
             await insertBetweenSiblings(
@@ -192,6 +190,7 @@ class NotesDAL {
                 },
                 transactionParams
             );
+            await this._connectOldSiblings(note, transactionParams);
         });
     }
 

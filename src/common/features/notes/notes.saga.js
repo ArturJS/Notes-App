@@ -116,13 +116,13 @@ function* watchChangeNoteOrder() {
                 const { id: anchorNoteId } = notes[reorderedNoteIndex - 1];
 
                 yield call(() =>
-                    notesApi.insertAfter({ noteId: id, anchorNoteId })
+                    notesApi.insertBefore({ noteId: id, anchorNoteId })
                 );
             } else {
                 const { id: anchorNoteId } = notes[reorderedNoteIndex + 1];
 
                 yield call(() =>
-                    notesApi.insertBefore({ noteId: id, anchorNoteId })
+                    notesApi.insertAfter({ noteId: id, anchorNoteId })
                 );
             }
 
