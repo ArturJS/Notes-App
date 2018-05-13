@@ -1,5 +1,13 @@
 import _ from 'lodash';
-import { take, all, fork, put, select, call } from 'redux-saga/effects';
+import {
+    take,
+    all,
+    fork,
+    put,
+    select,
+    call,
+    actionChannel
+} from 'redux-saga/effects';
 import { notesApi } from '../../api';
 import {
     ADD_NOTE_REQUEST,
@@ -97,8 +105,12 @@ function* watchGetAllNotes() {
 }
 
 function* watchChangeNoteOrder() {
+    const reorderingActionsQueue = yield actionChannel(
+        CHANGE_NOTE_ORDER_REQUEST
+    );
+
     while (true) {
-        const { payload } = yield take(CHANGE_NOTE_ORDER_REQUEST);
+        const { payload } = yield take(reorderingActionsQueue);
         const { id, commitChanges } = payload;
 
         if (!commitChanges) {
