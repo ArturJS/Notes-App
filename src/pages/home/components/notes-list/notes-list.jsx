@@ -79,41 +79,37 @@ export default class NotesList extends Component {
         const { notes } = this.state;
 
         return (
-            <div className="notes-list">
-                <DragDropContext
-                    onDragStart={this.onDragStart}
-                    onDragEnd={this.onDragEnd}
+            <DragDropContext
+                onDragStart={this.onDragStart}
+                onDragEnd={this.onDragEnd}
+            >
+                <Droppable
+                    droppableId="notes-list-droppableId"
+                    type="notes-list-type"
                 >
-                    <Droppable droppableId="notes-list" type="notes-list">
-                        {dropProvided => (
-                            <div
-                                ref={dropProvided.innerRef}
-                                {...dropProvided.droppableProps}
-                            >
-                                {notes.map((note, index) => (
-                                    <Draggable
-                                        key={note.id}
-                                        draggableId={note.id}
-                                        index={index}
-                                    >
-                                        {(dragProvided, dragSnapshot) => (
-                                            <Note
-                                                note={note}
-                                                key={note.id}
-                                                index={index}
-                                                isDragging={
-                                                    dragSnapshot.isDragging
-                                                }
-                                                provided={dragProvided}
-                                            />
-                                        )}
-                                    </Draggable>
-                                ))}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
-            </div>
+                    {dropProvided => (
+                        <div
+                            className="notes-list"
+                            ref={dropProvided.innerRef}
+                            {...dropProvided.droppableProps}
+                        >
+                            {notes.map((note, index) => (
+                                <Draggable draggableId={note.id} index={index}>
+                                    {(dragProvided, dragSnapshot) => (
+                                        <Note
+                                            note={note}
+                                            key={note.id}
+                                            index={index}
+                                            isDragging={dragSnapshot.isDragging}
+                                            provided={dragProvided}
+                                        />
+                                    )}
+                                </Draggable>
+                            ))}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
         );
     }
 }
