@@ -1,48 +1,15 @@
 // @flow
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
-// import { notesListPropType } from '../../../../common/prop-types/notes.prop-types';
+import PropTypes from 'prop-types';
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd';
+import { notesListPropType } from '../../../../common/prop-types/notes.prop-types';
 import Note from '../note';
 import './notes-list.scss';
 
-const reorder = (list: any[], startIndex: number, endIndex: number): any[] => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-};
-
 export default class NotesList extends Component {
     static propTypes = {
-        // notes: notesListPropType.isRequired,
-        // onMoveNote: PropTypes.func.isRequired,
-        // onDropNote: PropTypes.func.isRequired
-    };
-
-    state = {
-        notes: [
-            {
-                id: 6,
-                title: 'qew',
-                description: 'qwe',
-                files: []
-            },
-            {
-                id: 1,
-                title: 'first',
-                description:
-                    'first\n\n\nhttps://github.com/danneu/koa-bouncer/tree/next',
-                files: []
-            },
-            {
-                id: 2,
-                title: 'second',
-                description: 'second one\n\nddddd\n2134',
-                files: []
-            }
-        ]
+        notes: notesListPropType.isRequired,
+        onDropNote: PropTypes.func.isRequired
     };
 
     onDragStart = () => {
@@ -54,29 +21,19 @@ export default class NotesList extends Component {
     };
 
     onDragEnd = ({ source, destination }) => {
-        if (!destination) {
-            // dropped outside the list
+        const isDroppedOutsideList = !destination;
+        const isNotChangedOrder = (destination || {}).index === source.index;
+        const shouldAvoidUpdate = isDroppedOutsideList || isNotChangedOrder;
+
+        if (shouldAvoidUpdate) {
             return;
         }
 
-        if (destination.index === source.index) {
-            return;
-        }
-
-        const notes = reorder(
-            this.state.notes,
-            source.index,
-            destination.index
-        );
-
-        this.setState({
-            notes
-        });
+        this.props.onDropNote(source.index, destination.index);
     };
 
     render() {
-        // const { notes, onMoveNote, onDropNote } = this.props;
-        const { notes } = this.state;
+        const { notes } = this.props;
 
         return (
             <DragDropContext

@@ -76,13 +76,6 @@ export default class Home extends Component {
         notesActions: notesActionsPropType.isRequired
     };
 
-    onMoveNote = (oldIndex, newIndex) => {
-        this.changeNoteOrder({
-            oldIndex,
-            newIndex
-        });
-    };
-
     onDropNote = (oldIndex, newIndex) => {
         this.changeNoteOrder({
             oldIndex,
@@ -113,7 +106,7 @@ export default class Home extends Component {
             <div className="home-page">
                 <AddNoteForm />
                 <NotesList
-                    notes={notes || []}
+                    notes={notes}
                     onMoveNote={this.onMoveNote}
                     onDropNote={this.onDropNote}
                 />
