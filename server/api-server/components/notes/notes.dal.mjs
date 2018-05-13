@@ -9,7 +9,8 @@ const mapNote = note => ({
 
 const withinTransaction = async processingCallback => {
     const transaction = await db.sequelize.transaction({
-        isolationLevel: db.Sequelize.Transaction.SERIALIZABLE
+        isolationLevel: 'SERIALIZABLE',
+        type: 'EXCLUSIVE'
     });
 
     try {
@@ -103,28 +104,6 @@ class NotesDAL {
 
     async reorder({ noteId, reorderingType, anchorNoteId }) {
         await withinTransaction(async transaction => {
-            const transactionParams = {
-                transaction,
-                lock: transaction.LOCK.UPDATE
-            };
-            const [note, anchorNote] = await Promise.all([
-                db.Notes.findOne(
-                    {
-                        where: {
-                            id: noteId
-                        }
-                    },
-                    transactionParams
-                ),
-                db.Notes.findOne(
-                    {
-                        where: {
-                            id: anchorNoteId
-                        }
-                    },
-                    transactionParams
-                )
-            ]);
             const insertBetweenSiblings = async (
                 { targetNoteId, newPrevId = null, newNextId = null },
                 transactionParams // eslint-disable-line no-shadow
@@ -179,7 +158,28 @@ class NotesDAL {
                     nextId: anchorNoteItem.id
                 };
             };
-
+            const transactionParams = {
+                transaction,
+                lock: transaction.LOCK.UPDATE
+            };
+            const [note, anchorNote] = await Promise.all([
+                db.Notes.findOne(
+                    {
+                        where: {
+                            id: noteId
+                        }
+                    },
+                    transactionParams
+                ),
+                db.Notes.findOne(
+                    {
+                        where: {
+                            id: anchorNoteId
+                        }
+                    },
+                    transactionParams
+                )
+            ]);
             const newSiblings = getNewSiblings(reorderingType, anchorNote);
 
             await insertBetweenSiblings(
