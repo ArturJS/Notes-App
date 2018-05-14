@@ -39,7 +39,7 @@ export const notesApi = {
             data: {
                 title: note.title,
                 description: note.description,
-                files: note.files
+                files: note.files || []
             }
         });
 
@@ -54,7 +54,7 @@ export const notesApi = {
                 id: note.id,
                 title: note.title,
                 description: note.description,
-                files: note.files
+                files: note.files || []
             }
         });
 

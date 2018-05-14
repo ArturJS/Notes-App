@@ -1,15 +1,41 @@
 // @flow
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd';
-import { notesListPropType } from '../../../../common/prop-types/notes.prop-types';
+import _ from 'lodash';
+import {
+    notesActionsPropType,
+    notesListPropType
+} from '../../../../common/prop-types/notes.prop-types';
+import {
+    notesActions,
+    notesSelectors
+} from '../../../../common/features/notes';
 import Note from '../note';
 import './notes-list.scss';
 
+const mapStateToProps = state => ({
+    notes: notesSelectors.getNotes(state)
+});
+
+const mapDispatchToProps = dispatch => ({
+    notesActions: bindActionCreators(notesActions, dispatch)
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class NotesList extends Component {
     static propTypes = {
         notes: notesListPropType.isRequired,
-        onDropNote: PropTypes.func.isRequired
+        notesActions: notesActionsPropType.isRequired
+    };
+
+    onDropNote = (oldIndex, newIndex) => {
+        this.changeNoteOrder({
+            oldIndex,
+            newIndex,
+            commitChanges: true
+        });
     };
 
     onDragStart = () => {
@@ -29,7 +55,22 @@ export default class NotesList extends Component {
             return;
         }
 
-        this.props.onDropNote(source.index, destination.index);
+        this.onDropNote(source.index, destination.index);
+    };
+
+    changeNoteOrder = ({ oldIndex, newIndex, commitChanges }) => {
+        if (_.isUndefined(oldIndex) || _.isUndefined(newIndex)) {
+            return;
+        }
+
+        const movingNote = this.props.notes[oldIndex];
+
+        this.props.notesActions.changeNoteOrderRequest({
+            id: movingNote.id,
+            oldIndex,
+            newIndex,
+            commitChanges
+        });
     };
 
     render() {
