@@ -13,7 +13,7 @@ router
         notesApiValidator.getById,
         notesController.getById
     )
-    .post('/notes', withAuth, notesController.create)
+    .post('/notes', withAuth, notesApiValidator.create, notesController.create)
     .post(
         '/notes/reorder',
         withAuth,

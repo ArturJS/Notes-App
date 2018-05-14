@@ -92,12 +92,15 @@ class NotesDAL {
 
     async update(userId, note) {
         const noteId = note.id;
-        const updatedNote = await db.Notes.update(note, {
+        const affectedRecords = await db.Notes.update(note, {
             where: {
                 id: noteId,
                 userId
-            }
+            },
+            returning: true,
+            plain: true
         });
+        const updatedNote = affectedRecords[1];
 
         return mapNote(updatedNote);
     }

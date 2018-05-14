@@ -6,15 +6,16 @@ const reorderingTypes = Object.values(REORDERING_TYPES);
 const noteEssentialSchema = {
     title: joi.string().required(),
     description: joi.string().required(),
-    files: joi.array().items(
-        joi
-            .object({
+    files: joi
+        .array()
+        .items(
+            joi.object({
                 id: joi.number().required(),
                 downloadPath: joi.string().required(),
                 name: joi.string().required()
             })
-            .required()
-    )
+        )
+        .required()
 };
 
 class NotesApiValidator {
@@ -31,33 +32,37 @@ class NotesApiValidator {
 
     create = createApiValidator([
         {
-            path: 'body',
+            path: 'request.body',
             schema: joi.object(noteEssentialSchema).required()
         }
     ]);
 
     update = createApiValidator([
         {
-            path: 'body',
-            schema: joi.object({
-                id: joi.number().required(),
-                ...noteEssentialSchema
-            })
+            path: 'request.body',
+            schema: joi
+                .object({
+                    id: joi.number().required(),
+                    ...noteEssentialSchema
+                })
+                .required()
         }
     ]);
 
     reorder = createApiValidator([
         {
-            path: 'body',
-            schema: joi.object({
-                userId: joi.number().required(),
-                noteId: joi.number().required(),
-                reorderingType: joi
-                    .string()
-                    .allow(reorderingTypes)
-                    .required(),
-                anchorNoteId: joi.number().required()
-            })
+            path: 'request.body',
+            schema: joi
+                .object({
+                    userId: joi.number().required(),
+                    noteId: joi.number().required(),
+                    reorderingType: joi
+                        .string()
+                        .allow(reorderingTypes)
+                        .required(),
+                    anchorNoteId: joi.number().required()
+                })
+                .required()
         }
     ]);
 
