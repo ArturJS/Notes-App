@@ -7,11 +7,12 @@ import nextInit from 'next';
 import WebpackIsomorphicTools from 'webpack-isomorphic-tools';
 import config from '@config';
 import webpackIsomorphicToolsConfig from '../../scripts/tools/webpack-isomorphic-tools/config';
+import routes from '../../src/routes';
 
 const dev = config.env.NODE_ENV === 'development';
 const uiDirectory = path.resolve(__dirname, '../../src');
 const app = nextInit({ dir: uiDirectory, dev });
-const handle = app.getRequestHandler();
+const handle = routes.getRequestHandler(app);
 const server = new Koa();
 const router = new Router();
 
