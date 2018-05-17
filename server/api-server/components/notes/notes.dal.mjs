@@ -1,4 +1,18 @@
+// @flow
 import db from '../../common/models';
+import type { REORDERING_TYPES_TYPE } from './notes.enums';
+
+type TNoteEssential = {|
+    title: string,
+    description: string,
+    files?: TFile[]
+|};
+
+type TNoteFull = {|
+    ...TNoteEssential,
+    id: number,
+    files: TFile[]
+|};
 
 const mapNote = note => ({
     id: note.id,
@@ -31,13 +45,13 @@ const REORDERING_TYPES = {
 };
 
 class NotesDAL {
-    async getAll(userId) {
+    async getAll(userId: number): Promise<TNoteFull[]> {
         const notes = await this._getSortedNotesByUserId(userId, 'get notes');
 
         return notes.map(mapNote);
     }
 
-    async getById(userId, noteId) {
+    async getById(userId: number, noteId: number): Promise<?TNoteFull> {
         const note = await db.Notes.findOne({
             where: { id: noteId, userId }
         });
@@ -49,7 +63,7 @@ class NotesDAL {
         return mapNote(note);
     }
 
-    async create(userId, note) {
+    async create(userId: number, note: TNoteEssential): Promise<TNoteFull> {
         const createdNote = await withinTransaction(async transaction => {
             const lastNote = await db.Notes.findOne(
                 {
@@ -90,7 +104,7 @@ class NotesDAL {
         return mapNote(createdNote);
     }
 
-    async update(userId, note) {
+    async update(userId: number, note: TNoteFull): Promise<TNoteFull> {
         const noteId = note.id;
         const affectedRecords = await db.Notes.update(note, {
             where: {
@@ -105,7 +119,13 @@ class NotesDAL {
         return mapNote(updatedNote);
     }
 
-    async reorder({ noteId, reorderingType, anchorNoteId }) {
+    async reorder(params: {
+        noteId: number,
+        reorderingType: REORDERING_TYPES_TYPE,
+        anchorNoteId: number
+    }): Promise<void> {
+        const { noteId, reorderingType, anchorNoteId } = params;
+
         await withinTransaction(async transaction => {
             const insertBetweenSiblings = async (
                 { targetNoteId, newPrevId = null, newNextId = null },
@@ -197,7 +217,7 @@ class NotesDAL {
         });
     }
 
-    async remove(userId, noteId) {
+    async remove(userId: number, noteId: number): Promise<void> {
         await withinTransaction(async transaction => {
             const transactionParams = {
                 transaction,
@@ -226,7 +246,10 @@ class NotesDAL {
         });
     }
 
-    async hasAccessToNotes(userId, noteIds) {
+    async hasAccessToNotes(
+        userId: number,
+        noteIds: number[]
+    ): Promise<boolean> {
         const notes = await db.Notes.findAll({
             where: {
                 id: noteIds,
@@ -237,7 +260,10 @@ class NotesDAL {
         return notes.length === noteIds.length;
     }
 
-    async _connectOldSiblings(targetNote, transactionParams) {
+    async _connectOldSiblings(
+        targetNote: { prevId: ?number, nextId: ?number },
+        transactionParams
+    ): Promise<void> {
         const { prevId, nextId } = targetNote;
 
         if (prevId) {
@@ -265,7 +291,7 @@ class NotesDAL {
         }
     }
 
-    async _getSortedNotesByUserId(userId) {
+    async _getSortedNotesByUserId(userId: number): Promise<TNoteFull[]> {
         const notesList = await db.Notes.findAll({
             where: { userId }
         });
@@ -338,7 +364,7 @@ class NotesDAL {
             nextNote = getNoteById(nextNote.prevId);
         }
 
-        return sortedNotesList;
+        return sortedNotesList.map(mapNote);
     }
 }
 
