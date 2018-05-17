@@ -54,7 +54,6 @@ class NotesApiValidator {
             path: 'request.body',
             schema: joi
                 .object({
-                    userId: joi.number().required(),
                     noteId: joi.number().required(),
                     reorderingType: joi
                         .string()
