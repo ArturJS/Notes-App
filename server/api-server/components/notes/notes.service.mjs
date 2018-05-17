@@ -14,19 +14,19 @@ type TFile = {|
     name: string
 |};
 
-type NoteEssential = {|
+type TNoteEssential = {|
     title: string,
     description: string,
     files?: TFile[]
 |};
 
-type NoteFull = {|
-    ...NoteEssential,
+type TNoteFull = {|
+    ...TNoteEssential,
     id: number,
     files: TFile[]
 |};
 
-const mapNote = (note): NoteFull => ({
+const mapNote = (note): TNoteFull => ({
     id: note.id,
     title: note.title,
     description: note.description,
@@ -34,13 +34,13 @@ const mapNote = (note): NoteFull => ({
 });
 
 class NotesService {
-    async getAll(userId: number): Promise<NoteFull[]> {
+    async getAll(userId: number): Promise<TNoteFull[]> {
         const notes = await notesDAL.getAll(userId);
 
         return notes.map(mapNote);
     }
 
-    async getById(userId: number, noteId: number): Promise<NoteFull> {
+    async getById(userId: number, noteId: number): Promise<TNoteFull> {
         await this._checkAccessToNotes(userId, [noteId]);
 
         const note = await notesDAL.getById(userId, noteId);
@@ -52,13 +52,13 @@ class NotesService {
         return mapNote(note);
     }
 
-    async create(userId: number, note: NoteEssential): Promise<NoteFull> {
+    async create(userId: number, note: TNoteEssential): Promise<TNoteFull> {
         const createdNote = await notesDAL.create(userId, note);
 
         return mapNote(createdNote);
     }
 
-    async update(userId: number, note: NoteFull): Promise<NoteFull> {
+    async update(userId: number, note: TNoteFull): Promise<TNoteFull> {
         await this._checkAccessToNotes(userId, [note.id]);
 
         const updatedNote = await notesDAL.update(userId, note);
