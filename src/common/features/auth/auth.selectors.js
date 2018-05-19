@@ -13,3 +13,5 @@ export const getAuthState = createSelector(
         }
     })
 );
+
+export const isLoggedIn = createSelector(getAuthState, auth => auth.isLoggedIn);
