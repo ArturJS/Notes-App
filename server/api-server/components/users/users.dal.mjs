@@ -1,4 +1,18 @@
+// @flow
 import db from '../../common/models';
+
+type TUserInfo = {|
+    id: number,
+    firstName: string,
+    lastName: string,
+    email: string
+|};
+
+type TUserCreate = {|
+    firstName: string,
+    lastName: string,
+    email: string
+|};
 
 const mapUserInfo = user => ({
     id: user.id,
@@ -8,13 +22,13 @@ const mapUserInfo = user => ({
 });
 
 class UsersDAL {
-    async getAll() {
+    async getAll(): Promise<TUserInfo[]> {
         const users = await db.Users.findAll();
 
         return users.map(mapUserInfo);
     }
 
-    async getByEmail(email) {
+    async getByEmail(email: string): Promise<?TUserInfo> {
         const user = await db.Users.findOne({ where: { email } });
 
         if (!user) {
@@ -24,7 +38,7 @@ class UsersDAL {
         return mapUserInfo(user);
     }
 
-    async create(user) {
+    async create(user: TUserCreate): Promise<TUserInfo> {
         const createdUser = await db.Users.create({
             firstName: user.firstName,
             lastName: user.lastName,
