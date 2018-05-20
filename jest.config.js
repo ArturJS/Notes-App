@@ -9,7 +9,7 @@ module.exports = {
     setupFiles: ['<rootDir>/scripts/tools/jest/__mocks__/browser-mocks.js'],
     testURL: 'http://localhost:8080',
     transform: {
-        '\\.(js|jsx|mjs)$': './scripts/tools/jest/transform-preprocessor.js',
+        '\\.(js|jsx|mjs)$': '<rootDir>/node_modules/babel-jest',
         '^.+\\.scss$': './scripts/tools/jest/css-transform.js'
     },
     testRegex: '(/__tests__/.*|\\.(test|spec))\\.(m?jsx?)$',
@@ -21,11 +21,6 @@ module.exports = {
             '<rootDir>/tests/__mocks__/fileMock.js',
         '\\.(css|less|scss)$': 'identity-obj-proxy',
         '^./style$': 'identity-obj-proxy',
-        '^preact$': '<rootDir>/node_modules/preact/dist/preact.min.js',
-        '^react$': 'preact-compat',
-        '^react-dom$': 'preact-compat',
-        '^create-react-class$': 'preact-compat/lib/create-react-class',
-        '^react-addons-css-transition-group$': 'preact-css-transition-group',
         '@root': '<rootDir>/server/',
         '@config': 'identity-obj-proxy'
     },

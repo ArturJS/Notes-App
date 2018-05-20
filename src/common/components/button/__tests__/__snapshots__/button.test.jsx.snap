@@ -2,12 +2,12 @@
 
 exports[`<Button /> renders correctly 1`] = `
 <button
-  class="btn btn-gradient-basis btn-hot btn-test-class"
+  className="btn btn-gradient-basis btn-hot btn-test-class"
   onClick={[Function]}
   type="submit"
 >
   <span
-    class="btn-content"
+    className="btn-content"
   >
     <span>
       Inner content...
