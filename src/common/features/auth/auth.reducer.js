@@ -10,7 +10,7 @@ import {
 } from './auth.actions';
 
 const initialState = {
-    isLoggedIn: null,
+    isLoggedIn: false,
     isLoginPending: false,
     isLoginSuccess: null,
     isLogoutPending: false,

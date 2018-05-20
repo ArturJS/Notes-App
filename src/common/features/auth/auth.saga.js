@@ -9,7 +9,15 @@ import {
     logoutSuccess,
     logoutFailure
 } from './auth.actions';
+import { ANONYMOUS_MODE_READY } from '../anonymous-mode/anonymous-mode.actions';
 import { notesActions } from '../notes';
+
+export function* watchAnonymousMode() {
+    while (true) {
+        yield take(ANONYMOUS_MODE_READY);
+        yield put(notesActions.getAllNotesRequest());
+    }
+}
 
 export function* watchLogin() {
     while (true) {
@@ -44,7 +52,7 @@ export function* watchLogout() {
             yield call(authApi.logout);
 
             yield put(logoutSuccess());
-            yield put(notesActions.clearNotes());
+            yield put(notesActions.getAllNotesRequest());
         } catch (error) {
             yield put(logoutFailure(error));
         }
@@ -52,5 +60,10 @@ export function* watchLogout() {
 }
 
 export default function* watchAuth() {
-    yield all([fork(watchLogin), fork(watchLoginSuccess), fork(watchLogout)]);
+    yield all([
+        fork(watchAnonymousMode),
+        fork(watchLogin),
+        fork(watchLoginSuccess),
+        fork(watchLogout)
+    ]);
 }

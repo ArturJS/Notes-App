@@ -1,13 +1,13 @@
 import { baseApi } from './base.api';
 
 const mapNote = note => ({
-    id: note.id,
+    id: +note.id,
     title: note.title,
     description: note.description,
     files: note.files || []
 });
 
-const REORDERING_TYPES = {
+export const REORDERING_TYPES = {
     INSERT_BEFORE: 'INSERT_BEFORE',
     INSERT_AFTER: 'INSERT_AFTER'
 };

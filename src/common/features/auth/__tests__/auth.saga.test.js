@@ -23,6 +23,7 @@ import {
     logoutFailure
 } from '../auth.actions';
 import watchAuth, {
+    watchAnonymousMode,
     watchLogin,
     watchLoginSuccess,
     watchLogout
@@ -83,7 +84,7 @@ describe('auth.saga.js', () => {
             expect(generator.next().value).toEqual(call(authApi.logout));
             expect(generator.next().value).toEqual(put(logoutSuccess()));
             expect(generator.next().value).toEqual(
-                put(notesActions.clearNotes())
+                put(notesActions.getAllNotesRequest())
             );
         });
 
@@ -100,11 +101,12 @@ describe('auth.saga.js', () => {
     });
 
     describe('watchAuth', () => {
-        it('should fork only "watchLogin" "watchLoginSuccess" "watchLogout"', () => {
+        it('should fork only "watchAnonymousMode", "watchLogin", "watchLoginSuccess", "watchLogout"', () => {
             const generator = watchAuth();
 
             expect(generator.next().value).toEqual(
                 all([
+                    fork(watchAnonymousMode),
                     fork(watchLogin),
                     fork(watchLoginSuccess),
                     fork(watchLogout)

@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { pure, compose, toClass } from 'recompose';
 import './banner.scss';
+
+const enhance = compose(toClass, pure);
 
 const Banner = ({ title, body }) => (
     <div className="banner">
@@ -14,4 +17,4 @@ Banner.propTypes = {
     body: PropTypes.string.isRequired
 };
 
-export default Banner;
+export default enhance(Banner);

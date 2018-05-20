@@ -2,6 +2,7 @@
 // import type { FormApi } from 'final-form/dist/types.js.flow';
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -10,6 +11,7 @@ import _ from 'lodash';
 import FieldError from './components/field-error';
 import { filesApi } from '../../../../common/api'; // todo: use redux actions
 import Button from '../../../../common/components/button';
+import { authSelectors } from '../../../../common/features/auth';
 import { notesActionsPropType } from '../../../../common/prop-types/notes.prop-types';
 import MultilineInput from '../../../../common/components/multiline-input';
 import { notesActions } from '../../../../common/features/notes';
@@ -40,15 +42,19 @@ type State = {
     fileUploadPromises: Promise[]
 };
 
+const mapStateToProps = state => ({
+    isLoggedIn: authSelectors.isLoggedIn(state)
+});
 const mapDispatchToProps = dispatch => ({
     notesActions: bindActionCreators(notesActions, dispatch)
 });
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 @pure
 export default class AddNoteForm extends Component<Props, State> {
     static propTypes = {
-        notesActions: notesActionsPropType.isRequired
+        notesActions: notesActionsPropType.isRequired,
+        isLoggedIn: PropTypes.bool.isRequired
     };
 
     state = {
@@ -154,6 +160,7 @@ export default class AddNoteForm extends Component<Props, State> {
     };
 
     render() {
+        const { isLoggedIn } = this.props;
         const { filesList, uploadedFiles } = this.state;
 
         return (
@@ -203,18 +210,20 @@ export default class AddNoteForm extends Component<Props, State> {
                                 Submit
                             </Button>
 
-                            <Button
-                                type="button"
-                                className="btn-file"
-                                theme="hot"
-                            >
-                                <input
-                                    type="file"
-                                    multiple
-                                    onChange={this.attachFiles}
-                                />
-                                Attach files
-                            </Button>
+                            {isLoggedIn && (
+                                <Button
+                                    type="button"
+                                    className="btn-file"
+                                    theme="hot"
+                                >
+                                    <input
+                                        type="file"
+                                        multiple
+                                        onChange={this.attachFiles}
+                                    />
+                                    Attach files
+                                </Button>
+                            )}
                         </div>
                     </form>
                 )}
