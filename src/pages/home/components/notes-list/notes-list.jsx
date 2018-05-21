@@ -92,7 +92,11 @@ export default class NotesList extends Component {
                             {...dropProvided.droppableProps}
                         >
                             {notes.map((note, index) => (
-                                <Draggable draggableId={note.id} index={index}>
+                                <Draggable
+                                    draggableId={note.id}
+                                    index={index}
+                                    key={note.id}
+                                >
                                     {(dragProvided, dragSnapshot) => (
                                         <Note
                                             note={note}
