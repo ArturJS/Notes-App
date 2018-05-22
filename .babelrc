@@ -21,7 +21,8 @@
         [
             "module-resolver",
             {
-                "root": ["./server", "./src"],
+                "cwd": "babelrc",
+                "root": ["./"],
                 "alias": {
                     "@root": "./server/",
                     "@config": "./server/common/config/",
