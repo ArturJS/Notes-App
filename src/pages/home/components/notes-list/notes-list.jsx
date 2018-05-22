@@ -7,11 +7,8 @@ import _ from 'lodash';
 import {
     notesActionsPropType,
     notesListPropType
-} from '../../../../common/prop-types/notes.prop-types';
-import {
-    notesActions,
-    notesSelectors
-} from '../../../../common/features/notes';
+} from '@common/prop-types/notes.prop-types';
+import { notesActions, notesSelectors } from '@common/features/notes';
 import Note from '../note';
 import './notes-list.scss';
 

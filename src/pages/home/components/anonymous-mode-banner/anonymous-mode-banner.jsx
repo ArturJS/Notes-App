@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { pure, compose, toClass } from 'recompose';
 import { connect } from 'react-redux';
-import { authSelectors } from '../../../../common/features/auth';
-import Banner from '../../../../common/components/banner';
+import { authSelectors } from '@common/features/auth';
+import Banner from '@common/components/banner';
 
 const mapStateToProps = state => ({
     isLoggedIn: authSelectors.isLoggedIn(state)

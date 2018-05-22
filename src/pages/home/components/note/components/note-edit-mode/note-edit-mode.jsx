@@ -4,13 +4,13 @@ import { pure } from 'recompose';
 import { Form, Field } from 'react-final-form';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// import Button from '../../../../common/components/button';
 import {
     notesActionsPropType,
     notePropType
-} from '../../../../../../common/prop-types/notes.prop-types';
-import MultilineInput from '../../../../../../common/components/multiline-input';
-import { notesActions } from '../../../../../../common/features/notes';
+} from '@common/prop-types/notes.prop-types';
+import MultilineInput from '@common/components/multiline-input';
+import { notesActions } from '@common/features/notes';
+// import Button from '@common/components/button';
 // import FilesList from '../../../file-list';
 
 const mapDispatchToProps = dispatch => ({

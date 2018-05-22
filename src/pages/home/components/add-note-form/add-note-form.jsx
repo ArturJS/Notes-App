@@ -8,13 +8,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
 import _ from 'lodash';
+import { filesApi } from '@common/api'; // todo: use redux actions
+import Button from '@common/components/button';
+import { authSelectors } from '@common/features/auth';
+import { notesActionsPropType } from '@common/prop-types/notes.prop-types';
+import MultilineInput from '@common/components/multiline-input';
+import { notesActions } from '@common/features/notes';
 import FieldError from './components/field-error';
-import { filesApi } from '../../../../common/api'; // todo: use redux actions
-import Button from '../../../../common/components/button';
-import { authSelectors } from '../../../../common/features/auth';
-import { notesActionsPropType } from '../../../../common/prop-types/notes.prop-types';
-import MultilineInput from '../../../../common/components/multiline-input';
-import { notesActions } from '../../../../common/features/notes';
 import FilesList from '../file-list';
 import './add-note-form.scss';
 

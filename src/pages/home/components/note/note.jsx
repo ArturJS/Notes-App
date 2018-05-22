@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { pure } from 'recompose';
-import { notePropType } from '../../../../common/prop-types/notes.prop-types';
+import { notePropType } from '@common/prop-types/notes.prop-types';
 import NoteEditMode from './components/note-edit-mode';
 import NoteReadonlyMode from './components/note-readonly-mode';
 import './note.scss';

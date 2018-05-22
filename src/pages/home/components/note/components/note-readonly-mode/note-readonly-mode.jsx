@@ -8,8 +8,8 @@ import { connect } from 'react-redux';
 import {
     notesActionsPropType,
     notePropType
-} from '../../../../../../common/prop-types/notes.prop-types';
-import { notesActions } from '../../../../../../common/features/notes';
+} from '@common/prop-types/notes.prop-types';
+import { notesActions } from '@common/features/notes';
 import FilesList from '../../../file-list';
 
 const linkRegexp = /(http[^\s]+)/g;
