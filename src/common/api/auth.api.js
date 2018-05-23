@@ -3,7 +3,12 @@ import { baseApi } from './base.api';
 
 export const authApi = {
     loginWithGoogle() {
-        window.location.replace(`${config.baseURL}/auth/google`);
+        const { baseURL } = config;
+        const returnUrl = encodeURIComponent(window.location.pathname);
+
+        window.location.replace(
+            `${baseURL}/auth/google?returnUrl=${returnUrl}`
+        );
     },
 
     async logout() {

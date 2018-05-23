@@ -16,12 +16,14 @@ export const configurePassport = app => {
             passport.authenticate('google', { scope: ['email', 'profile'] })
         )
         .get('/api/auth/google/callback', async ctx => {
+            const redirectUrl = ctx.request.query.returnUrl || '/';
+
             await passport.authenticate('google', async (err, user) => {
                 if (!user) {
-                    ctx.redirect('/?google-auth-error');
+                    ctx.redirect(`${redirectUrl}?google-auth-error`);
                 } else {
                     await ctx.login(user);
-                    ctx.redirect('/');
+                    ctx.redirect(redirectUrl);
                 }
             })(ctx);
         })
