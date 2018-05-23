@@ -11,19 +11,26 @@ export const configurePassport = app => {
     app.use(passport.session());
 
     router
-        .get(
-            '/api/auth/google',
-            passport.authenticate('google', { scope: ['email', 'profile'] })
-        )
+        .get('/api/auth/google', async (ctx, next) => {
+            const { returnUrl = '/' } = ctx.request.query;
+
+            ctx.session.returnUrl = returnUrl;
+
+            await passport.authenticate('google', {
+                scope: ['email', 'profile']
+            })(ctx, next);
+        })
         .get('/api/auth/google/callback', async ctx => {
-            const redirectUrl = ctx.request.query.returnUrl || '/';
+            const returnUrl = ctx.session.returnUrl || '/';
+
+            ctx.session.returnUrl = null;
 
             await passport.authenticate('google', async (err, user) => {
                 if (!user) {
-                    ctx.redirect(`${redirectUrl}?google-auth-error`);
+                    ctx.redirect(`${returnUrl}?google-auth-error`);
                 } else {
                     await ctx.login(user);
-                    ctx.redirect(redirectUrl);
+                    ctx.redirect(returnUrl);
                 }
             })(ctx);
         })
