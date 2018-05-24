@@ -8,7 +8,7 @@
         "build": "cd src && npx next build",
         "db:create": "npx sequelize db:create",
         "db:migrate": "npx sequelize db:migrate",
-        "dev": "npm run start:dev",
+        "debug": "node --inspect server/index.js",
         "docker:dev": "docker-compose --file docker-compose.dev.yml up",
         "flow": "node ./scripts/tasks/flow.js",
         "precommit": "lint-staged",
