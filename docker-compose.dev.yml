@@ -1,7 +1,7 @@
 version: '3'
 services:
     notes_app_dev:
-        command: nodemon --watch server -e js,mjs server/index.js
+        command: nodemon --legacy-watch server -e js,mjs server/index.js
         build: 
             context: .
             dockerfile: Dockerfile.dev

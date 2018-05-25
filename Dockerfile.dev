@@ -1,18 +1,13 @@
-FROM node:8.10.0-slim
+FROM node:carbon
 
 WORKDIR /usr/node/notes-app
-RUN apt-get update && apt-get install -y openssl curl sudo && \
-  mkdir -p /home/node/.preact-cli /home/node/.config/devcert && \
-  echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-  echo '%node ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-  chown -R node:node . /home/node/
-USER node
 
-COPY --chown=node:node package.json .
-COPY --chown=node:node package-lock.json .
-COPY --chown=node:node ./ ./
+COPY package.json .
+COPY package-lock.json .
 
-RUN npm install && \
-    npm run build:docker
+RUN npm install
+RUN npm rebuild node-sass --force
+
+COPY ./ ./
 
 ENTRYPOINT ["node", "server/index.js"]
