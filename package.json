@@ -33,7 +33,7 @@
     },
     "keywords": [],
     "author": "ArturJS",
-    "license": "ISC",
+    "license": "MIT",
     "devDependencies": {
         "@zeit/next-sass": "0.1.2",
         "autoprefixer": "8.4.1",
