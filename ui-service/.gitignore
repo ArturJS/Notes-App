@@ -1,0 +1,11 @@
+.idea/
+.vscode/
+node_modules/
+build/
+.env
+coverage/
+.next
+webpack-stats.json
+webpack-assets.json
+webpack-bundle-report.html
+
