@@ -13,6 +13,14 @@
     "test:watch": "npx jest --watch --env=jsdom",
     "test:coverage": "npx jest --coverage --env=jsdom"
   },
+  "lint-staged": {
+    "server/**/*.{js,mjs}": [
+      "prettier --write",
+      "eslint --fix",
+      "jest --bail --findRelatedTests --env=jsdom",
+      "git add"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "MIT",
@@ -39,6 +47,7 @@
     "if-env": "1.0.0",
     "jest": "22.4.3",
     "jest-runtime": "22.4.3",
+    "lint-staged": "7.1.2",
     "nodemon": "1.17.2",
     "prettier": "1.9.2"
   },

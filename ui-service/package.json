@@ -7,10 +7,25 @@
     "build": "cd src && npx next build",
     "debug": "node --inspect server/index.js",
     "flow": "node ./scripts/tasks/flow.js",
+    "precommit": "lint-staged",
+    "postcommit": "git update-index --again",
     "start": "node server/index.js",
     "test": "npx jest --env=jsdom",
     "test:watch": "npx jest --watch --env=jsdom",
     "test:coverage": "npx jest --coverage --env=jsdom"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix",
+      "jest --bail --findRelatedTests --env=jsdom",
+      "git add"
+    ],
+    "server/**/*.{js,mjs}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
   },
   "keywords": [],
   "author": "ArturJS",
@@ -54,6 +69,7 @@
     "if-env": "1.0.0",
     "jest": "22.4.3",
     "jest-runtime": "22.4.3",
+    "lint-staged": "7.1.2",
     "node-sass": "4.7.2",
     "null-loader": "0.1.1",
     "postcss-easy-import": "3.0.0",

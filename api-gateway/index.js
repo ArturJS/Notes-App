@@ -21,11 +21,9 @@ const getTargetUrl = (url) => {
     const isApiPath = /^\/api\//.test(url);
 
     if (isApiPath) {
-        // return `${API_BASE_URL}${url}`;
         return API_BASE_URL;
     }
 
-    // return `${UI_BASE_URL}${url}`;
     return UI_BASE_URL;
 };
 
