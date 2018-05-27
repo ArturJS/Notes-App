@@ -10,6 +10,7 @@ import {
     notePropType
 } from '@common/prop-types/notes.prop-types';
 import { notesActions } from '@common/features/notes';
+import { modalProvider } from '@common/features/modal';
 import FilesList from '../../../file-list';
 
 const linkRegexp = /(http[^\s]+)/g;
@@ -38,7 +39,17 @@ export default class NoteReadonlyMode extends Component {
     };
 
     onRemove = async () => {
-        const { id } = this.props.note;
+        const { id, title } = this.props.note;
+        const shouldDelete = await modalProvider.showConfirm({
+            title: 'Please confirm your action',
+            body: ['Are you sure you want to delete ', `note "${title}"?`].join(
+                ''
+            )
+        }).result;
+
+        if (!shouldDelete) {
+            return;
+        }
 
         this.props.notesActions.deleteNoteRequest(id);
     };

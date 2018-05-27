@@ -3,6 +3,7 @@ import { pure, compose, toClass } from 'recompose';
 import { notesApi, authApi } from '@common/api';
 import withReduxStore from '@common/hocs/with-redux-store.jsx';
 import withRootLayout from '@common/hocs/with-root-layout.jsx';
+import { ModalDialog } from '@common/features/modal';
 import AnonymousModeBanner from './components/anonymous-mode-banner';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
@@ -54,6 +55,7 @@ const Home = () => (
         <AnonymousModeBanner />
         <AddNoteForm />
         <NotesList />
+        <ModalDialog />
     </div>
 );
 
