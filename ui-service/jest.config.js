@@ -6,6 +6,7 @@ module.exports = {
         '!src/**/*.test.{js,jsx}',
         '!src/**/*index.{js,jsx}'
     ],
+    setupTestFrameworkScriptFile: '<rootDir>/scripts/tools/jest/enzyme-configure.js',
     setupFiles: ['<rootDir>/scripts/tools/jest/__mocks__/browser-mocks.js'],
     testURL: 'http://localhost:8080',
     transform: {

@@ -24,17 +24,16 @@ const mapDispatchToProps = dispatch => ({
     modalActions: bindActionCreators(modalActions, dispatch)
 });
 
-@connect(mapStateToProps, mapDispatchToProps)
-export default class ModalDialog extends Component {
+class ModalDialog extends Component {
     static propTypes = {
         modalStack: PropTypes.arrayOf(
             PropTypes.shape({
                 id: PropTypes.string.isRequired,
                 title: PropTypes.string.isRequired,
-                body: PropTypes.oneOfType(
+                body: PropTypes.oneOfType([
                     PropTypes.string.isRequired,
                     PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
-                ).isRequired,
+                ]).isRequired,
                 type: PropTypes.string.isRequired,
                 close: PropTypes.func.isRequired,
                 className: PropTypes.string.isRequired,
@@ -49,6 +48,7 @@ export default class ModalDialog extends Component {
 
     close = event => {
         const { id } = event.target.dataset;
+
         this.props.modalActions.closeModal({
             id,
             reason: true
@@ -57,6 +57,7 @@ export default class ModalDialog extends Component {
 
     dismiss = event => {
         const { id } = event.target.dataset;
+
         this.props.modalActions.closeModal({
             id,
             reason: false
@@ -64,8 +65,7 @@ export default class ModalDialog extends Component {
     };
 
     renderModalBody = modal => {
-        const isArrayOfStrings =
-            modal.body && modal.body.length && typeof modal.body !== 'string';
+        const isArrayOfStrings = _.isArray(modal.body);
 
         return (
             <Fragment>
@@ -85,7 +85,7 @@ export default class ModalDialog extends Component {
             <div className="modal-body">{this.renderModalBody(modal)}</div>
             <div className="modal-footer">
                 <button
-                    className="btn btn-primary"
+                    className="btn btn-primary btn-ok"
                     type="button"
                     data-id={modal.id}
                     onClick={this.close}
@@ -94,7 +94,7 @@ export default class ModalDialog extends Component {
                 </button>
                 {modal.type === MODAL_TYPES.confirm && (
                     <button
-                        className="btn btn-default"
+                        className="btn btn-default btn-cancel"
                         type="button"
                         data-id={modal.id}
                         onClick={this.dismiss}
@@ -146,3 +146,5 @@ export default class ModalDialog extends Component {
         );
     }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModalDialog);
