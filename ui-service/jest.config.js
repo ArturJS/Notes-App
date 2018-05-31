@@ -3,6 +3,7 @@ module.exports = {
         'server/**/*.mjs',
         'src/**/*.{js,jsx}',
         '!server/**/index.mjs',
+        '!src/.next/**/*.{js,jsx}',
         '!src/**/*.test.{js,jsx}',
         '!src/**/*index.{js,jsx}'
     ],
