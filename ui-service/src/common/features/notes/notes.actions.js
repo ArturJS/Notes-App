@@ -10,20 +10,11 @@ export const { addNoteRequest, addNoteSuccess, addNoteFailure } = createActions(
             description,
             files
         }),
-        [ADD_NOTE_SUCCESS]: ({
+        [ADD_NOTE_SUCCESS]: ({ id, title, description, files }) => ({
             id,
             title,
             description,
-            files,
-            prev,
-            next
-        }) => ({
-            id,
-            title,
-            description,
-            files,
-            prev,
-            next
+            files
         }),
         [ADD_NOTE_FAILURE]: () => {}
     }
@@ -42,12 +33,10 @@ export const {
         title,
         description
     }),
-    [UPDATE_NOTE_SUCCESS]: ({ id, title, description, prev, next }) => ({
+    [UPDATE_NOTE_SUCCESS]: ({ id, title, description }) => ({
         id,
         title,
-        description,
-        prev,
-        next
+        description
     }),
     [UPDATE_NOTE_FAILURE]: id => ({ id })
 });
@@ -79,9 +68,7 @@ export const {
             id: note.id,
             title: note.title,
             description: note.description,
-            files: note.files,
-            prev: note.prev,
-            next: note.next
+            files: note.files
         }))
     }),
     [GET_ALL_NOTES_FAILURE]: () => {}
@@ -99,7 +86,7 @@ export const {
         id,
         oldIndex,
         newIndex,
-        commitChanges = false
+        commitChanges
     }) => ({
         id,
         oldIndex,
