@@ -11,7 +11,7 @@ import {
 } from './notes.actions';
 
 const initialState = [];
-// todo: use normalized data { [noteId]: note }
+
 /* eslint-disable no-param-reassign */
 const notesReducer = handleActions(
     {
