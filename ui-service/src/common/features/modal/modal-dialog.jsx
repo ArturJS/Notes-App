@@ -106,6 +106,7 @@ const ModalDialog = ({
                 className={`modal ${modal.className}`}
                 shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
                 contentLabel=""
+                ariaHideApp={false}
             >
                 <div className="modal-content">
                     <button
