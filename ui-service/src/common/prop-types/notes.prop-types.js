@@ -5,7 +5,10 @@ export const notePropType = PropTypes.shape({
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    files: filesListPropType
+    files: filesListPropType,
+    meta: PropTypes.shape({
+        transactionId: PropTypes.number
+    })
 });
 
 export const notesListPropType = PropTypes.arrayOf(notePropType);

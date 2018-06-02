@@ -8,6 +8,7 @@ import {
     call,
     actionChannel
 } from 'redux-saga/effects';
+import { ensureState } from 'redux-optimistic-ui';
 import { notesApi } from '../../api';
 import {
     ADD_NOTE_REQUEST,
@@ -118,7 +119,7 @@ function* watchChangeNoteOrder() {
         }
 
         try {
-            const notes = yield select(state => state.notes);
+            const notes = yield select(state => ensureState(state.notes));
             const reorderedNoteIndex = _.findIndex(
                 notes,
                 note => note.id === id

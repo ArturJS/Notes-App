@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { BEGIN, COMMIT, REVERT } from 'redux-optimistic-ui';
 
-let currentTransactionID = 0;
+let currentTransactionID = 1;
 
 const generateNextTransactionID = () => {
     currentTransactionID += 1;

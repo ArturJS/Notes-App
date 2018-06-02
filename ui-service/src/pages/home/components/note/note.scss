@@ -11,8 +11,8 @@
     color: $c-white;
     overflow: hidden;
     margin-bottom: 15px;
-    transition: box-shadow 0.15s ease;
-    will-change: box-shadow;
+    transition: box-shadow 0.15s ease, background-color 0.15s ease;
+    will-change: box-shadow, background-color;
 
     &:hover {
         box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
@@ -20,6 +20,15 @@
 
     &.isDragging {
         opacity: 0;
+    }
+
+    &.isLoading {
+        background-color: #3f51b5;
+        cursor: not-allowed;
+
+        * {
+            cursor: not-allowed;
+        }
     }
 
     &-title {

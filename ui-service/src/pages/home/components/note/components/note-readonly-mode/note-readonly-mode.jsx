@@ -35,10 +35,18 @@ export default class NoteReadonlyMode extends Component {
     };
 
     onEdit = () => {
+        if (this.isLoading()) {
+            return;
+        }
+
         this.props.onEdit();
     };
 
     onRemove = async () => {
+        if (this.isLoading()) {
+            return;
+        }
+
         const { id, title } = this.props.note;
         const shouldDelete = await modalProvider.showConfirm({
             title: 'Please confirm your action',
@@ -54,6 +62,8 @@ export default class NoteReadonlyMode extends Component {
         this.props.notesActions.deleteNoteRequest(id);
     };
 
+    isLoading = () => _.get(this.props.note, 'meta.transactionId', false);
+
     wrapUrlLinks = text =>
         _.escape(text).replace(
             linkRegexp,
@@ -66,12 +76,12 @@ export default class NoteReadonlyMode extends Component {
             // isDragging,
             provided
         } = this.props;
-
         const isDragging = false;
+        const isLoading = this.isLoading();
 
         return (
             <div
-                className={classNames('note', { isDragging })}
+                className={classNames('note', { isDragging, isLoading })}
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}

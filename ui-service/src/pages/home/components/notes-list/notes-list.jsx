@@ -70,6 +70,8 @@ export default class NotesList extends Component {
         });
     };
 
+    isDragDisabled = note => _.get(note, 'meta.transactionId', false);
+
     render() {
         const { notes } = this.props;
 
@@ -91,6 +93,7 @@ export default class NotesList extends Component {
                             {notes.map((note, index) => (
                                 <Draggable
                                     draggableId={note.id}
+                                    isDragDisabled={this.isDragDisabled(note)}
                                     index={index}
                                     key={note.id}
                                 >
