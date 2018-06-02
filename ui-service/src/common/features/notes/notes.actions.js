@@ -1,22 +1,32 @@
 import { createActions, createAction } from 'redux-actions';
 
+const withOptimistic = payloadCreator => [
+    payloadCreator,
+    () => ({
+        isOptimistic: true,
+        synced: false
+    })
+];
+
 export const ADD_NOTE_REQUEST = 'ADD_NOTE_REQUEST';
 export const ADD_NOTE_SUCCESS = 'ADD_NOTE_SUCCESS';
 export const ADD_NOTE_FAILURE = 'ADD_NOTE_FAILURE';
 export const { addNoteRequest, addNoteSuccess, addNoteFailure } = createActions(
     {
-        [ADD_NOTE_REQUEST]: ({ title, description, files }) => ({
+        [ADD_NOTE_REQUEST]: withOptimistic(({ title, description, files }) => ({
             title,
             description,
             files
-        }),
-        [ADD_NOTE_SUCCESS]: ({ id, title, description, files }) => ({
-            id,
-            title,
-            description,
-            files
-        }),
-        [ADD_NOTE_FAILURE]: () => {}
+        })),
+        [ADD_NOTE_SUCCESS]: withOptimistic(
+            ({ id, title, description, files }) => ({
+                id,
+                title,
+                description,
+                files
+            })
+        ),
+        [ADD_NOTE_FAILURE]: withOptimistic(() => {})
     }
 );
 
@@ -28,17 +38,17 @@ export const {
     updateNoteSuccess,
     updateNoteFailure
 } = createActions({
-    [UPDATE_NOTE_REQUEST]: ({ id, title, description }) => ({
+    [UPDATE_NOTE_REQUEST]: withOptimistic(({ id, title, description }) => ({
         id,
         title,
         description
-    }),
-    [UPDATE_NOTE_SUCCESS]: ({ id, title, description }) => ({
+    })),
+    [UPDATE_NOTE_SUCCESS]: withOptimistic(({ id, title, description }) => ({
         id,
         title,
         description
-    }),
-    [UPDATE_NOTE_FAILURE]: id => ({ id })
+    })),
+    [UPDATE_NOTE_FAILURE]: withOptimistic(id => ({ id }))
 });
 
 export const DELETE_NOTE_REQUEST = 'DELETE_NOTE_REQUEST';
@@ -49,9 +59,9 @@ export const {
     deleteNoteSuccess,
     deleteNoteFailure
 } = createActions({
-    [DELETE_NOTE_REQUEST]: id => ({ id }),
-    [DELETE_NOTE_SUCCESS]: id => ({ id }),
-    [DELETE_NOTE_FAILURE]: id => ({ id })
+    [DELETE_NOTE_REQUEST]: withOptimistic(id => ({ id })),
+    [DELETE_NOTE_SUCCESS]: withOptimistic(id => ({ id })),
+    [DELETE_NOTE_FAILURE]: withOptimistic(id => ({ id }))
 });
 
 export const GET_ALL_NOTES_REQUEST = 'GET_ALL_NOTES_REQUEST';

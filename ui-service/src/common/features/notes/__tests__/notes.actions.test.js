@@ -87,7 +87,11 @@ describe('notes.actions.js', () => {
 
                 expect(result).toEqual({
                     type: ADD_NOTE_REQUEST,
-                    payload
+                    payload,
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
+                    }
                 });
             });
         });
@@ -107,7 +111,11 @@ describe('notes.actions.js', () => {
 
                 expect(result).toEqual({
                     type: ADD_NOTE_SUCCESS,
-                    payload
+                    payload,
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
+                    }
                 });
             });
         });
@@ -122,7 +130,11 @@ describe('notes.actions.js', () => {
                 const result = addNoteFailure(extraPayload);
 
                 expect(result).toEqual({
-                    type: ADD_NOTE_FAILURE
+                    type: ADD_NOTE_FAILURE,
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
+                    }
                 });
             });
         });
@@ -143,7 +155,11 @@ describe('notes.actions.js', () => {
 
                 expect(result).toEqual({
                     type: UPDATE_NOTE_REQUEST,
-                    payload
+                    payload,
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
+                    }
                 });
             });
         });
@@ -162,7 +178,11 @@ describe('notes.actions.js', () => {
 
                 expect(result).toEqual({
                     type: UPDATE_NOTE_SUCCESS,
-                    payload
+                    payload,
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
+                    }
                 });
             });
         });
@@ -175,6 +195,10 @@ describe('notes.actions.js', () => {
                     type: UPDATE_NOTE_FAILURE,
                     payload: {
                         id: 1
+                    },
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
                     }
                 });
             });
@@ -190,6 +214,10 @@ describe('notes.actions.js', () => {
                     type: DELETE_NOTE_REQUEST,
                     payload: {
                         id: 123
+                    },
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
                     }
                 });
             });
@@ -203,6 +231,10 @@ describe('notes.actions.js', () => {
                     type: DELETE_NOTE_SUCCESS,
                     payload: {
                         id: 123
+                    },
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
                     }
                 });
             });
@@ -216,6 +248,10 @@ describe('notes.actions.js', () => {
                     type: DELETE_NOTE_FAILURE,
                     payload: {
                         id: 123
+                    },
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
                     }
                 });
             });

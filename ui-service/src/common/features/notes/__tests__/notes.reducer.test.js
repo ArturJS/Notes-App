@@ -1,25 +1,41 @@
-import notesReducer from '../notes.reducer';
+jest.mock('redux-optimistic-ui', () => ({
+    optimistic: jest.fn(reducer => {
+        // eslint-disable-next-line
+        reducer._wrappedWithOptimistic = true;
+
+        return reducer;
+    })
+}));
 
 jest.mock('../notes.actions', () => ({
     ADD_NOTE_SUCCESS: 'ADD_NOTE_SUCCESS',
     UPDATE_NOTE_SUCCESS: 'UPDATE_NOTE_SUCCESS',
-    DELETE_NOTE_SUCCESS: 'DELETE_NOTE_SUCCESS',
+    DELETE_NOTE_REQUEST: 'DELETE_NOTE_REQUEST',
     GET_ALL_NOTES_SUCCESS: 'GET_ALL_NOTES_SUCCESS',
     CHANGE_NOTE_ORDER_REQUEST: 'CHANGE_NOTE_ORDER_REQUEST',
     CLEAR_NOTES: 'CLEAR_NOTES'
 }));
 
-// eslint-disable-next-line import/first
+/* eslint-disable import/first */
+import { optimistic } from 'redux-optimistic-ui';
+import notesReducer from '../notes.reducer';
 import {
     ADD_NOTE_SUCCESS,
     UPDATE_NOTE_SUCCESS,
-    DELETE_NOTE_SUCCESS,
+    DELETE_NOTE_REQUEST,
     GET_ALL_NOTES_SUCCESS,
     CHANGE_NOTE_ORDER_REQUEST,
     CLEAR_NOTES
 } from '../notes.actions';
+/* eslint-enable import/first */
 
 describe('auth.reducer.js', () => {
+    it('should be wrapped with "optimistic" reducer enhancer', () => {
+        // eslint-disable-next-line no-underscore-dangle
+        expect(notesReducer._wrappedWithOptimistic).toBe(true);
+        expect(optimistic).toHaveBeenCalledWith(notesReducer);
+    });
+
     describe('ADD_NOTE_SUCCESS action', () => {
         it('should correctly process ADD_NOTE_SUCCESS action', () => {
             const newNote = {
@@ -34,14 +50,32 @@ describe('auth.reducer.js', () => {
                 description: 'test description 1',
                 files: []
             };
-            const state = [oldNote];
+            const state = [
+                {
+                    ...newNote,
+                    meta: {
+                        transactionId: 1
+                    }
+                },
+                oldNote
+            ];
+            const result = notesReducer(state, {
+                type: ADD_NOTE_SUCCESS,
+                payload: newNote,
+                meta: {
+                    optimistic: {
+                        id: 1
+                    }
+                }
+            });
 
-            expect(
-                notesReducer(state, {
-                    type: ADD_NOTE_SUCCESS,
-                    payload: newNote
-                })
-            ).toEqual([newNote, ...state]);
+            expect(result).toEqual([
+                {
+                    ...newNote,
+                    meta: {}
+                },
+                oldNote
+            ]);
         });
     });
 
@@ -61,22 +95,29 @@ describe('auth.reducer.js', () => {
                     id: 2,
                     title: 'test title 2',
                     description: 'test description 2',
-                    files: []
+                    files: [],
+                    meta: {
+                        transactionId: 1
+                    }
                 }
             ];
             const updatedNote = {
                 id: 2,
-                title: 'NEW test title 2',
-                description: 'NEW test description 2',
-                files: []
+                title: 'test title 2',
+                description: 'test description 2',
+                files: [],
+                meta: {}
             };
+            const result = notesReducer(state, {
+                type: UPDATE_NOTE_SUCCESS,
+                meta: {
+                    optimistic: {
+                        id: 1
+                    }
+                }
+            });
 
-            expect(
-                notesReducer(state, {
-                    type: UPDATE_NOTE_SUCCESS,
-                    payload: updatedNote
-                })
-            ).toEqual([...otherNotes, updatedNote]);
+            expect(result).toEqual([...otherNotes, updatedNote]);
         });
 
         it('should NOT affect existing notes list of there is no such note', () => {
@@ -100,18 +141,22 @@ describe('auth.reducer.js', () => {
                 description: 'NEW test description 3',
                 files: []
             };
+            const result = notesReducer(state, {
+                type: UPDATE_NOTE_SUCCESS,
+                payload: updatedNote,
+                meta: {
+                    optimistic: {
+                        id: 123
+                    }
+                }
+            });
 
-            expect(
-                notesReducer(state, {
-                    type: UPDATE_NOTE_SUCCESS,
-                    payload: updatedNote
-                })
-            ).toEqual(state);
+            expect(result).toEqual(state);
         });
     });
 
-    describe('DELETE_NOTE_SUCCESS action', () => {
-        it('should correctly process DELETE_NOTE_SUCCESS action', () => {
+    describe('DELETE_NOTE_REQUEST action', () => {
+        it('should correctly process DELETE_NOTE_REQUEST action', () => {
             const otherNotes = [
                 {
                     id: 1,
@@ -132,7 +177,7 @@ describe('auth.reducer.js', () => {
 
             expect(
                 notesReducer(state, {
-                    type: DELETE_NOTE_SUCCESS,
+                    type: DELETE_NOTE_REQUEST,
                     payload: {
                         id: 2
                     }
