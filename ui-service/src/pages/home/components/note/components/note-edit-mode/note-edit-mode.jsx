@@ -2,38 +2,25 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { pure } from 'recompose';
 import { Form, Field } from 'react-final-form';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import {
-    notesActionsPropType,
-    notePropType
-} from '@common/prop-types/notes.prop-types';
+import { notePropType } from '@common/prop-types/notes.prop-types';
 import MultilineInput from '@common/components/multiline-input';
-import { notesActions } from '@common/features/notes';
 // import Button from '@common/components/button';
 // import FilesList from '../../../file-list';
 
-const mapDispatchToProps = dispatch => ({
-    notesActions: bindActionCreators(notesActions, dispatch)
-});
-
-@connect(null, mapDispatchToProps)
 @pure
 export default class NoteEditMode extends Component {
     static propTypes = {
         note: notePropType.isRequired,
-        notesActions: notesActionsPropType.isRequired,
         onSave: PropTypes.func.isRequired,
         onCancel: PropTypes.func.isRequired
     };
 
     onSave = ({ title, description }) => {
-        this.props.notesActions.updateNoteRequest({
+        this.props.onSave({
             id: this.props.note.id,
             title,
             description
         });
-        this.props.onSave();
     };
 
     onCancel = () => {
@@ -47,7 +34,7 @@ export default class NoteEditMode extends Component {
             errors.title = 'Please enter title';
         }
         if (!description || !description.trim()) {
-            errors.title = 'Please enter description';
+            errors.description = 'Please enter description';
         }
 
         return errors;

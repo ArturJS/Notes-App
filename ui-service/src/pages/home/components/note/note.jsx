@@ -1,14 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { pure } from 'recompose';
-import { notePropType } from '@common/prop-types/notes.prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {
+    notesActionsPropType,
+    notePropType
+} from '@common/prop-types/notes.prop-types';
+import { notesActions } from '@common/features/notes';
 import NoteEditMode from './components/note-edit-mode';
 import NoteReadonlyMode from './components/note-readonly-mode';
 import './note.scss';
 
+const mapDispatchToProps = dispatch => ({
+    notesActions: bindActionCreators(notesActions, dispatch)
+});
+
+@connect(null, mapDispatchToProps)
 @pure
 export default class Note extends Component {
     static propTypes = {
+        notesActions: notesActionsPropType.isRequired,
         note: notePropType.isRequired,
         provided: PropTypes.shape({
             innerRef: PropTypes.func.isRequired,
@@ -22,15 +34,24 @@ export default class Note extends Component {
     };
 
     onEdit = () => {
-        this.setState({ isEditing: true });
+        this.toggleIsEditing(true);
     };
 
-    onSave = () => {
-        this.setState({ isEditing: false });
+    onRemove = id => {
+        this.props.notesActions.deleteNoteRequest(id);
+    };
+
+    onSave = note => {
+        this.toggleIsEditing(false);
+        this.props.notesActions.updateNoteRequest(note);
     };
 
     onCancel = () => {
-        this.setState({ isEditing: false });
+        this.toggleIsEditing(false);
+    };
+
+    toggleIsEditing = value => {
+        this.setState({ isEditing: value });
     };
 
     render() {
@@ -50,7 +71,11 @@ export default class Note extends Component {
                         onCancel={this.onCancel}
                     />
                 ) : (
-                    <NoteReadonlyMode note={note} onEdit={this.onEdit} />
+                    <NoteReadonlyMode
+                        note={note}
+                        onEdit={this.onEdit}
+                        onRemove={this.onRemove}
+                    />
                 )}
             </div>
         );

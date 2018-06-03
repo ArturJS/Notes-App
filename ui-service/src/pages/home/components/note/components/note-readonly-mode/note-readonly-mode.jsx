@@ -3,28 +3,17 @@ import PropTypes from 'prop-types';
 import { pure } from 'recompose';
 import classNames from 'classnames';
 import _ from 'lodash';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import {
-    notesActionsPropType,
-    notePropType
-} from '@common/prop-types/notes.prop-types';
-import { notesActions } from '@common/features/notes';
+import { notePropType } from '@common/prop-types/notes.prop-types';
 import { modalProvider } from '@common/features/modal';
 import FilesList from '../../../file-list';
 
 const linkRegexp = /(http[^\s]+)/g;
 
-const mapDispatchToProps = dispatch => ({
-    notesActions: bindActionCreators(notesActions, dispatch)
-});
-
-@connect(null, mapDispatchToProps)
 @pure
 export default class NoteReadonlyMode extends Component {
     static propTypes = {
         note: notePropType.isRequired,
-        notesActions: notesActionsPropType.isRequired,
+        onRemove: PropTypes.func.isRequired,
         onEdit: PropTypes.func.isRequired
     };
 
@@ -53,7 +42,7 @@ export default class NoteReadonlyMode extends Component {
             return;
         }
 
-        this.props.notesActions.deleteNoteRequest(id);
+        this.props.onRemove(id);
     };
 
     isLoading = () => _.get(this.props.note, 'meta.transactionId', false);
