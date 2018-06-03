@@ -42,14 +42,7 @@ function* watchAddNote() {
                 })
             );
 
-            yield put(
-                addNoteSuccess({
-                    id: newNote.id,
-                    title: newNote.title,
-                    description: newNote.description,
-                    files: newNote.files
-                })
-            );
+            yield put(addNoteSuccess(newNote));
         } catch (error) {
             yield put(addNoteFailure());
         }

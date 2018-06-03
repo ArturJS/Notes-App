@@ -2,6 +2,7 @@ import produce from 'immer';
 import { handleActions } from 'redux-actions';
 import { optimistic } from 'redux-optimistic-ui';
 import _ from 'lodash';
+import shortId from 'shortid';
 import {
     ADD_NOTE_REQUEST,
     ADD_NOTE_SUCCESS,
@@ -49,12 +50,13 @@ const updateByTransactionId = (state, { payload, meta }) =>
         const index = _.findIndex(
             draftState,
             note => _.get(note, 'meta.transactionId') === transactionId
-        );
+        ); // todo: simplify logic with optimistic updates
+        const notePayload = _.omit(detachTransactionId(payload), 'trackId');
 
         updateNoteByIndex({
             draftState,
             index,
-            payload: detachTransactionId(payload)
+            payload: notePayload
         });
     });
 
@@ -68,6 +70,7 @@ const notesReducer = handleActions(
                 const note = attachTransactionId(payload, meta);
 
                 note.id = generateTempId();
+                note.trackId = shortId.generate();
 
                 draftState.unshift(note);
             }),

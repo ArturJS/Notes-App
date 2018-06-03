@@ -23,12 +23,6 @@ export default class NoteEditMode extends Component {
     static propTypes = {
         note: notePropType.isRequired,
         notesActions: notesActionsPropType.isRequired,
-        isDragging: PropTypes.bool.isRequired,
-        provided: PropTypes.shape({
-            innerRef: PropTypes.func.isRequired,
-            draggableProps: PropTypes.object.isRequired,
-            dragHandleProps: PropTypes.object.isRequired
-        }).isRequired,
         onSave: PropTypes.func.isRequired,
         onCancel: PropTypes.func.isRequired
     };
@@ -60,16 +54,13 @@ export default class NoteEditMode extends Component {
     };
 
     render() {
-        const { note, provided } = this.props;
+        const { note } = this.props;
 
         return (
             <Form
                 onSubmit={this.onSave}
                 validate={this.validate}
                 initialValues={note}
-                innerRef={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
                 render={({ handleSubmit, invalid }) => (
                     <form className="note" onSubmit={handleSubmit} noValidate>
                         <div>

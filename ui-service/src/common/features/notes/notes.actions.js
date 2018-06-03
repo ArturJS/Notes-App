@@ -19,11 +19,12 @@ export const { addNoteRequest, addNoteSuccess, addNoteFailure } = createActions(
             files
         })),
         [ADD_NOTE_SUCCESS]: withOptimistic(
-            ({ id, title, description, files }) => ({
+            ({ id, title, description, files, trackId }) => ({
                 id,
                 title,
                 description,
-                files
+                files,
+                trackId
             })
         ),
         [ADD_NOTE_FAILURE]: withOptimistic(() => {})
@@ -78,7 +79,8 @@ export const {
             id: note.id,
             title: note.title,
             description: note.description,
-            files: note.files
+            files: note.files,
+            trackId: note.trackId
         }))
     }),
     [GET_ALL_NOTES_FAILURE]: () => {}

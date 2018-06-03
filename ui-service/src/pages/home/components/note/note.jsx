@@ -10,7 +10,6 @@ import './note.scss';
 export default class Note extends Component {
     static propTypes = {
         note: notePropType.isRequired,
-        isDragging: PropTypes.bool.isRequired,
         provided: PropTypes.shape({
             innerRef: PropTypes.func.isRequired,
             draggableProps: PropTypes.object.isRequired,
@@ -35,24 +34,25 @@ export default class Note extends Component {
     };
 
     render() {
-        const { note, isDragging, provided } = this.props;
+        const { note, provided } = this.props;
         const { isEditing } = this.state;
 
-        return isEditing ? (
-            <NoteEditMode
-                note={note}
-                isDragging={isDragging}
-                provided={provided}
-                onSave={this.onSave}
-                onCancel={this.onCancel}
-            />
-        ) : (
-            <NoteReadonlyMode
-                note={note}
-                isDragging={isDragging}
-                provided={provided}
-                onEdit={this.onEdit}
-            />
+        return (
+            <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+            >
+                {isEditing ? (
+                    <NoteEditMode
+                        note={note}
+                        onSave={this.onSave}
+                        onCancel={this.onCancel}
+                    />
+                ) : (
+                    <NoteReadonlyMode note={note} onEdit={this.onEdit} />
+                )}
+            </div>
         );
     }
 }

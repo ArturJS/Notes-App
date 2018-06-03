@@ -6,6 +6,7 @@ export const notePropType = PropTypes.shape({
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     files: filesListPropType,
+    trackId: PropTypes.string.isRequired,
     meta: PropTypes.shape({
         transactionId: PropTypes.number
     })

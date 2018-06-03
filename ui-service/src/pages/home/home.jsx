@@ -1,5 +1,5 @@
 import React from 'react';
-import { pure, compose, toClass } from 'recompose';
+import { pure, compose } from 'recompose';
 import { notesApi, authApi } from '@common/api';
 import withReduxStore from '@common/hocs/with-redux-store.jsx';
 import withRootLayout from '@common/hocs/with-root-layout.jsx';
@@ -11,7 +11,6 @@ import '../../common/style/index.scss';
 import './home.scss';
 
 const enhance = compose(
-    toClass,
     withReduxStore({
         async getInitialReduxState({ req }) {
             const apiParams = {

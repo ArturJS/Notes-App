@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { TransitionGroup } from 'react-transition-group';
 import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd';
 import _ from 'lodash';
 import {
@@ -9,6 +10,7 @@ import {
     notesListPropType
 } from '@common/prop-types/notes.prop-types';
 import { notesActions, notesSelectors } from '@common/features/notes';
+import AnimateHeight from '@common/components/animate-height';
 import Note from '../note';
 import './notes-list.scss';
 
@@ -72,6 +74,31 @@ export default class NotesList extends Component {
 
     isDragDisabled = note => _.get(note, 'meta.transactionId', false);
 
+    renderDraggableItem = (note, index) => (
+        <Draggable
+            draggableId={note.trackId}
+            isDragDisabled={this.isDragDisabled(note)}
+            index={index}
+            key={note.trackId}
+        >
+            {(dragProvided, dragSnapshot) => (
+                <Note
+                    note={note}
+                    key={note.trackId}
+                    index={index}
+                    isDragging={dragSnapshot.isDragging}
+                    provided={dragProvided}
+                />
+            )}
+        </Draggable>
+    );
+
+    renderAnimatedItem = (note, index) => (
+        <AnimateHeight key={note.trackId}>
+            {this.renderDraggableItem(note, index)}
+        </AnimateHeight>
+    );
+
     render() {
         const { notes } = this.props;
 
@@ -90,24 +117,11 @@ export default class NotesList extends Component {
                             ref={dropProvided.innerRef}
                             {...dropProvided.droppableProps}
                         >
-                            {notes.map((note, index) => (
-                                <Draggable
-                                    draggableId={note.id}
-                                    isDragDisabled={this.isDragDisabled(note)}
-                                    index={index}
-                                    key={note.id}
-                                >
-                                    {(dragProvided, dragSnapshot) => (
-                                        <Note
-                                            note={note}
-                                            key={note.id}
-                                            index={index}
-                                            isDragging={dragSnapshot.isDragging}
-                                            provided={dragProvided}
-                                        />
-                                    )}
-                                </Draggable>
-                            ))}
+                            <TransitionGroup>
+                                {notes.map((note, index) =>
+                                    this.renderAnimatedItem(note, index)
+                                )}
+                            </TransitionGroup>
                         </div>
                     )}
                 </Droppable>

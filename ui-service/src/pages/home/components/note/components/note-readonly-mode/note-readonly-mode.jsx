@@ -25,12 +25,6 @@ export default class NoteReadonlyMode extends Component {
     static propTypes = {
         note: notePropType.isRequired,
         notesActions: notesActionsPropType.isRequired,
-        isDragging: PropTypes.bool.isRequired,
-        provided: PropTypes.shape({
-            innerRef: PropTypes.func.isRequired,
-            draggableProps: PropTypes.object.isRequired,
-            dragHandleProps: PropTypes.object.isRequired
-        }).isRequired,
         onEdit: PropTypes.func.isRequired
     };
 
@@ -71,21 +65,12 @@ export default class NoteReadonlyMode extends Component {
         );
 
     render() {
-        const {
-            note,
-            // isDragging,
-            provided
-        } = this.props;
+        const { note } = this.props;
         const isDragging = false;
         const isLoading = this.isLoading();
 
         return (
-            <div
-                className={classNames('note', { isDragging, isLoading })}
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-            >
+            <div className={classNames('note', { isDragging, isLoading })}>
                 <div>
                     <i
                         className="icon icon-left icon-pencil"

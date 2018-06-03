@@ -1,10 +1,12 @@
+import shortId from 'shortid';
 import { baseApi } from './base.api';
 
 const mapNote = note => ({
     id: +note.id,
     title: note.title,
     description: note.description,
-    files: note.files || []
+    files: note.files || [],
+    trackId: shortId.generate()
 });
 
 export const REORDERING_TYPES = {
