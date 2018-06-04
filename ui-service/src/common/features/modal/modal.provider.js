@@ -1,5 +1,6 @@
 import shortid from 'shortid';
 import store from '@common/store';
+import { sleep } from '../../utils';
 import * as modalActions from './modal.actions';
 
 export const MODAL_TYPES = {
@@ -8,6 +9,9 @@ export const MODAL_TYPES = {
     info: 'INFO_MODAL',
     custom: 'CUSTOM_MODAL'
 };
+
+// it's necessary to perform exit animation in modal-dialog.jsx
+const CLOSE_DELAY_MS = 10;
 
 class Modal {
     constructor({
@@ -28,6 +32,7 @@ class Modal {
         this.className = className;
         this.shouldCloseOnOverlayClick = shouldCloseOnOverlayClick;
         this.noBackdrop = noBackdrop;
+        this.isOpen = true;
     }
 }
 
@@ -75,12 +80,16 @@ class ModalProvider {
         };
     }
 
-    closeAll(reason) {
+    async closeAll(reason) {
         store.dispatch(
-            modalActions.closeAllModals({
+            modalActions.closeAllModalsRequest({
                 reason
             })
         );
+
+        await sleep(CLOSE_DELAY_MS);
+
+        store.dispatch(modalActions.closeAllModalsSuccess());
     }
 
     _openModal({ title, body, type, className, noBackdrop }) {
@@ -104,9 +113,7 @@ class ModalProvider {
             )
         );
 
-        result.then(() => {
-            this._closeModal(id);
-        });
+        result.then(reason => this._closeModal({ id, reason }));
 
         return {
             result,
@@ -114,8 +121,12 @@ class ModalProvider {
         };
     }
 
-    _closeModal(id) {
-        store.dispatch(modalActions.closeModal({ id }));
+    async _closeModal({ id, reason }) {
+        store.dispatch(modalActions.closeModalRequest({ id, reason }));
+
+        await sleep(CLOSE_DELAY_MS);
+
+        store.dispatch(modalActions.closeModalSuccess({ id }));
     }
 }
 

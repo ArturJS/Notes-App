@@ -3,11 +3,18 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Modal from 'react-modal';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { compose, pure, withHandlers } from 'recompose';
 import _ from 'lodash';
-import * as modalActions from './modal.actions';
-import { MODAL_TYPES } from './modal.provider';
+import * as modalActions from '../modal.actions';
+import { MODAL_TYPES } from '../modal.provider';
 import './modal-dialog.scss';
+
+const defaultBackdropStyle = {
+    overlay: {
+        backgroundColor: ''
+    }
+};
 
 const noBackdropStyle = {
     overlay: {
@@ -31,7 +38,7 @@ const enhance = compose(
         close: props => event => {
             const { id } = event.target.dataset;
 
-            props.modalActions.closeModal({
+            props.modalActions.closeModalRequest({
                 id,
                 reason: true
             });
@@ -40,7 +47,7 @@ const enhance = compose(
         dismiss: props => event => {
             const { id } = event.target.dataset;
 
-            props.modalActions.closeModal({
+            props.modalActions.closeModalRequest({
                 id,
                 reason: false
             });
@@ -100,31 +107,49 @@ const ModalDialog = ({
         {modalStack.map(modal => (
             <Modal
                 key={modal.id}
-                isOpen
+                isOpen={modal.isOpen}
                 onRequestClose={dismiss}
-                style={modal.noBackdrop ? noBackdropStyle : {}}
+                style={
+                    modal.noBackdrop ? noBackdropStyle : defaultBackdropStyle
+                }
                 className={`modal ${modal.className}`}
                 shouldCloseOnOverlayClick={modal.shouldCloseOnOverlayClick}
+                closeTimeoutMS={300}
                 contentLabel=""
                 ariaHideApp={false}
             >
-                <div className="modal-content">
-                    <button
-                        type="button"
-                        className="close"
-                        data-id={modal.id}
-                        onClick={dismiss}
-                    >
-                        &times;
-                    </button>
-                    <div className="modal-header">
-                        <h3 className="modal-title">{modal.title}</h3>
-                    </div>
-                    {modal.type === MODAL_TYPES.custom &&
-                        renderCustomType(modal)}
-                    {modal.type !== MODAL_TYPES.custom &&
-                        renderStandardType(modal)}
-                </div>
+                <TransitionGroup>
+                    {modal.isOpen && (
+                        <CSSTransition
+                            key={modal.id}
+                            appear
+                            timeout={300}
+                            classNames="modal-show"
+                            mountOnEnter
+                            unmountOnExit
+                        >
+                            <div className="modal-content">
+                                <button
+                                    type="button"
+                                    className="close"
+                                    data-id={modal.id}
+                                    onClick={dismiss}
+                                >
+                                    &times;
+                                </button>
+                                <div className="modal-header">
+                                    <h3 className="modal-title">
+                                        {modal.title}
+                                    </h3>
+                                </div>
+                                {modal.type === MODAL_TYPES.custom &&
+                                    renderCustomType(modal)}
+                                {modal.type !== MODAL_TYPES.custom &&
+                                    renderStandardType(modal)}
+                            </div>
+                        </CSSTransition>
+                    )}
+                </TransitionGroup>
             </Modal>
         ))}
     </Fragment>
@@ -148,7 +173,7 @@ ModalDialog.propTypes = {
     ).isRequired,
     // eslint-disable-next-line react/no-unused-prop-types
     modalActions: PropTypes.shape({
-        closeModal: PropTypes.func.isRequired
+        closeModalRequest: PropTypes.func.isRequired
     }).isRequired,
     dismiss: PropTypes.func.isRequired,
     renderCustomType: PropTypes.func.isRequired,

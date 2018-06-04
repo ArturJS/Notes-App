@@ -1,4 +1,4 @@
-@import '../../style/utils';
+@import '../../../style/utils';
 
 .modal {
   $c-modal-bg: $c-desert-storm;
@@ -126,6 +126,30 @@
   }
 }
 
+.modal-show {
+  &-appear {
+    opacity: 0.01;
+    transform: scale(0.5);
+
+    &.modal-show-appear-active {
+      opacity: 1;
+      transform: scale(1);
+      transition: all 300ms ease-out;
+    }
+  }
+
+  &-exit {
+    opacity: 1;
+    transform: scale(1);
+
+    &.modal-show-exit-active {
+      opacity: 0.01;
+      transform: scale(0.5);
+      transition: all 300ms ease-out;
+    }
+  }
+}
+
 .ReactModal__Overlay {
   z-index: 999;
   overflow-y: auto;
@@ -133,9 +157,19 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
+  background-color: rgba(255, 255, 255, 0);
+  transition: background-color 300ms ease-out;
 
   @media (min-width: $tablet-width) {
     align-items: center;
+  }
+
+  &--after-open {
+    background-color: rgba(255, 255, 255, 0.75);
+  }
+
+  &--before-close {
+    background-color: rgba(255, 255, 255, 0);
   }
 }
 
