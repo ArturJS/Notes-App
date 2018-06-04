@@ -94,19 +94,16 @@ export const {
     changeNoteOrderSuccess,
     changeNoteOrderFailure
 } = createActions({
-    [CHANGE_NOTE_ORDER_REQUEST]: ({
-        id,
-        oldIndex,
-        newIndex,
-        commitChanges
-    }) => ({
-        id,
-        oldIndex,
-        newIndex,
-        commitChanges
-    }),
-    [CHANGE_NOTE_ORDER_SUCCESS]: id => ({ id }),
-    [CHANGE_NOTE_ORDER_FAILURE]: id => ({ id })
+    [CHANGE_NOTE_ORDER_REQUEST]: withOptimistic(
+        ({ id, oldIndex, newIndex, commitChanges }) => ({
+            id,
+            oldIndex,
+            newIndex,
+            commitChanges
+        })
+    ),
+    [CHANGE_NOTE_ORDER_SUCCESS]: withOptimistic(id => ({ id })),
+    [CHANGE_NOTE_ORDER_FAILURE]: withOptimistic(id => ({ id }))
 });
 
 export const CLEAR_NOTES = 'CLEAR_NOTES';

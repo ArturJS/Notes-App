@@ -314,7 +314,11 @@ describe('notes.actions.js', () => {
 
                 expect(result).toEqual({
                     type: CHANGE_NOTE_ORDER_REQUEST,
-                    payload
+                    payload,
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
+                    }
                 });
             });
         });
@@ -327,6 +331,10 @@ describe('notes.actions.js', () => {
                     type: CHANGE_NOTE_ORDER_SUCCESS,
                     payload: {
                         id: 123
+                    },
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
                     }
                 });
             });
@@ -340,6 +348,10 @@ describe('notes.actions.js', () => {
                     type: CHANGE_NOTE_ORDER_FAILURE,
                     payload: {
                         id: 123
+                    },
+                    meta: {
+                        isOptimistic: true,
+                        synced: false
                     }
                 });
             });
