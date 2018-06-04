@@ -1,18 +1,30 @@
 import {
     OPEN_MODAL,
-    CLOSE_MODAL,
-    CLOSE_ALL_MODALS,
+    CLOSE_MODAL_REQUEST,
+    CLOSE_MODAL_SUCCESS,
+    CLOSE_ALL_MODALS_REQUEST,
+    CLOSE_ALL_MODALS_SUCCESS,
     openModal,
-    closeModal,
-    closeAllModals
+    closeModalRequest,
+    closeModalSuccess,
+    closeAllModalsRequest,
+    closeAllModalsSuccess
 } from '../modal.actions';
 
 describe('modal.actions.js', () => {
     it('should export correct action types', () => {
-        expect([OPEN_MODAL, CLOSE_MODAL, CLOSE_ALL_MODALS]).toEqual([
+        expect([
+            OPEN_MODAL,
+            CLOSE_MODAL_REQUEST,
+            CLOSE_MODAL_SUCCESS,
+            CLOSE_ALL_MODALS_REQUEST,
+            CLOSE_ALL_MODALS_SUCCESS
+        ]).toEqual([
             'OPEN_MODAL',
-            'CLOSE_MODAL',
-            'CLOSE_ALL_MODALS'
+            'CLOSE_MODAL_REQUEST',
+            'CLOSE_MODAL_SUCCESS',
+            'CLOSE_ALL_MODALS_REQUEST',
+            'CLOSE_ALL_MODALS_SUCCESS'
         ]);
     });
 
@@ -29,7 +41,7 @@ describe('modal.actions.js', () => {
         });
     });
 
-    describe('"closeModal" action creator', () => {
+    describe('"closeModalRequest" action creator', () => {
         it('should return object with correct "type"', () => {
             const extraInfo = {
                 extraField: 'extraValue'
@@ -38,19 +50,32 @@ describe('modal.actions.js', () => {
                 id: 'modalId_123',
                 reason: 'some test reason'
             };
-            const result = closeModal({
+            const result = closeModalRequest({
                 ...payload,
                 ...extraInfo
             });
 
             expect(result).toEqual({
-                type: CLOSE_MODAL,
+                type: CLOSE_MODAL_REQUEST,
                 payload
             });
         });
     });
 
-    describe('"closeAllModals" action creator', () => {
+    describe('"closeModalSuccess" action creator', () => {
+        it('should return object with correct "type"', () => {
+            const result = closeModalSuccess(123);
+
+            expect(result).toEqual({
+                type: CLOSE_MODAL_SUCCESS,
+                payload: {
+                    id: 123
+                }
+            });
+        });
+    });
+
+    describe('"closeAllModalsRequest" action creator', () => {
         it('should return object with correct "type"', () => {
             const extraInfo = {
                 extraField: 'extraValue'
@@ -58,14 +83,24 @@ describe('modal.actions.js', () => {
             const payload = {
                 reason: 'some test reason'
             };
-            const result = closeAllModals({
+            const result = closeAllModalsRequest({
                 ...payload,
                 ...extraInfo
             });
 
             expect(result).toEqual({
-                type: CLOSE_ALL_MODALS,
+                type: CLOSE_ALL_MODALS_REQUEST,
                 payload
+            });
+        });
+    });
+
+    describe('"closeAllModalsSuccess" action creator', () => {
+        it('should return object with correct "type"', () => {
+            const result = closeAllModalsSuccess();
+
+            expect(result).toEqual({
+                type: CLOSE_ALL_MODALS_SUCCESS
             });
         });
     });
