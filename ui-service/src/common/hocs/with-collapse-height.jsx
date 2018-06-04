@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Transition } from 'react-transition-group';
+import { sleep } from '@common/utils';
 
 const withCollapseHeight = (
     { duration } = { duration: 300 }
@@ -13,7 +14,6 @@ const withCollapseHeight = (
             element.style.setProperty(key, value);
         });
     };
-    const sleep = delay => new Promise(resolve => setTimeout(resolve, delay));
     const initAnimation = async ({ element, height }) => {
         await sleep(0);
         element.style.setProperty('height', `${height}px`);

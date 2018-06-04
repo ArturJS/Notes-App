@@ -1,7 +1,12 @@
 import { take, call, put, all, fork } from 'redux-saga/effects';
-import { authApi } from '../../../api';
 import { notesActions } from '../../notes';
 
+jest.mock('../../../api', () => ({
+    authApi: {
+        loginWithGoogle: jest.fn(),
+        logout: jest.fn()
+    }
+}));
 jest.mock('../auth.actions', () => ({
     LOGIN_REQUEST: 'LOGIN_REQUEST',
     LOGIN_SUCCESS: 'LOGIN_SUCCESS',
@@ -28,6 +33,7 @@ import watchAuth, {
     watchLoginSuccess,
     watchLogout
 } from '../auth.saga';
+import { authApi } from '../../../api';
 /* eslint-enable import/first */
 
 describe('auth.saga.js', () => {

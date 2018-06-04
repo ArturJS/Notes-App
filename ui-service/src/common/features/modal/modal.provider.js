@@ -46,6 +46,21 @@ class ModalProvider {
         };
     }
 
+    showError({ title, body, className = '' }) {
+        const { result, close } = this._openModal({
+            title,
+            body,
+            type: MODAL_TYPES.error,
+            className: `modal-error ${className}`,
+            noBackdrop: true
+        });
+
+        return {
+            result,
+            close
+        };
+    }
+
     showCustom({ title, body, className }) {
         const { result, close } = this._openModal({
             title,
@@ -68,7 +83,7 @@ class ModalProvider {
         );
     }
 
-    _openModal({ title, body, type, className }) {
+    _openModal({ title, body, type, className, noBackdrop }) {
         let close;
         const result = new Promise(resolve => {
             close = resolve;
@@ -83,7 +98,8 @@ class ModalProvider {
                     body,
                     type,
                     className,
-                    close
+                    close,
+                    noBackdrop
                 })
             )
         );
