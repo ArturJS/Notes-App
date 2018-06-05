@@ -39,6 +39,31 @@ jest.mock(
         </div>
     )
 );
+jest.mock('react-transition-group', () => ({
+    CSSTransition: ({children, ...restProps}) => (
+        <div className="css-transition">
+            <div className="props">
+                {JSON.stringify(
+                    restProps,
+                    (prop, value) => {
+                        if (typeof value === 'function') {
+                            return `function ${prop}`;
+                        }
+
+                        return value;
+                    },
+                    '    '
+                )}
+            </div>
+            {children}
+        </div>
+    ),
+    TransitionGroup: ({children}) => (
+        <div className="transition-group">
+            {children}
+        </div>
+    )
+}));
 /* eslint-enable react/prop-types */
 jest.mock('redux', () => ({
     bindActionCreators: jest.fn(actions => actions)
@@ -66,10 +91,10 @@ jest.mock('react-redux', () => {
     return reactRedux;
 });
 /* eslint-disable-next-line react/prop-types */
-jest.mock('../modal.actions', () => ({
-    closeModal: jest.fn()
+jest.mock('../../modal.actions', () => ({
+    closeModalRequest: jest.fn()
 }));
-jest.mock('../modal.provider', () => ({
+jest.mock('../../modal.provider', () => ({
     MODAL_TYPES: {
         error: 'ERROR_MODAL',
         confirm: 'CONFIRM_MODAL',
@@ -81,8 +106,8 @@ jest.mock('../modal.provider', () => ({
 /* eslint-disable import/first */
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as modalActions from '../modal.actions';
-import { MODAL_TYPES } from '../modal.provider';
+import * as modalActions from '../../modal.actions';
+import { MODAL_TYPES } from '../../modal.provider';
 import ModalDialog from '../modal-dialog.jsx';
 /* eslint-enable import/first */
 
@@ -97,7 +122,8 @@ describe('<ModalDialog />', () => {
                 close: () => {},
                 className: 'test-confirm-modal-class',
                 shouldCloseOnOverlayClick: true,
-                noBackdrop: false
+                noBackdrop: false,
+                isOpen: true
             },
             {
                 id: '2',
@@ -107,7 +133,8 @@ describe('<ModalDialog />', () => {
                 close: () => {},
                 className: 'test-custom-modal-class',
                 shouldCloseOnOverlayClick: false,
-                noBackdrop: true
+                noBackdrop: true,
+                isOpen: true
             }
         ];
         const tree = renderer
@@ -131,7 +158,8 @@ describe('<ModalDialog />', () => {
                 close: () => {},
                 className: 'test-confirm-modal-class',
                 shouldCloseOnOverlayClick: true,
-                noBackdrop: false
+                noBackdrop: false,
+                isOpen: true
             }
         ];
         const wrapper = mount(
@@ -175,7 +203,8 @@ describe('<ModalDialog />', () => {
                     close: () => {},
                     className: 'test-confirm-modal-class',
                     shouldCloseOnOverlayClick: true,
-                    noBackdrop: false
+                    noBackdrop: false,
+                    isOpen: true
                 }
             ];
 
@@ -190,7 +219,7 @@ describe('<ModalDialog />', () => {
 
             wrapper.find('.modal-footer .btn-ok').simulate('click');
 
-            expect(modalActions.closeModal).toHaveBeenCalledWith({
+            expect(modalActions.closeModalRequest).toHaveBeenCalledWith({
                 id: '1',
                 reason: true
             });
@@ -208,11 +237,12 @@ describe('<ModalDialog />', () => {
                     close: () => {},
                     className: 'test-confirm-modal-class',
                     shouldCloseOnOverlayClick: true,
-                    noBackdrop: false
+                    noBackdrop: false,
+                    isOpen: true
                 }
             ];
 
-            modalActions.closeModal = jest.fn();
+            modalActions.closeModalRequest = jest.fn();
 
             const wrapper = mount(
                 <ModalDialog
@@ -223,7 +253,7 @@ describe('<ModalDialog />', () => {
 
             wrapper.find('.modal-footer .btn-cancel').simulate('click');
 
-            expect(modalActions.closeModal).toHaveBeenCalledWith({
+            expect(modalActions.closeModalRequest).toHaveBeenCalledWith({
                 id: '1',
                 reason: false
             });
@@ -239,11 +269,12 @@ describe('<ModalDialog />', () => {
                     close: () => {},
                     className: 'test-confirm-modal-class',
                     shouldCloseOnOverlayClick: true,
-                    noBackdrop: false
+                    noBackdrop: false,
+                    isOpen: true
                 }
             ];
 
-            modalActions.closeModal = jest.fn();
+            modalActions.closeModalRequest = jest.fn();
 
             const wrapper = mount(
                 <ModalDialog
@@ -254,7 +285,7 @@ describe('<ModalDialog />', () => {
 
             wrapper.find('.modal-content .close').simulate('click');
 
-            expect(modalActions.closeModal).toHaveBeenCalledWith({
+            expect(modalActions.closeModalRequest).toHaveBeenCalledWith({
                 id: '1',
                 reason: false
             });
