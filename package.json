@@ -10,7 +10,9 @@
         "start:api-service": "cd api-service && npm start",
         "start:ui-service": "cd ui-service && npm start",
         "precommit": "cd ui-service && lint-staged && cd ../api-service && lint-staged",
-        "postcommit": "git update-index --again"
+        "postcommit": "git update-index --again",
+        "postinstall": "cd ui-service && npm install && cd ../api-service && npm install",
+        "test": "cd ui-service && npm test && cd ../api-service && npm test"
     },
     "keywords": [],
     "author": "ArturJS",
