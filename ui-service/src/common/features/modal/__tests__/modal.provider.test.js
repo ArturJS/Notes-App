@@ -6,8 +6,8 @@ jest.mock('@common/store', () => ({
 }));
 jest.mock('../modal.actions', () => ({
     openModal: jest.fn(() => 'openModal result'),
-    closeModal: jest.fn(() => 'closeModal result'),
-    closeAllModals: jest.fn(() => 'closeAllModals result')
+    closeModalRequest: jest.fn(() => 'closeModalRequest result'),
+    closeAllModalsRequest: jest.fn(() => 'closeAllModalsRequest result')
 }));
 /* eslint-disable import/first */
 import * as modalActions from '../modal.actions';
@@ -41,15 +41,13 @@ describe('modal.provider.js', () => {
 
             expect(store.dispatch).toHaveBeenCalledWith('openModal result');
 
-            const closePayload = {
-                reason: 'Some test reason'
-            };
+            const reason = 'Some test reason';
 
-            close(closePayload);
+            close(reason);
 
             const resultOfClose = await result;
 
-            expect(resultOfClose).toEqual(closePayload);
+            expect(resultOfClose).toEqual(reason);
             expect(modalActions.openModal).toHaveBeenCalledWith({
                 id: 'test_modal_id',
                 title: 'Test title',
@@ -58,12 +56,16 @@ describe('modal.provider.js', () => {
                 className: 'test-class-name',
                 close,
                 shouldCloseOnOverlayClick: true,
-                noBackdrop: false
+                noBackdrop: false,
+                isOpen: true
             });
-            expect(modalActions.closeModal).toHaveBeenCalledWith({
-                id: 'test_modal_id'
+            expect(modalActions.closeModalRequest).toHaveBeenCalledWith({
+                id: 'test_modal_id',
+                reason
             });
-            expect(store.dispatch).toHaveBeenCalledWith('closeModal result');
+            expect(store.dispatch).toHaveBeenCalledWith(
+                'closeModalRequest result'
+            );
         });
     });
 
@@ -77,15 +79,13 @@ describe('modal.provider.js', () => {
 
             expect(store.dispatch).toHaveBeenCalledWith('openModal result');
 
-            const closePayload = {
-                reason: 'Some test reason'
-            };
+            const reason = 'Some test reason';
 
-            close(closePayload);
+            close(reason);
 
             const resultOfClose = await result;
 
-            expect(resultOfClose).toEqual(closePayload);
+            expect(resultOfClose).toEqual(reason);
             expect(modalActions.openModal).toHaveBeenCalledWith({
                 id: 'test_modal_id',
                 title: 'Test title',
@@ -94,12 +94,16 @@ describe('modal.provider.js', () => {
                 className: 'test-class-name',
                 close,
                 shouldCloseOnOverlayClick: true,
-                noBackdrop: false
+                noBackdrop: false,
+                isOpen: true
             });
-            expect(modalActions.closeModal).toHaveBeenCalledWith({
-                id: 'test_modal_id'
+            expect(modalActions.closeModalRequest).toHaveBeenCalledWith({
+                id: 'test_modal_id',
+                reason
             });
-            expect(store.dispatch).toHaveBeenCalledWith('closeModal result');
+            expect(store.dispatch).toHaveBeenCalledWith(
+                'closeModalRequest result'
+            );
         });
     });
 
@@ -107,11 +111,11 @@ describe('modal.provider.js', () => {
         it('should dispatch "closeAllModals" request', () => {
             modalProvider.closeAll('ASAP!!!');
 
-            expect(modalActions.closeAllModals).toHaveBeenCalledWith({
+            expect(modalActions.closeAllModalsRequest).toHaveBeenCalledWith({
                 reason: 'ASAP!!!'
             });
             expect(store.dispatch).toHaveBeenCalledWith(
-                'closeAllModals result'
+                'closeAllModalsRequest result'
             );
         });
     });
