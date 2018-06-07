@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FieldError /> \`renderError\` method renders error if has touched && error 1`] = `
+<div
+  className="field-error"
+/>
+`;
+
+exports[`<FieldError /> \`renderError\` method renders nothing if has no error 1`] = `null`;
+
+exports[`<FieldError /> renders correctly 1`] = `
+"{
+    \\"name\\": \\"testField\\",
+    \\"subscription\\": {
+        \\"touched\\": true,
+        \\"error\\": true
+    }
+}"
+`;
