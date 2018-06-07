@@ -1,6 +1,16 @@
+jest.mock('@root/common/models', () => ({
+    Users: {
+        findAll: jest.fn(),
+        findOne: jest.fn(),
+        create: jest.fn()
+    }
+}));
+
+/* eslint-disable import/first */
 import _ from 'lodash';
 import db from '@root/common/models';
 import usersDal from '../users.dal';
+/* eslint-enable import/first */
 
 describe('UsersDAL', () => {
     describe('getAll()', () => {
@@ -22,11 +32,7 @@ describe('UsersDAL', () => {
                 }
             ];
 
-            _.extend(db, {
-                Users: {
-                    findAll: jest.fn(async () => users)
-                }
-            });
+            db.Users.findAll = jest.fn(async () => users);
 
             const resultUsersList = await usersDal.getAll();
             const expectedUsersList = users.map(user =>
@@ -40,11 +46,7 @@ describe('UsersDAL', () => {
 
     describe('getByEmail()', () => {
         it('should return null if there is no such user', async () => {
-            _.extend(db, {
-                Users: {
-                    findOne: jest.fn(async () => undefined)
-                }
-            });
+            db.Users.findOne = jest.fn(async () => undefined);
 
             const testEmail = 'wrong@email.com';
             const resultUser = await usersDal.getByEmail(testEmail);
@@ -60,17 +62,13 @@ describe('UsersDAL', () => {
         it('should return exact user data', async () => {
             const testEmail = 'john-doe@email.com';
 
-            _.extend(db, {
-                Users: {
-                    findOne: jest.fn(async () => ({
-                        id: 1,
-                        firstName: 'John',
-                        lastName: 'Doe',
-                        email: testEmail,
-                        extraInfo: 'some extra info'
-                    }))
-                }
-            });
+            db.Users.findOne = jest.fn(async () => ({
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                email: testEmail,
+                extraInfo: 'some extra info'
+            }));
 
             const resultUser = await usersDal.getByEmail(testEmail);
 
@@ -96,11 +94,7 @@ describe('UsersDAL', () => {
                 email: 'john-doe@email.com'
             };
 
-            _.extend(db, {
-                Users: {
-                    create: jest.fn(async () => testUser)
-                }
-            });
+            db.Users.create = jest.fn(async () => testUser);
 
             const resultUser = await usersDal.create({
                 ...testUser,

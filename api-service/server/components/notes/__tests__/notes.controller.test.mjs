@@ -1,5 +1,16 @@
+jest.mock('../notes.service', () => ({
+    getAll: jest.fn(),
+    getById: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    reorder: jest.fn(),
+    remove: jest.fn()
+}));
+
+/* eslint-disable import/first */
 import notesService from '../notes.service';
 import notesController from '../notes.controller';
+/* eslint-enable import/first */
 
 describe('NotesController', () => {
     describe('getAll()', () => {
