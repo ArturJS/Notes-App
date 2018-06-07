@@ -3,4 +3,9 @@
     max-width: 700px;
     margin: 0 auto;
     position: relative;
+
+
+    [data-react-beautiful-dnd-drag-handle] {
+        padding-bottom: 15px;
+    }
 }
