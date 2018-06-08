@@ -25,7 +25,7 @@ describe('<FieldError />', () => {
                     renderError({
                         meta: {
                             touched: true,
-                            error: true
+                            error: 'test error'
                         }
                     })
                 )
@@ -41,7 +41,7 @@ describe('<FieldError />', () => {
                     renderError({
                         meta: {
                             touched: true,
-                            error: false
+                            error: ''
                         }
                     })
                 )

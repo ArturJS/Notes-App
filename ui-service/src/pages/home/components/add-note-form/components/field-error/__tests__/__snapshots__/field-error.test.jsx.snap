@@ -3,7 +3,9 @@
 exports[`<FieldError /> \`renderError\` method renders error if has touched && error 1`] = `
 <div
   className="field-error"
-/>
+>
+  test error
+</div>
 `;
 
 exports[`<FieldError /> \`renderError\` method renders nothing if has no error 1`] = `null`;
