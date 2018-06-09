@@ -12,7 +12,7 @@ jest.mock('react-collapse', () => ({
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { mount } from 'enzyme';
-import Header from '../header.jsx';
+import Header, { HeaderClass } from '../header.jsx';
 /* eslint-enable import/first */
 
 let originalWindowScroll;
@@ -36,22 +36,26 @@ describe('<FieldError />', () => {
     describe('toggle `isExpanded` state', () => {
         it('changes after click on .header-hamburger', () => {
             const wrapper = mount(<Header />);
-            const { isExpanded: originalIsExpanded } = wrapper.instance().state;
+            const { isExpanded: originalIsExpanded } = wrapper
+                .find(HeaderClass)
+                .props();
 
             wrapper.find('.header-hamburger').simulate('click');
 
-            const { isExpanded } = wrapper.instance().state;
+            const { isExpanded } = wrapper.find(HeaderClass).props();
 
             expect(isExpanded).not.toBe(originalIsExpanded);
         });
 
         it('changes after keyPress on .header-hamburger', () => {
             const wrapper = mount(<Header />);
-            const { isExpanded: originalIsExpanded } = wrapper.instance().state;
+            const { isExpanded: originalIsExpanded } = wrapper
+                .find(HeaderClass)
+                .props();
 
             wrapper.find('.header-hamburger').simulate('keyPress');
 
-            const { isExpanded } = wrapper.instance().state;
+            const { isExpanded } = wrapper.find(HeaderClass).props();
 
             expect(isExpanded).not.toBe(originalIsExpanded);
         });
