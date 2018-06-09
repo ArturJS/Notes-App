@@ -1,6 +1,10 @@
 jest.mock('react-final-form', () => ({
     Field: props => JSON.stringify(props, null, '    ')
 }));
+jest.mock('react-transition-group', () => ({
+    TransitionGroup: ({ children }) => children,
+    CSSTransition: ({ children }) => children
+}));
 
 /* eslint-disable import/first */
 import React from 'react';

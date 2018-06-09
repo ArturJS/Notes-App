@@ -3,14 +3,33 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { compose, pure, withHandlers, toClass } from 'recompose';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './field-error.scss';
 
 const enhance = compose(
     pure,
     withHandlers({
         // eslint-disable-next-line react/prop-types
-        renderError: () => ({ meta: { touched, error } }) =>
-            touched && error ? <div className="field-error">{error}</div> : null
+        renderError: ({ name }) => ({ meta: { touched, error } }) => {
+            const showError = touched && error;
+
+            return (
+                <TransitionGroup>
+                    {showError && (
+                        <CSSTransition
+                            key={name}
+                            appear
+                            timeout={350}
+                            classNames="hopping-anim"
+                            mountOnEnter
+                            unmountOnExit
+                        >
+                            <div className="field-error">{error}</div>
+                        </CSSTransition>
+                    )}
+                </TransitionGroup>
+            );
+        }
     })
 );
 

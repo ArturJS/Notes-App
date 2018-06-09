@@ -10,3 +10,35 @@
     pointer-events: none;
     user-select: none;
 }
+
+.hopping-anim {
+    &-enter {
+        &-active,
+        &-done {
+            animation: hopping-anim 350ms ease-out both;
+        }
+    }
+
+    &-exit {
+        &-active {
+            animation: hopping-anim 350ms ease-out both reverse;
+        }
+    }
+}
+
+@keyframes hopping-anim {
+    0% {
+        transform: translateY(0);
+        z-index: 0;
+    }
+
+    50% {
+        transform: translateY(-100%);
+        z-index: 1;
+    }
+
+    100% {
+        transform: translateY(0);
+        z-index: 1;
+    }
+}

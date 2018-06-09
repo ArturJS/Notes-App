@@ -32,6 +32,8 @@
     resize: vertical;
     min-height: 35px;
     font-size: 16px;
+    position: relative;
+    z-index: 1;
 
     &:focus {
         outline: none;
