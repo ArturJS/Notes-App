@@ -2,10 +2,11 @@
 .vscode/
 node_modules/
 build/
-.env
 coverage/
+logs/
+.env
 .next
 webpack-stats.json
 webpack-assets.json
 webpack-bundle-report.html
-
+*.log
