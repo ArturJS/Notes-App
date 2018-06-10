@@ -296,17 +296,21 @@ class NotesDAL {
             where: { userId }
         });
 
-        if (notesList.length === 0) {
-            return [];
-        }
+        const isNotFirstAndLastNotesAvailableCheck = notes => {
+            if (notesList.length === 0) {
+                return false;
+            }
 
-        const isNotFirstAndLastNotesAvailable = notes => {
             const firstNote = notes.find(note => !note.nextId);
             const lastNote = notes.find(note => !note.prevId);
 
             return !(firstNote && lastNote);
         };
-        const isBrokenReference = notes => {
+        const isBrokenReferenceCheck = notes => {
+            if (notesList.length === 0) {
+                return false;
+            }
+
             const firstNote = notes.find(note => !note.nextId);
             const passedNotesSet = new Set([firstNote]);
             const getNoteById = noteId =>
@@ -328,30 +332,40 @@ class NotesDAL {
 
             return false;
         };
+        const isNotFirstAndLastNotesAvailable = isNotFirstAndLastNotesAvailableCheck(
+            notesList
+        );
+        const isBrokenReference = isBrokenReferenceCheck(notesList);
+        const isWrongRefs =
+            isNotFirstAndLastNotesAvailable || isBrokenReference;
 
-        if (isNotFirstAndLastNotesAvailable(notesList)) {
+        if (isWrongRefs) {
             // todo use logger
             /* eslint-disable no-console */
             console.error('Inconsistent data in database!');
-            console.error('Cannot find first or last note!');
+
+            if (isNotFirstAndLastNotesAvailable) {
+                console.error('Cannot find first or last note!');
+            } else if (isBrokenReference) {
+                console.error('Broken references in database!');
+            } else {
+                console.error('Unknown references error in database!');
+            }
+
             console.error(
                 `Notes for userId="${userId}" will be returned as is...`
             );
             /* eslint-enable no-console */
+
+            const notesIds = notesList.map(({ id }) => id);
+
+            await this._autoFixBrokenRefs(notesIds);
 
             return notesList; // todo: probably we should fix broken references???
         }
 
-        if (isBrokenReference(notesList)) {
-            /* eslint-disable no-console */
-            console.error('Inconsistent data in database!');
-            console.error('Broken references in database!');
-            console.error(
-                `Notes for userId="${userId}" will be returned as is...`
-            );
-            /* eslint-enable no-console */
-
-            return notesList; // todo: probably we should fix broken references???
+        if (notesList.length === 0) {
+            return [];
         }
 
         const sortedNotesList = [];
@@ -365,6 +379,31 @@ class NotesDAL {
         }
 
         return sortedNotesList.map(mapNote);
+    }
+
+    async _autoFixBrokenRefs(notesIds: number[]): Promise<void> {
+        await withinTransaction(async transaction => {
+            const allUpdatesPromises = notesIds.map((noteId, index) => {
+                const isFirst = index === 0;
+                const isLast = index === notesIds.length - 1;
+                const updatePromise = db.Notes.update(
+                    {
+                        prevId: isFirst ? null : notesIds[index - 1],
+                        nextId: isLast ? null : notesIds[index + 1]
+                    },
+                    {
+                        where: {
+                            id: noteId
+                        }
+                    },
+                    { transaction, lock: transaction.LOCK.UPDATE }
+                );
+
+                return updatePromise;
+            });
+
+            return Promise.all(allUpdatesPromises);
+        });
     }
 }
 
