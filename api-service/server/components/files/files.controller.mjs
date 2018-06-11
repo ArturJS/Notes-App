@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import asyncBusboy from 'async-busboy';
+import logger from '@root/common/logger';
 import filesService from './files.service';
 
 const getUserId = ctx => _.get(ctx, 'session.passport.user.id');
@@ -30,7 +31,7 @@ const uploadFile = async ctx => {
             }
         });
 
-        console.log('busboyData', busboyData);
+        logger.info(`busboyData ${busboyData}`);
     });
 };
 

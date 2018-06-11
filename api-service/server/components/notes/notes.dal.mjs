@@ -1,5 +1,6 @@
 // @flow
 import db from '@root/common/models';
+import logger from '@root/common/logger';
 import type { REORDERING_TYPES_TYPE } from './notes.enums';
 
 type TNoteEssential = {|
@@ -340,28 +341,22 @@ class NotesDAL {
             isNotFirstAndLastNotesAvailable || isBrokenReference;
 
         if (isWrongRefs) {
-            // todo use logger
-            /* eslint-disable no-console */
-            console.error('Inconsistent data in database!');
-
-            if (isNotFirstAndLastNotesAvailable) {
-                console.error('Cannot find first or last note!');
-            } else if (isBrokenReference) {
-                console.error('Broken references in database!');
-            } else {
-                console.error('Unknown references error in database!');
-            }
-
-            console.error(
-                `Notes for userId="${userId}" will be returned as is...`
+            logger.error(
+                [
+                    `Exception in NotesDAL._getSortedNotesByUserId(${userId}) `,
+                    'Inconsistent data in database!',
+                    isNotFirstAndLastNotesAvailable
+                        ? 'Cannot find first or last note!'
+                        : 'Broken references in database!',
+                    `Notes for userId="${userId}" will be returned as is...`
+                ].join('')
             );
-            /* eslint-enable no-console */
 
             const notesIds = notesList.map(({ id }) => id);
 
             await this._autoFixBrokenRefs(notesIds);
 
-            return notesList; // todo: probably we should fix broken references???
+            return notesList;
         }
 
         if (notesList.length === 0) {

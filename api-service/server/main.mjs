@@ -4,6 +4,7 @@ import bodyParser from 'koa-bodyparser';
 import session from 'koa-session';
 import cors from '@koa/cors';
 import config from '@root/common/config';
+import logger from '@root/common/logger';
 import { errorMiddleware } from '@root/common/middlewares';
 import { configurePassport } from '@root/common/configure-passport';
 import { apiServer } from './api.server';
@@ -26,10 +27,6 @@ app
 
 configurePassport(app);
 
-app
-    .use(mount('/api', apiServer))
-    .listen(PORT, () => {
-        // todo use winston logger
-        // eslint-disable-next-line no-console
-        console.log(`Server is listening at ${PORT} port`);
-    });
+app.use(mount('/api', apiServer)).listen(PORT, () => {
+    logger.info(`Server is listening at ${PORT} port`);
+});

@@ -5,6 +5,7 @@ import mimeType from 'mime-types';
 import axios from 'axios';
 import config from '@config';
 import db from '@root/common/models';
+import logger from '@root/common/logger';
 
 type TGetFile = null | {|
     id: number,
@@ -60,8 +61,12 @@ class FilesDAL {
                 downloadStream
             };
         } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(err); // todo: use logger
+            logger.error(
+                [
+                    `Exception in FilesDAL.getById(${userId}, ${fileId})`,
+                    err
+                ].join('')
+            );
 
             return null;
         }
@@ -134,8 +139,12 @@ class FilesDAL {
                 }
             });
         } catch (err) {
-            // eslint-disable-next-line no-console
-            console.error(err);
+            logger.error(
+                [
+                    `Exception in FilesDAL.remove(${userId}, ${fileId})`,
+                    err
+                ].join('')
+            );
         }
 
         await db.Files.destroy(ormQuery);
