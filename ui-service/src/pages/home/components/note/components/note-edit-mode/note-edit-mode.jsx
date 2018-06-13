@@ -4,6 +4,7 @@ import { pure } from 'recompose';
 import { Form, Field } from 'react-final-form';
 import { notePropType } from '@common/prop-types/notes.prop-types';
 import MultilineInput from '@common/components/multiline-input';
+import FieldError from '../../../field-error';
 // import Button from '@common/components/button';
 // import FilesList from '../../../file-list';
 
@@ -66,23 +67,29 @@ export default class NoteEditMode extends Component {
                                 tabIndex="0"
                             />
                         </div>
-                        <div className="note-title">
-                            <Field
-                                name="title"
-                                component="input"
-                                className="form-control"
-                                autoComplete="off"
-                                placeholder="Note title..."
-                            />
+                        <div className="note-title is-editing">
+                            <div className="control-field">
+                                <Field
+                                    name="title"
+                                    component="input"
+                                    className="form-control"
+                                    autoComplete="off"
+                                    placeholder="Note title..."
+                                />
+                                <FieldError name="title" />
+                            </div>
                         </div>
                         <div className="note-description is-editing">
-                            <Field
-                                name="description"
-                                component={MultilineInput}
-                                className="note-description-control"
-                                autoComplete="off"
-                                placeholder="Note description..."
-                            />
+                            <div className="control-field">
+                                <Field
+                                    name="description"
+                                    component={MultilineInput}
+                                    className="note-description-control"
+                                    autoComplete="off"
+                                    placeholder="Note description..."
+                                />
+                                <FieldError name="description" />
+                            </div>
                         </div>
                         {/* <FilesList
                             files={note.files}
