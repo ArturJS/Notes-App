@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import withCollapseHeight from '@common/hocs/with-collapse-height';
 import { childrenPropType } from '@common/prop-types/components.prop-types';
 
-const AnimateHeight = ({ children, ...restProps }) => (
-    <div {...restProps}>{children}</div>
-);
+const AnimateHeight = ({ children }) => <Fragment>{children}</Fragment>;
 
 AnimateHeight.propTypes = {
     children: childrenPropType.isRequired

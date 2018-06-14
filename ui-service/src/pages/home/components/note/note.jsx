@@ -25,7 +25,7 @@ export default class Note extends Component {
         provided: PropTypes.shape({
             innerRef: PropTypes.func.isRequired,
             draggableProps: PropTypes.object.isRequired,
-            dragHandleProps: PropTypes.object.isRequired
+            dragHandleProps: PropTypes.object
         }).isRequired
     };
 

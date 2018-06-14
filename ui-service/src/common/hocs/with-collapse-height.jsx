@@ -1,9 +1,8 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { Transition } from 'react-transition-group';
 import { sleep } from '@common/utils';
+import { childrenPropType } from '@common/prop-types/components.prop-types';
 
 const withCollapseHeight = (
     { duration } = { duration: 300 }
@@ -26,20 +25,7 @@ const withCollapseHeight = (
 
     return class CollapseHeight extends React.Component {
         static propTypes = {
-            isDragging: PropTypes.bool,
-            provided: PropTypes.shape({
-                innerRef: PropTypes.func.isRequired,
-                draggableProps: PropTypes.object.isRequired,
-                dragHandleProps: PropTypes.object.isRequired
-            })
-        };
-        static defaultProps = {
-            isDragging: false,
-            provided: {
-                innerRef: _.noop,
-                draggableProps: {},
-                dragHandleProps: {}
-            }
+            children: childrenPropType.isRequired
         };
 
         handleEnter = () => {
@@ -81,7 +67,7 @@ const withCollapseHeight = (
         };
 
         render() {
-            const { isDragging, provided, ...restProps } = this.props;
+            const { children, ...restProps } = this.props;
 
             return (
                 <Transition
@@ -91,12 +77,7 @@ const withCollapseHeight = (
                     onExit={this.handleExit}
                     unmountOnExit
                 >
-                    <WrappedComponent
-                        key="child"
-                        isDragging={isDragging}
-                        provided={provided}
-                        {...restProps}
-                    />
+                    <WrappedComponent>{children}</WrappedComponent>
                 </Transition>
             );
         }
