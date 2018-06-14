@@ -15,7 +15,7 @@ export const REORDERING_TYPES = {
 };
 
 export const notesApi = {
-    async getAll(options) {
+    async getAll(options = {}) {
         const { data: notes } = await baseApi.ajax({
             method: 'get',
             url: '/notes',
