@@ -19,6 +19,10 @@ export default class MultilineInput extends Component {
         placeholder: ''
     };
 
+    componentDidMount() {
+        this.autofitContent();
+    }
+
     setTextareaRef = node => {
         this.textareaEl = node;
     };
