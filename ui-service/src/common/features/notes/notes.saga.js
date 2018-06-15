@@ -8,7 +8,6 @@ import {
     call,
     actionChannel
 } from 'redux-saga/effects';
-import { delay } from 'redux-saga';
 import { ensureState } from 'redux-optimistic-ui';
 import { notesApi } from '../../api';
 import {
@@ -88,12 +87,6 @@ function* watchDeleteNote() {
 function* watchGetAllNotes() {
     while (true) {
         yield take(GET_ALL_NOTES_REQUEST);
-
-        // todo fix this hack
-        // probably it happens during initial bootstrapping
-        // when not all modules are resolved
-        // and one of sagas trying to dispatch GET_ALL_NOTES_REQUEST action
-        yield delay(0);
 
         try {
             const notes = yield call(() => notesApi.getAll());
