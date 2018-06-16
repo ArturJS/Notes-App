@@ -69,6 +69,7 @@ export default class NoteEditMode extends Component {
                         </div>
                         <div className="note-title is-editing">
                             <div className="control-field">
+                                <FieldError name="title" />
                                 <Field
                                     name="title"
                                     component="input"
@@ -76,11 +77,11 @@ export default class NoteEditMode extends Component {
                                     autoComplete="off"
                                     placeholder="Note title..."
                                 />
-                                <FieldError name="title" />
                             </div>
                         </div>
                         <div className="note-description is-editing">
                             <div className="control-field">
+                                <FieldError name="description" />
                                 <Field
                                     name="description"
                                     component={MultilineInput}
@@ -88,7 +89,6 @@ export default class NoteEditMode extends Component {
                                     autoComplete="off"
                                     placeholder="Note description..."
                                 />
-                                <FieldError name="description" />
                             </div>
                         </div>
                         {/* <FilesList

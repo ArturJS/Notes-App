@@ -174,6 +174,7 @@ export default class AddNoteForm extends Component<Props, State> {
                         noValidate
                     >
                         <div className="control-field">
+                            <FieldError name="title" />
                             <Field
                                 name="title"
                                 component="input"
@@ -181,9 +182,9 @@ export default class AddNoteForm extends Component<Props, State> {
                                 autoComplete="off"
                                 placeholder="Note title..."
                             />
-                            <FieldError name="title" />
                         </div>
                         <div className="control-field">
+                            <FieldError name="description" />
                             <Field
                                 name="description"
                                 component={MultilineInput}
@@ -191,7 +192,6 @@ export default class AddNoteForm extends Component<Props, State> {
                                 autoComplete="off"
                                 placeholder="Note description..."
                             />
-                            <FieldError name="description" />
                         </div>
                         <FilesList
                             files={uploadedFiles}
