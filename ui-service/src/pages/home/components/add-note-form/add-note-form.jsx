@@ -14,6 +14,7 @@ import { Form, Field } from '@common/features/form';
 import { notesActionsPropType } from '@common/prop-types/notes.prop-types';
 import MultilineInput from '@common/components/multiline-input';
 import { notesActions } from '@common/features/notes';
+import { modalProvider } from '@common/features/modal';
 import FilesList from '../file-list';
 import './add-note-form.scss';
 
@@ -70,38 +71,76 @@ export default class AddNoteForm extends Component<Props, State> {
         this.setState({ uploadedFiles: [] });
     };
 
-    createNote = async ({ title, description }: Note): Promise<void> => {
-        await this.waitForFilesUploading();
+    setFileInputRef = node => {
+        this.fileInputRef = node;
+    };
 
-        this.props.notesActions.addNoteRequest({
-            title,
-            description,
-            files: this.state.uploadedFiles.map(
-                ({ downloadPath, name, id, size }) => ({
-                    downloadPath,
-                    name,
-                    id,
-                    size
-                })
-            )
+    resetFileInput = () => {
+        const input = this.fileInputRef;
+
+        input.value = '';
+
+        if (!/safari/i.test(window.navigator.userAgent)) {
+            input.type = '';
+            input.type = 'file';
+        }
+    };
+
+    validateTotalFilesSize = newFiles => {
+        const TEN_MEGABYTES = 10 * 1024 * 1024;
+        const allFiles = [...newFiles, ...this.state.uploadedFiles];
+        const allFileSizes = allFiles.map(({ size }) => size);
+        const totalFilesSize = allFileSizes.reduce(
+            (acc, value) => acc + value,
+            0
+        );
+
+        return totalFilesSize <= TEN_MEGABYTES;
+    };
+
+    attachFiles = async e => {
+        // todo: validate and remove duplications
+        const files = Array.from(e.target.files);
+        const isInvalid = !this.validateTotalFilesSize(files);
+
+        this.resetFileInput();
+
+        if (isInvalid) {
+            modalProvider.showError({
+                title: 'Error!',
+                body: 'Total allowed files size is 10 megabytes.'
+            });
+
+            return;
+        }
+
+        const fileUploadPromises = files.map(this.uploadFile);
+
+        this.setState(prevState => ({
+            fileUploadPromises: [
+                ...prevState.fileUploadPromises,
+                ...fileUploadPromises
+            ],
+            filesList: [...prevState.filesList, ...files]
+        }));
+
+        const uploadedFiles = await Promise.all(fileUploadPromises);
+
+        this.setState({
+            uploadedFiles: [...this.state.uploadedFiles, ...uploadedFiles],
+            filesList: []
         });
     };
 
-    waitForFilesUploading = async () => {
-        await Promise.all(this.state.fileUploadPromises);
-    };
+    uploadFile = async (file: File) => {
+        const { id, downloadPath, name, size } = await filesApi.create(file);
 
-    validate = ({ title, description }: NoteValidate) => {
-        const errors = {};
-
-        if (!title || !title.trim()) {
-            errors.title = 'Please enter title';
-        }
-        if (!description || !description.trim()) {
-            errors.description = 'Please enter description';
-        }
-
-        return errors;
+        return {
+            id,
+            downloadPath,
+            name,
+            size
+        };
     };
 
     removeFile = (fileToRemove: File | TFile): void => {
@@ -124,35 +163,37 @@ export default class AddNoteForm extends Component<Props, State> {
         filesApi.remove(uploadedFile.id);
     };
 
-    uploadFile = async (file: File) => {
-        const { id, downloadPath, name, size } = await filesApi.create(file);
+    validate = ({ title, description }: NoteValidate) => {
+        const errors = {};
 
-        return {
-            id,
-            downloadPath,
-            name,
-            size
-        };
+        if (!title || !title.trim()) {
+            errors.title = 'Please enter title';
+        }
+        if (!description || !description.trim()) {
+            errors.description = 'Please enter description';
+        }
+
+        return errors;
     };
 
-    attachFiles = async e => {
-        // todo: validate and remove duplications
-        const files = Array.from(e.target.files);
-        const fileUploadPromises = files.map(this.uploadFile);
+    waitForFilesUploading = async () => {
+        await Promise.all(this.state.fileUploadPromises);
+    };
 
-        this.setState(prevState => ({
-            fileUploadPromises: [
-                ...prevState.fileUploadPromises,
-                ...fileUploadPromises
-            ],
-            filesList: [...prevState.filesList, ...files]
-        }));
+    createNote = async ({ title, description }: Note): Promise<void> => {
+        await this.waitForFilesUploading();
 
-        const uploadedFiles = await Promise.all(fileUploadPromises);
-
-        this.setState({
-            uploadedFiles: [...this.state.uploadedFiles, ...uploadedFiles],
-            filesList: []
+        this.props.notesActions.addNoteRequest({
+            title,
+            description,
+            files: this.state.uploadedFiles.map(
+                ({ downloadPath, name, id, size }) => ({
+                    downloadPath,
+                    name,
+                    id,
+                    size
+                })
+            )
         });
     };
 
@@ -205,6 +246,7 @@ export default class AddNoteForm extends Component<Props, State> {
                                     <input
                                         type="file"
                                         multiple
+                                        ref={this.setFileInputRef}
                                         onChange={this.attachFiles}
                                     />
                                     Attach files
