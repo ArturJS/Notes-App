@@ -20,7 +20,8 @@ import './add-note-form.scss';
 type TFile = {|
     id: number,
     downloadPath: string,
-    name: string
+    name: string,
+    size: number
 |};
 
 type Note = {
@@ -76,10 +77,11 @@ export default class AddNoteForm extends Component<Props, State> {
             title,
             description,
             files: this.state.uploadedFiles.map(
-                ({ downloadPath, name, id }) => ({
+                ({ downloadPath, name, id, size }) => ({
                     downloadPath,
                     name,
-                    id
+                    id,
+                    size
                 })
             )
         });
@@ -123,12 +125,13 @@ export default class AddNoteForm extends Component<Props, State> {
     };
 
     uploadFile = async (file: File) => {
-        const { id, downloadPath, name } = await filesApi.create(file);
+        const { id, downloadPath, name, size } = await filesApi.create(file);
 
         return {
             id,
             downloadPath,
-            name
+            name,
+            size
         };
     };
 

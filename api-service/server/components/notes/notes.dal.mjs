@@ -235,6 +235,7 @@ class NotesDAL {
 
             await this._connectOldSiblings(targetNote, transactionParams);
 
+            // todo remove related files
             await db.Notes.destroy(
                 {
                     where: {

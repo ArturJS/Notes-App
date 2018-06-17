@@ -12,7 +12,8 @@ const noteEssentialSchema = {
             joi.object({
                 id: joi.number().required(),
                 downloadPath: joi.string().required(),
-                name: joi.string().required()
+                name: joi.string().required(),
+                size: joi.number().required()
             })
         )
         .required()

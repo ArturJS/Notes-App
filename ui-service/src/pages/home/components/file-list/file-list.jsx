@@ -12,7 +12,11 @@ const FilesList = ({ files, onRemove }) => {
     return (
         <ul className="files-list list-unstyled">
             {files.map(file => (
-                <FilesListItem file={file} onRemove={onRemove} />
+                <FilesListItem
+                    key={file.name}
+                    file={file}
+                    onRemove={onRemove}
+                />
             ))}
         </ul>
     );

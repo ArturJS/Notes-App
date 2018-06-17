@@ -13,6 +13,10 @@ const Files = (sequelize, DataTypes) => {
         downloadPath: {
             type: DataTypes.TEXT,
             allowNull: false
+        },
+        size: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     });
 
