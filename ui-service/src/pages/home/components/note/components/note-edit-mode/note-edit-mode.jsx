@@ -1,12 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { pure } from 'recompose';
-import { Form, Field } from 'react-final-form';
+import { Form, Field } from '@common/features/form';
 import { notePropType } from '@common/prop-types/notes.prop-types';
 import MultilineInput from '@common/components/multiline-input';
-import FieldError from '../../../field-error';
-// import Button from '@common/components/button';
-// import FilesList from '../../../file-list';
 
 @pure
 export default class NoteEditMode extends Component {
@@ -46,11 +43,12 @@ export default class NoteEditMode extends Component {
 
         return (
             <Form
+                className="note"
                 onSubmit={this.onSave}
                 validate={this.validate}
                 initialValues={note}
-                render={({ handleSubmit, invalid }) => (
-                    <form className="note" onSubmit={handleSubmit} noValidate>
+                render={({ invalid }) => (
+                    <Fragment>
                         <div>
                             <button
                                 type="submit"
@@ -68,49 +66,23 @@ export default class NoteEditMode extends Component {
                             />
                         </div>
                         <div className="note-title is-editing">
-                            <div className="control-field">
-                                <FieldError name="title" />
-                                <Field
-                                    name="title"
-                                    component="input"
-                                    className="form-control"
-                                    autoComplete="off"
-                                    placeholder="Note title..."
-                                />
-                            </div>
+                            <Field
+                                name="title"
+                                component="input"
+                                autoComplete="off"
+                                placeholder="Note title..."
+                            />
                         </div>
                         <div className="note-description is-editing">
-                            <div className="control-field">
-                                <FieldError name="description" />
-                                <Field
-                                    name="description"
-                                    component={MultilineInput}
-                                    className="note-description-control"
-                                    autoComplete="off"
-                                    placeholder="Note description..."
-                                />
-                            </div>
+                            <Field
+                                name="description"
+                                component={MultilineInput}
+                                className="note-description-control"
+                                autoComplete="off"
+                                placeholder="Note description..."
+                            />
                         </div>
-                        {/* <FilesList
-                            files={note.files}
-                            onRemove={this.onRemoveFile}
-                        /> */}
-                        {/*
-                        <div className={'buttons-group'}>
-                            <Button
-                                type="button"
-                                className={'btn-file'}
-                                theme="hot">
-                                <input
-                                    type="file"
-                                    multiple
-                                    onChange={this.attachFiles}
-                                />
-                                Attach files
-                            </Button>
-                        </div>
-                        */}
-                    </form>
+                    </Fragment>
                 )}
             />
         );

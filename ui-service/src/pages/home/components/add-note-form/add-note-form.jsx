@@ -1,9 +1,8 @@
 // @flow
 // import type { FormApi } from 'final-form/dist/types.js.flow';
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Field } from 'react-final-form';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
@@ -11,10 +10,10 @@ import _ from 'lodash';
 import { filesApi } from '@common/api'; // todo: use redux actions
 import Button from '@common/components/button';
 import { authSelectors } from '@common/features/auth';
+import { Form, Field } from '@common/features/form';
 import { notesActionsPropType } from '@common/prop-types/notes.prop-types';
 import MultilineInput from '@common/components/multiline-input';
 import { notesActions } from '@common/features/notes';
-import FieldError from '../field-error';
 import FilesList from '../file-list';
 import './add-note-form.scss';
 
@@ -64,11 +63,6 @@ export default class AddNoteForm extends Component<Props, State> {
     };
 
     onSubmit = async (values: Note, formApi) => {
-        // if (!firebaseProvider.isLoggedIn()) {
-        //     // todo @connect with authState
-        //     return;
-        // }
-
         await this.createNote(values);
 
         formApi.reset();
@@ -165,34 +159,23 @@ export default class AddNoteForm extends Component<Props, State> {
 
         return (
             <Form
+                className="add-note-form"
                 onSubmit={this.onSubmit}
                 validate={this.validate}
-                render={({ handleSubmit, pristine }) => (
-                    <form
-                        onSubmit={handleSubmit}
-                        className="add-note-form"
-                        noValidate
-                    >
-                        <div className="control-field">
-                            <FieldError name="title" />
-                            <Field
-                                name="title"
-                                component="input"
-                                className="form-control"
-                                autoComplete="off"
-                                placeholder="Note title..."
-                            />
-                        </div>
-                        <div className="control-field">
-                            <FieldError name="description" />
-                            <Field
-                                name="description"
-                                component={MultilineInput}
-                                className="form-control"
-                                autoComplete="off"
-                                placeholder="Note description..."
-                            />
-                        </div>
+                render={({ pristine }) => (
+                    <Fragment>
+                        <Field
+                            name="title"
+                            component="input"
+                            autoComplete="off"
+                            placeholder="Note title..."
+                        />
+                        <Field
+                            name="description"
+                            component={MultilineInput}
+                            autoComplete="off"
+                            placeholder="Note description..."
+                        />
                         <FilesList
                             files={uploadedFiles}
                             onRemove={this.removeFile}
@@ -225,7 +208,7 @@ export default class AddNoteForm extends Component<Props, State> {
                                 </Button>
                             )}
                         </div>
-                    </form>
+                    </Fragment>
                 )}
             />
         );
