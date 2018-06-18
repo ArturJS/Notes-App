@@ -12,20 +12,52 @@ const showErrorNotify = async () => {
     close();
 };
 
+const makeRequest = async requestParams => {
+    const source = axios.CancelToken.source();
+    const request = axios({
+        ...config,
+        ...requestParams,
+        cancelToken: source.token
+    });
+
+    if (typeof requestParams.provideCancel === 'function') {
+        requestParams.provideCancel(source.cancel);
+    }
+
+    return request;
+};
+
+const processError = async (error, requestParams) => {
+    if (axios.isCancel(error)) {
+        // eslint-disable-next-line no-console
+        console.info('Request cancelled.');
+
+        return {
+            data: null
+        };
+    }
+
+    if (!requestParams.suppressErrorNotify) {
+        await showErrorNotify();
+    }
+
+    // eslint-disable-next-line no-console
+    console.error(error);
+    throw error;
+};
+
 export const baseApi = {
-    async ajax(request) {
+    async ajax(requestParams) {
         try {
-            const response = await axios({ ...config, ...request });
+            const response = await makeRequest(requestParams);
 
             return response;
         } catch (error) {
-            if (!request.suppressErrorNotify) {
-                await showErrorNotify();
-            }
+            await processError(error, requestParams);
 
-            // eslint-disable-next-line no-console
-            console.error(error);
-            throw error;
+            return {
+                data: null
+            };
         }
     }
 };

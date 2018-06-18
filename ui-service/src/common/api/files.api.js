@@ -1,7 +1,7 @@
 import { baseApi } from './base.api';
 
 export const filesApi = {
-    async create(file) {
+    async create(file, params = {}) {
         const formData = new FormData();
 
         formData.append('files', file);
@@ -16,11 +16,20 @@ export const filesApi = {
             onUploadProgress: ({ total, loaded }) => {
                 const progressInPercentage = 100 * loaded / total;
 
+                if (typeof params.onUploadProgress === 'function') {
+                    params.onUploadProgress(progressInPercentage);
+                }
+
                 // todo pass "progressInPercentage" to progress bar
                 // eslint-disable-next-line no-console
                 console.log(progressInPercentage);
-            }
+            },
+            provideCancel: params.provideCancel
         });
+
+        if (!fileData) {
+            return null;
+        }
 
         return {
             id: fileData.id,

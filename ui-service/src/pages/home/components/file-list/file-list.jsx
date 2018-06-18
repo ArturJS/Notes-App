@@ -4,7 +4,7 @@ import { toClass } from 'recompose';
 import FilesListItem from './components/files-list-item';
 import './file-list.scss';
 
-const FilesList = ({ files, onRemove }) => {
+const FilesList = ({ files }) => {
     if (!files) {
         return null;
     }
@@ -13,9 +13,9 @@ const FilesList = ({ files, onRemove }) => {
         <ul className="files-list list-unstyled">
             {files.map(file => (
                 <FilesListItem
-                    key={file.name}
+                    key={file.id}
                     file={file}
-                    onRemove={onRemove}
+                    onRemove={file.remove}
                 />
             ))}
         </ul>
@@ -25,14 +25,11 @@ const FilesList = ({ files, onRemove }) => {
 FilesList.propTypes = {
     files: PropTypes.arrayOf(
         PropTypes.shape({
-            name: PropTypes.string.isRequired
+            id: PropTypes.number.isRequired,
+            name: PropTypes.string.isRequired,
+            remove: PropTypes.func
         }).isRequired
-    ).isRequired,
-    onRemove: PropTypes.func
-};
-
-FilesList.defaultProps = {
-    onRemove: null
+    ).isRequired
 };
 
 export default toClass(FilesList);
