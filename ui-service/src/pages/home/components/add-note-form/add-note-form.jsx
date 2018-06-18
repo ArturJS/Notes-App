@@ -7,21 +7,15 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure } from 'recompose';
 import _ from 'lodash';
-import { filesApi } from '@common/api'; // todo: use redux actions
 import Button from '@common/components/button';
 import { authSelectors } from '@common/features/auth';
 import { Form, Field } from '@common/features/form';
 import { notesActionsPropType } from '@common/prop-types/notes.prop-types';
 import MultilineInput from '@common/components/multiline-input';
 import { notesActions } from '@common/features/notes';
+import FilesUploader, { IStore, FileInstance } from '../files-uploader';
 import FilesList from '../file-list';
 import './add-note-form.scss';
-
-type TFile = {|
-    id: number,
-    downloadPath: string,
-    name: string
-|};
 
 type Note = {
     title: string,
@@ -36,9 +30,8 @@ type NoteValidate = {
 type Props = {};
 
 type State = {
-    uploadedFiles: TFile[],
-    filesList: File[],
-    fileUploadPromises: Promise[]
+    filesUploaderStore: IStore,
+    files: FileInstance[]
 };
 
 const mapStateToProps = state => ({
@@ -56,37 +49,72 @@ export default class AddNoteForm extends Component<Props, State> {
         isLoggedIn: PropTypes.bool.isRequired
     };
 
+    constructor(props) {
+        super(props);
+
+        this.uploadingPromise = Promise.resolve();
+        this.resolveUploadPromise = _.noop;
+        this.unsubscribeFromFilesStore = _.noop;
+    }
+
     state = {
-        uploadedFiles: [],
-        filesList: [],
-        fileUploadPromises: []
+        filesUploaderStore: null,
+        files: []
     };
 
     onSubmit = async (values: Note, formApi) => {
         await this.createNote(values);
 
         formApi.reset();
-        this.setState({ uploadedFiles: [] });
+    };
+
+    onUploadStateChanged = ({ isUploading }) => {
+        if (!isUploading) {
+            this.resolveUploadPromise();
+
+            return;
+        }
+
+        this.uploadingPromise = new Promise(resolve => {
+            this.resolveUploadPromise = resolve;
+        });
+    };
+
+    setFilesUploaderStore = filesUploaderStore => {
+        this.unsubscribeFromFilesStore();
+        this.setState({
+            filesUploaderStore
+        });
+        this.unsubscribeFromFilesStore = filesUploaderStore.subscribe(
+            ({ files }) => {
+                this.setState({
+                    files
+                });
+            }
+        );
     };
 
     createNote = async ({ title, description }: Note): Promise<void> => {
         await this.waitForFilesUploading();
 
+        const { filesUploaderStore } = this.state;
+        const { files: uploadedFiles } = filesUploaderStore.getState();
+
         this.props.notesActions.addNoteRequest({
             title,
             description,
-            files: this.state.uploadedFiles.map(
-                ({ downloadPath, name, id }) => ({
-                    downloadPath,
-                    name,
-                    id
-                })
-            )
+            files: uploadedFiles.map(({ downloadPath, name, id, size }) => ({
+                downloadPath,
+                name,
+                id,
+                size
+            }))
         });
+        filesUploaderStore.setState({ files: [] });
     };
 
     waitForFilesUploading = async () => {
-        await Promise.all(this.state.fileUploadPromises);
+        await this.uploadingPromise;
     };
 
     validate = ({ title, description }: NoteValidate) => {
@@ -102,60 +130,9 @@ export default class AddNoteForm extends Component<Props, State> {
         return errors;
     };
 
-    removeFile = (fileToRemove: File | TFile): void => {
-        // todo split method
-        const uploadedFile = _.find(
-            this.state.uploadedFiles,
-            file => file.name === fileToRemove.name
-        );
-
-        this.setState(({ filesList, uploadedFiles }) => ({
-            // todo cancel requests for not uploaded files
-            filesList: filesList.filter(file => file !== fileToRemove),
-            uploadedFiles: uploadedFiles.filter(file => file !== fileToRemove)
-        }));
-
-        if (!uploadedFile) {
-            return;
-        }
-
-        filesApi.remove(uploadedFile.id);
-    };
-
-    uploadFile = async (file: File) => {
-        const { id, downloadPath, name } = await filesApi.create(file);
-
-        return {
-            id,
-            downloadPath,
-            name
-        };
-    };
-
-    attachFiles = async e => {
-        // todo: validate and remove duplications
-        const files = Array.from(e.target.files);
-        const fileUploadPromises = files.map(this.uploadFile);
-
-        this.setState(prevState => ({
-            fileUploadPromises: [
-                ...prevState.fileUploadPromises,
-                ...fileUploadPromises
-            ],
-            filesList: [...prevState.filesList, ...files]
-        }));
-
-        const uploadedFiles = await Promise.all(fileUploadPromises);
-
-        this.setState({
-            uploadedFiles: [...this.state.uploadedFiles, ...uploadedFiles],
-            filesList: []
-        });
-    };
-
     render() {
         const { isLoggedIn } = this.props;
-        const { filesList, uploadedFiles } = this.state;
+        const { files } = this.state;
 
         return (
             <Form
@@ -176,14 +153,7 @@ export default class AddNoteForm extends Component<Props, State> {
                             autoComplete="off"
                             placeholder="Note description..."
                         />
-                        <FilesList
-                            files={uploadedFiles}
-                            onRemove={this.removeFile}
-                        />
-                        <FilesList
-                            files={filesList}
-                            onRemove={this.removeFile}
-                        />
+                        <FilesList files={files} />
                         <div className="buttons-group">
                             <Button
                                 type="submit"
@@ -194,18 +164,12 @@ export default class AddNoteForm extends Component<Props, State> {
                             </Button>
 
                             {isLoggedIn && (
-                                <Button
-                                    type="button"
-                                    className="btn-file"
-                                    theme="hot"
-                                >
-                                    <input
-                                        type="file"
-                                        multiple
-                                        onChange={this.attachFiles}
-                                    />
-                                    Attach files
-                                </Button>
+                                <FilesUploader
+                                    provideStore={this.setFilesUploaderStore}
+                                    onUploadStateChanged={
+                                        this.onUploadStateChanged
+                                    }
+                                />
                             )}
                         </div>
                     </Fragment>

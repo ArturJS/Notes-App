@@ -66,7 +66,8 @@ class FilesController {
         ctx.body = {
             id: createdFile.id,
             downloadPath: createdFile.downloadPath,
-            filename: createdFile.filename
+            filename: createdFile.filename,
+            size: createdFile.size
         };
     }
 

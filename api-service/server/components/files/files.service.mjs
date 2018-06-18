@@ -6,7 +6,8 @@ import filesDAL from './files.dal';
 type TFile = {|
     id: number,
     downloadPath: string,
-    filename: string
+    filename: string,
+    size: number
 |};
 
 type TDownloadFile = {|

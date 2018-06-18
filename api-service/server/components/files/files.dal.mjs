@@ -2,6 +2,7 @@
 import { Readable } from 'stream';
 import uuidV4 from 'uuid/v4';
 import mimeType from 'mime-types';
+import createStreamMeter from 'stream-meter';
 import axios from 'axios';
 import config from '@config';
 import db from '@root/common/models';
@@ -16,7 +17,8 @@ type TGetFile = null | {|
 type TCreateFile = null | {|
     id: number,
     downloadPath: string,
-    filename: string
+    filename: string,
+    size: number
 |};
 
 const { DROPBOX_TOKEN } = config.dropbox;
@@ -86,11 +88,7 @@ class FilesDAL {
         const { filename, mimetype } = meta;
         const fileExtension = mimeType.extension(mimetype);
         const downloadPath = `${filename}-${uuidV4()}.${fileExtension}`;
-        const file = await db.Files.create({
-            name: filename,
-            downloadPath,
-            userId
-        });
+        const streamMeter = createStreamMeter();
 
         await axios({
             method: 'POST',
@@ -105,13 +103,22 @@ class FilesDAL {
                     mute: false
                 })
             },
-            data: uploadStream
+            data: uploadStream.pipe(streamMeter)
+        });
+
+        const size = streamMeter.bytes;
+        const file = await db.Files.create({
+            name: filename,
+            downloadPath,
+            userId,
+            size
         });
 
         return {
             id: file.id,
             downloadPath: `/api/files/${file.id}`,
-            filename
+            filename,
+            size
         };
     }
 
