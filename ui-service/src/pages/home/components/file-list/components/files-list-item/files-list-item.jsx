@@ -26,7 +26,8 @@ export default class FilesListItem extends Component {
     };
 
     state = {
-        isUploaded: false
+        isUploaded: false,
+        isRemoved: false
     };
 
     componentDidMount() {
@@ -35,17 +36,20 @@ export default class FilesListItem extends Component {
         this.unsubscribe = _.noop;
 
         if (file.subscribe) {
-            this.unsubscribe = file.subscribe(
-                'uploadProgress',
-                this.subscribeOnUploadProgress
-            );
+            this.unsubscribe = file.subscribe('change', this.subscribeOnChange);
         }
     }
 
-    subscribeOnUploadProgress = progressInPercentage => {
-        if (progressInPercentage === 100) {
+    subscribeOnChange = (key, value) => {
+        const isUploaded = key === 'uploadProgress' && value === 100;
+
+        if (isUploaded) {
             this.setState({
                 isUploaded: true
+            });
+        } else if (key === 'isRemoved') {
+            this.setState({
+                isRemoved: value
             });
         }
     };
@@ -101,6 +105,11 @@ export default class FilesListItem extends Component {
 
     render() {
         const { onRemove, file } = this.props;
+        const { isRemoved } = this.state;
+
+        if (isRemoved) {
+            return null;
+        }
 
         return (
             <li

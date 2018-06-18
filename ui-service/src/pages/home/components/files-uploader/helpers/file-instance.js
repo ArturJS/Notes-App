@@ -11,8 +11,9 @@ export class FileInstance {
         this.size = fileFromInput.size;
         this.uploadProgress = 0;
         this.uploadingPromise = null;
+        this.isRemoved = false;
         this._observers = {
-            onUploadProgress: new Observer(),
+            change: new Observer(),
             onRemove: new Observer()
         };
         this._cancelRequest = _.noop;
@@ -20,39 +21,14 @@ export class FileInstance {
         this._startUploading(fileFromInput);
     }
 
-    _startUploading(fileFromInput) {
-        this.uploadingPromise = filesApi
-            .create(fileFromInput, {
-                onUploadProgress: progressInPercentage => {
-                    this.uploadProgress = progressInPercentage;
-                    this._observers.onUploadProgress.trigger(
-                        progressInPercentage
-                    );
-                },
-                provideCancel: cancelFn => {
-                    this._cancelRequest = cancelFn;
-                }
-            })
-            .then(fileData => {
-                if (!fileData) {
-                    return;
-                }
-
-                this.id = fileData.id;
-                this.downloadPath = fileData.downloadPath;
-                this.name = fileData.name;
-                this.size = fileData.size;
-            });
-    }
-
     isUploaded = () => this.uploadProgress === 100;
 
     subscribe = (eventName, fn) => {
-        if (eventName === 'uploadProgress') {
-            this._observers.onUploadProgress.subscribe(fn);
+        if (eventName === 'change') {
+            this._observers.change.subscribe(fn);
 
             return () => {
-                this._observers.onUploadProgress.unsubscribe(fn);
+                this._observers.change.unsubscribe(fn);
             };
         }
 
@@ -74,6 +50,16 @@ export class FileInstance {
     };
 
     remove = async () => {
+        this._setIsRemoved(true);
+
+        try {
+            await this._performRemoval();
+        } catch (e) {
+            this._setIsRemoved(false);
+        }
+    };
+
+    _performRemoval = async () => {
         if (this.isUploaded()) {
             await filesApi.remove(this.id);
         } else {
@@ -81,6 +67,36 @@ export class FileInstance {
         }
 
         this._observers.onRemove.trigger(this.id);
+    };
+
+    _startUploading = fileFromInput => {
+        this.uploadingPromise = filesApi
+            .create(fileFromInput, {
+                onUploadProgress: this._setUploadProgress,
+                provideCancel: cancelFn => {
+                    this._cancelRequest = cancelFn;
+                }
+            })
+            .then(fileData => {
+                if (!fileData) {
+                    return;
+                }
+
+                this.id = fileData.id;
+                this.downloadPath = fileData.downloadPath;
+                this.name = fileData.name;
+                this.size = fileData.size;
+            });
+    };
+
+    _setUploadProgress = progressInPercentage => {
+        this.uploadProgress = progressInPercentage;
+        this._observers.change.trigger('uploadProgress', progressInPercentage);
+    };
+
+    _setIsRemoved = value => {
+        this.isRemoved = value;
+        this._observers.change.trigger('isRemoved', value);
     };
 }
 
