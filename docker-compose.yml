@@ -1,15 +1,47 @@
 version: '3'
 services:
-    notes_app:
-        build: .
-        container_name: "notes_app"
-        env_file: .env
+    notes-app_api-gateway:
+        build: 
+            context: ./api-gateway
+            dockerfile: Dockerfile
+        container_name: "notes-app_api-gateway"
+        env_file: ./api-gateway/.env
+        environment:
+            - DOCKER_BUILD=true
         ports:
-            - "3000:3000"
+            - "80:80"
+        networks:
+            - notes-app_api-service-net
+            - notes-app_ui-service-net
+
+    notes-app_api-service:
+        build: 
+            context: ./api-service
+            dockerfile: Dockerfile
+        container_name: "notes-app_api-service"
+        env_file: ./api-service/.env
+        environment:
+            - DOCKER_BUILD=true
+        ports:
+            - "3001:3001"
+        hostname: api-service
         networks:
             - redis-net
+            - notes-app_api-service-net
         depends_on:
             - redis
+
+    notes-app_ui-service:
+        build: 
+            context: ./ui-service
+            dockerfile: Dockerfile
+        container_name: "notes-app_ui-service"
+        env_file: ./ui-service/.env
+        environment:
+            - DOCKER_BUILD=true
+        ports:
+            - "3000:3000"
+        hostname: ui-service
 
     redis:
         image: redis:4.0.5-alpine
@@ -22,6 +54,8 @@ services:
 
 networks:
   redis-net:
+  notes-app_api-service-net:
+  notes-app_ui-service-net:
 
 volumes:
   redis-data:
