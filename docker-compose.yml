@@ -1,61 +1,67 @@
 version: '3'
 services:
-    notes-app_api-gateway:
+    api-gateway:
         build: 
             context: ./api-gateway
             dockerfile: Dockerfile
-        container_name: "notes-app_api-gateway"
+        container_name: "api-gateway"
         env_file: ./api-gateway/.env
         environment:
             - DOCKER_BUILD=true
         ports:
-            - "80:80"
+            - "8080:8080"
         networks:
-            - notes-app_api-service-net
-            - notes-app_ui-service-net
+            internal-network:
+        depends_on:
+            - api-service
+            - ui-service
 
-    notes-app_api-service:
+    api-service:
         build: 
             context: ./api-service
             dockerfile: Dockerfile
-        container_name: "notes-app_api-service"
+        container_name: "api-service"
         env_file: ./api-service/.env
         environment:
             - DOCKER_BUILD=true
         ports:
             - "3001:3001"
-        hostname: api-service
         networks:
-            - redis-net
-            - notes-app_api-service-net
+            internal-network:
+                aliases:
+                    - api-service
         depends_on:
             - redis
 
-    notes-app_ui-service:
+    ui-service:
         build: 
             context: ./ui-service
             dockerfile: Dockerfile
-        container_name: "notes-app_ui-service"
+        container_name: "ui-service"
         env_file: ./ui-service/.env
         environment:
             - DOCKER_BUILD=true
         ports:
             - "3000:3000"
-        hostname: ui-service
+        networks:
+            internal-network:
+                aliases:
+                    - ui-service
 
     redis:
         image: redis:4.0.5-alpine
         command: ["redis-server", "--appendonly", "yes"]
-        hostname: redis
         networks:
-            - redis-net
+            internal-network:
+                aliases:
+                    - redis
         volumes:
             - redis-data:/data
 
+# http://andrewtarry.com/docker_compose/ - more info about networking in docker-compose
 networks:
-  redis-net:
-  notes-app_api-service-net:
-  notes-app_ui-service-net:
+    internal-network:
+        driver: bridge
 
 volumes:
   redis-data:

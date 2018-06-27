@@ -13,4 +13,4 @@ COPY --chown=node:node ./ ./
 
 RUN npm install --production
 
-ENTRYPOINT ["sudo", "node", "index.js"]
+ENTRYPOINT ["node", "index.js"]

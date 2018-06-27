@@ -1,8 +1,7 @@
 const http = require('http');
 const httpProxy = require('http-proxy');
 
-// TODO: figure out why during docker-compose up process.env.DOCKER_BUILD is absent
-if (!process.env.DOCKER_BUILD && false) { 
+if (!process.env.DOCKER_BUILD) { 
     // eslint-disable-next-line global-require
     require('dotenv-safe').config({
         example: './.env.example',
@@ -11,12 +10,12 @@ if (!process.env.DOCKER_BUILD && false) {
 }
 
 const {
-    HOST = 'localhost', // todo remote default params
-    PORT = 80,
-    API_HOST = 'api-service',
-    API_PORT = 3001,
-    UI_HOST = 'ui-service',
-    UI_PORT = 3000
+    HOST,
+    PORT,
+    API_HOST,
+    API_PORT,
+    UI_HOST,
+    UI_PORT
 } = process.env;
 const API_BASE_URL = `http://${API_HOST}:${API_PORT}`;
 const UI_BASE_URL = `http://${UI_HOST}:${UI_PORT}`;
