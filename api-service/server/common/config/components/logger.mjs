@@ -4,7 +4,7 @@ const { LOG_LEVEL } = process.env;
 
 const validationSchema = joi
     .string()
-    .allow(['error', 'warn', 'info', 'verbose', 'debug', 'silly'])
+    .only(['error', 'warn', 'info', 'verbose', 'debug', 'silly'])
     .required();
 const { error } = joi.validate(LOG_LEVEL, validationSchema);
 

@@ -10,3 +10,4 @@ webpack-stats.json
 webpack-assets.json
 webpack-bundle-report.html
 *.log
+e2e/screenshots/

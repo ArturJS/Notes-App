@@ -1,10 +1,13 @@
 const http = require('http');
 const httpProxy = require('http-proxy');
 
-require('dotenv-safe').config({
-    example: './.env.example',
-    path: './.env'
-});
+if (!process.env.DOCKER_BUILD) { 
+    // eslint-disable-next-line global-require
+    require('dotenv-safe').config({
+        example: './.env.example',
+        path: './.env'
+    });
+}
 
 const {
     HOST,

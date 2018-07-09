@@ -5,6 +5,8 @@
     "repository": "https://github.com/ArturJS/ArturJS.github.io",
     "main": "index.js",
     "scripts": {
+        "e2e": "docker-compose --file docker-compose.e2e.yml up | grep nightwatch",
+        "e2e:rebuild:ui-service": "docker-compose --file docker-compose.e2e.yml up --no-deps --build ui-service",
         "start": "npx npm-run-all --parallel start:api-gateway start:api-service start:ui-service",
         "start:api-gateway": "cd api-gateway && npm start",
         "start:api-service": "cd api-service && npm start",

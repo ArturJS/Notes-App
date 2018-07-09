@@ -58,6 +58,32 @@ services:
         volumes:
             - redis-data:/data
 
+    chromedriver:
+        image: blueimp/chromedriver
+        environment:
+            - VNC_ENABLED=true
+            - EXPOSE_X11=true
+        ports:
+            - 5900:5900
+        networks:
+            internal-network:
+                aliases:
+                    - chromedriver
+    nightwatch:
+        image: blueimp/nightwatch:0.9
+        # init: true
+        depends_on:
+            - chromedriver
+            - ui-service
+        environment:
+            - WAIT_FOR_HOSTS=ui-service:3000 chromedriver:4444 chromedriver:6060
+        volumes:
+            - ./e2e:/home/node
+        networks:
+            internal-network:
+                aliases:
+                    - nightwatch
+
 # http://andrewtarry.com/docker_compose/ - more info about networking in docker-compose
 networks:
     internal-network:

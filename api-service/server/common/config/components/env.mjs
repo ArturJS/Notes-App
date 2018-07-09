@@ -4,7 +4,7 @@ const { NODE_ENV } = process.env;
 
 const validationSchema = joi
     .string()
-    .allow(['development', 'production'])
+    .only(['development', 'production'])
     .required();
 const { error } = joi.validate(NODE_ENV, validationSchema);
 
