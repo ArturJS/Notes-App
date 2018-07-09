@@ -16,17 +16,19 @@ const screenshotPath = browser => {
 };
 
 module.exports = {
-    'sample test': browser => {
-        browser
-            .url(browser.launch_url)
-            .pause(1000)
-            .saveScreenshot(screenshotPath(browser));
+    'Add note': browser => {
+        browser.url(browser.launch_url);
 
         browser
-            .setValue('form.add-note-form input[name="title"]', 'Note title')
+            .setValue('form.add-note-form input[name="title"]', 'Test title')
             .setValue(
                 'form.add-note-form textarea[name="description"]',
-                'Note description'
+                'Test description'
+            )
+            .waitForElementVisible(
+                // waitForElementVisible() is necessary for .click()
+                'form.add-note-form button[type="submit"]',
+                1000
             )
             .click('form.add-note-form button[type="submit"]');
 
@@ -34,15 +36,19 @@ module.exports = {
             .element('form.add-note-form input[name="title"]')
             .text.to.equal('');
 
-        // browser.expect
-        //     .element('form.add-note-form textarea[name="description"]')
-        //     .text.to.equal('');
-        // .waitForElementVisible('.notes-list .note', 5000)
-        // .expect.element('.notes-list .note .note-title')
-        // .text.to.equal('Note title');
+        browser.expect
+            .element('form.add-note-form textarea[name="description"]')
+            .text.to.equal('');
 
-        // .expect.element('notes-list .note .note-description')
-        // .text.to.equal('Note description')
+        browser
+            .waitForElementVisible('.notes-list .note', 5000)
+            .expect.element('.notes-list .note .note-title')
+            .text.to.equal('Test title');
+
+        browser.expect
+            .element('.notes-list .note .note-description')
+            .text.to.equal('Test description');
+
         browser.saveScreenshot(screenshotPath(browser)).end();
     }
 };
