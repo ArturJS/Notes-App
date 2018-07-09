@@ -98,7 +98,11 @@ export default class AddNoteForm extends Component<Props, State> {
         await this.waitForFilesUploading();
 
         const { filesUploaderStore } = this.state;
-        const { files: uploadedFiles } = filesUploaderStore.getState();
+        let uploadedFiles = [];
+
+        if (filesUploaderStore) {
+            uploadedFiles = filesUploaderStore.getState().files;
+        }
 
         this.props.notesActions.addNoteRequest({
             title,
@@ -110,7 +114,10 @@ export default class AddNoteForm extends Component<Props, State> {
                 size
             }))
         });
-        filesUploaderStore.setState({ files: [] });
+
+        if (filesUploaderStore) {
+            filesUploaderStore.setState({ files: [] });
+        }
     };
 
     waitForFilesUploading = async () => {
