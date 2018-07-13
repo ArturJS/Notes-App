@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './multiline-input.scss';
@@ -7,8 +7,7 @@ export default class MultilineInput extends Component {
     static propTypes = {
         input: PropTypes.shape({
             onChange: PropTypes.func.isRequired,
-            value: PropTypes.string.isRequired,
-            className: PropTypes.string
+            value: PropTypes.string.isRequired
         }).isRequired,
         className: PropTypes.string,
         placeholder: PropTypes.string
@@ -23,14 +22,22 @@ export default class MultilineInput extends Component {
         this.autofitContent();
     }
 
-    setTextareaRef = node => {
-        this.textareaEl = node;
-    };
+    componentDidUpdate() {
+        this.autofitContent();
+    }
+
+    textareaRef = createRef();
 
     autofitContent = () => {
         window.requestAnimationFrame(() => {
-            this.textareaEl.style.height = '0px';
-            this.textareaEl.style.height = `${this.textareaEl.scrollHeight}px`;
+            const { current: textareaEl } = this.textareaRef;
+
+            if (!textareaEl) {
+                return; // in case of unit tests
+            }
+
+            textareaEl.style.height = '0px';
+            textareaEl.style.height = `${textareaEl.scrollHeight}px`;
         });
     };
 
@@ -39,7 +46,7 @@ export default class MultilineInput extends Component {
 
         return (
             <textarea
-                ref={this.setTextareaRef}
+                ref={this.textareaRef}
                 className={classNames('multiline-input', className)}
                 placeholder={placeholder}
                 onInput={this.autofitContent}
