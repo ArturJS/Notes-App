@@ -10,7 +10,7 @@
 # It accepts a number of `host:port` combinations to connect to via netcat.
 # The command to execute after each host is reachable can be supplied after the
 # `--` argument.
-# The default timeout of 20 seconds can be changed via `-t timeout` argument.
+# The default timeout of 30 seconds can be changed via `-t timeout` argument.
 #
 # Copyright 2016, Sebastian Tschan
 # https://blueimp.net
@@ -21,7 +21,7 @@
 
 set -e
 
-TIMEOUT=20
+TIMEOUT=30
 
 is_integer() {
   test "$1" -eq "$1" 2> /dev/null
