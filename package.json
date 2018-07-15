@@ -20,7 +20,7 @@
     "author": "ArturJS",
     "license": "MIT",
     "devDependencies": {
-        "husky": "0.14.3"
+        "husky": "^1.0.0-rc.13"
     },
     "dependencies": {
         "npm-run-all": "4.1.3"
