@@ -21,9 +21,6 @@ jest.mock('react-redux', () => {
 
     return reactRedux;
 });
-jest.mock('recompose', () => ({
-    pure: component => component
-}));
 jest.mock('../../../hocs/with-redux-store', () => () => component => component);
 // eslint-disable-next-line react/prop-types
 jest.mock('../../button', () => ({ theme, children, onClick }) => (

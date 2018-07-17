@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { pure } from 'recompose';
+import { pure, compose, withHandlers } from 'recompose';
 import Button from '../button';
 import { authActions, authSelectors } from '../../features/auth';
-import withReduxStore from '../../hocs/with-redux-store.jsx';
+import withReduxStore from '../../hocs/with-redux-store';
 import { authActionsPropType } from '../../prop-types/auth.prop-types';
 import './user-auth-state.scss';
 
@@ -21,44 +21,52 @@ const mapDispatchToProps = dispatch => ({
     authActions: bindActionCreators(authActions, dispatch)
 });
 
-@withReduxStore()
-@connect(mapStateToProps, mapDispatchToProps)
-@pure
-export default class UserAuthState extends Component {
-    static propTypes = {
-        isLoggedIn: PropTypes.bool,
-        authActions: authActionsPropType.isRequired
-    };
+const enhance = compose(
+    withReduxStore(),
+    connect(mapStateToProps, mapDispatchToProps),
+    withHandlers({
+        login: ({
+            // eslint-disable-next-line no-shadow
+            authActions
+        }) => () => {
+            authActions.loginRequest();
+        },
+        logout: ({
+            // eslint-disable-next-line no-shadow
+            authActions
+        }) => () => {
+            authActions.logoutRequest();
+        }
+    }),
+    pure
+);
 
-    static defaultProps = {
-        isLoggedIn: false
-    };
+const UserAuthState = ({ isLoggedIn, logout, login }) => (
+    <div className="user-auth-state">
+        {isLoggedIn ? (
+            <Button theme="primary" onClick={logout}>
+                Sign out &nbsp;
+                <i className="icon icon-exit" />
+            </Button>
+        ) : (
+            <Button theme="hot" onClick={login}>
+                Sign in &nbsp;
+                <i className="icon icon-enter" />
+            </Button>
+        )}
+    </div>
+);
 
-    login = () => {
-        this.props.authActions.loginRequest();
-    };
+UserAuthState.propTypes = {
+    isLoggedIn: PropTypes.bool,
+    // eslint-disable-next-line react/no-unused-prop-types
+    authActions: authActionsPropType.isRequired,
+    logout: PropTypes.func.isRequired,
+    login: PropTypes.func.isRequired
+};
 
-    logout = () => {
-        this.props.authActions.logoutRequest();
-    };
+UserAuthState.defaultProps = {
+    isLoggedIn: false
+};
 
-    render() {
-        const { isLoggedIn } = this.props;
-
-        return (
-            <div className="user-auth-state">
-                {isLoggedIn ? (
-                    <Button theme="primary" onClick={this.logout}>
-                        Sign out &nbsp;
-                        <i className="icon icon-exit" />
-                    </Button>
-                ) : (
-                    <Button theme="hot" onClick={this.login}>
-                        Sign in &nbsp;
-                        <i className="icon icon-enter" />
-                    </Button>
-                )}
-            </div>
-        );
-    }
-}
+export default enhance(UserAuthState);
