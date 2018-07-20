@@ -6,7 +6,9 @@ module.exports = {
         addNoteForm: {
             selector: 'form.add-note-form',
             elements: {
+                titleError: '.field-title .field-error',
                 titleField: 'input[name="title"]',
+                descriptionError: '.field-description .field-error',
                 descriptionField: 'textarea[name="description"]',
                 submitButton: 'button[type="submit"]'
             },

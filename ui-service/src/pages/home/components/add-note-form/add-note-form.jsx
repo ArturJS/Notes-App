@@ -153,12 +153,14 @@ export default class AddNoteForm extends Component<Props, State> {
                             component="input"
                             autoComplete="off"
                             placeholder="Note title..."
+                            className="field-title"
                         />
                         <Field
                             name="description"
                             component={MultilineInput}
                             autoComplete="off"
                             placeholder="Note description..."
+                            className="field-description"
                         />
                         <FilesList files={files} />
                         <div className="buttons-group">
