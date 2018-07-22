@@ -24,8 +24,6 @@ services:
         env_file: ./api-service/.env
         environment:
             - DOCKER_BUILD=true
-        ports:
-            - "3001:3001"
         networks:
             internal-network:
                 aliases:
@@ -41,8 +39,6 @@ services:
         env_file: ./ui-service/.env
         environment:
             - DOCKER_BUILD=true
-        ports:
-            - "3000:3000"
         networks:
             internal-network:
                 aliases:
