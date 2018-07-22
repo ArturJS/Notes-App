@@ -35,7 +35,7 @@ module.exports = createExtension({
             });
             config.plugins.push(
                 new ExtractTextPlugin({
-                    filename: '[name]-[chunkhash].css',
+                    filename: '[name].css?v=[chunkhash]',
                     allChunks: true
                 }),
                 webpackIsomorphicToolsPlugin
