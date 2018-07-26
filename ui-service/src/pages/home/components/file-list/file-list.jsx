@@ -5,7 +5,7 @@ import FilesListItem from './components/files-list-item';
 import './file-list.scss';
 
 const FilesList = ({ files }) => {
-    if (!files) {
+    if (files.length === 0) {
         return null;
     }
 
