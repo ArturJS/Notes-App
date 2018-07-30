@@ -55,11 +55,10 @@ export default class NoteReadonlyMode extends Component {
 
     render() {
         const { note } = this.props;
-        const isDragging = false;
         const isLoading = this.isLoading();
 
         return (
-            <div className={classNames('note', { isDragging, isLoading })}>
+            <div className={classNames('note', { isLoading })}>
                 <div>
                     <i
                         className="icon icon-left icon-pencil"

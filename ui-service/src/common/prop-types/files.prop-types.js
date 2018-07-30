@@ -6,4 +6,4 @@ export const filePropType = PropTypes.shape({
     filename: PropTypes.string.isRequired
 }).isRequired;
 
-export const notesListPropType = PropTypes.arrayOf(filePropType).isRequired;
+export const filesListPropType = PropTypes.arrayOf(filePropType).isRequired;
