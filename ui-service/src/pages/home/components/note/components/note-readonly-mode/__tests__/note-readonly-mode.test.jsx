@@ -48,6 +48,41 @@ describe('<NoteReadonlyMode />', () => {
         expect(tree).toMatchSnapshot();
     });
 
+    it("wraps url's in description correctly", () => {
+        const note = {
+            id: 1,
+            title: 'Note test title',
+            description: 'http://google.com and https://ya.ru/',
+            files: [],
+            trackId: '1'
+        };
+        const wrapper = mount(
+            <NoteReadonlyMode
+                note={note}
+                onRemove={() => {}}
+                onEdit={() => {}}
+            />
+        );
+
+        expect(wrapper.find('.note-description').html()).toBe(
+            [
+                '<div class="note-description">',
+                '<a ',
+                'href="http://google.com" ',
+                'class="note-link" ',
+                'target="_blank" ',
+                'rel="nofollow noopener">http://google.com</a>',
+                ' and ',
+                '<a ',
+                'href="https://ya.ru/" ',
+                'class="note-link" ',
+                'target="_blank" ',
+                'rel="nofollow noopener">https://ya.ru/</a>',
+                '</div>'
+            ].join('')
+        );
+    });
+
     describe('test isLoading state', () => {
         it('should have `isLoading` class when note has `meta.transactionId`', () => {
             const note = {
