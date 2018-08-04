@@ -26,6 +26,12 @@ const staticAssetsPath = path.resolve(rootDir, './.next');
 Promise.all([app.prepare(), webpackIsomorphicTools.server(rootDir)]).then(
     () => {
         router.get('*', async ctx => {
+            if (config.env.DOCKER_BUILD) {
+                // todo: consider better placement for apiBaseUrl
+                // todo: (get rid of hardcoded apiBaseUrl string)
+                ctx.req.apiBaseUrl = 'http://api-service:3001/api';
+            }
+
             await handle(ctx.req, ctx.res);
             ctx.respond = false;
         });

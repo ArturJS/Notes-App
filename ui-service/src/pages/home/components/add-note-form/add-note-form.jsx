@@ -85,6 +85,11 @@ export default class AddNoteForm extends Component<Props, State> {
         this.setState({
             filesUploaderStore
         });
+
+        if (!filesUploaderStore) {
+            return;
+        }
+
         this.unsubscribeFromFilesStore = filesUploaderStore.subscribe(
             ({ files }) => {
                 this.setState({

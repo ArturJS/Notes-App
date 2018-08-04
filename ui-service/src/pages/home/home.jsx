@@ -16,7 +16,8 @@ const enhance = compose(
             const apiParams = {
                 headers: {
                     Cookie: req.headers.cookie || ''
-                }
+                },
+                baseURL: req.apiBaseUrl
             };
 
             try {
@@ -39,6 +40,9 @@ const enhance = compose(
                     }
                 };
             } catch (err) {
+                console.error('SSR Auth failed!');
+                console.error('Error details: ', err);
+
                 return {
                     notes: []
                 };
