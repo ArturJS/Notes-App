@@ -41,8 +41,6 @@ const processError = async (error, requestParams) => {
         await showErrorNotify();
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
     throw error;
 };
 
