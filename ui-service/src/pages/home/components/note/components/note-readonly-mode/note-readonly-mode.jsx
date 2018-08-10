@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { pure } from 'recompose';
+import { compose, pure, withHandlers } from 'recompose';
 import classNames from 'classnames';
 import _ from 'lodash';
 import { notePropType } from '@common/prop-types/notes.prop-types';
@@ -9,82 +9,90 @@ import FilesList from '../../../file-list';
 
 const linkRegexp = /(http[^\s]+)/g;
 
-@pure
-export default class NoteReadonlyMode extends Component {
-    static propTypes = {
-        note: notePropType.isRequired,
-        onRemove: PropTypes.func.isRequired,
-        onEdit: PropTypes.func.isRequired
-    };
-
-    onEdit = () => {
-        if (this.isLoading()) {
-            return;
-        }
-
-        this.props.onEdit();
-    };
-
-    onRemove = async () => {
-        if (this.isLoading()) {
-            return;
-        }
-
-        const { id, title } = this.props.note;
-        const shouldDelete = await modalProvider.showConfirm({
-            title: 'Please confirm your action',
-            body: ['Are you sure you want to delete ', `note "${title}"?`].join(
-                ''
+const enhance = compose(
+    pure,
+    withHandlers({
+        isLoading: ({ note }) => () => _.get(note, 'meta.transactionId', false),
+        wrapUrlLinks: () => text =>
+            _.escape(text).replace(
+                linkRegexp,
+                '<a href="$1" class="note-link" target="_blank" rel="nofollow noopener">$1</a>'
             )
-        }).result;
+    }),
+    withHandlers({
+        handleEdit: ({ isLoading, onEdit }) => () => {
+            if (isLoading()) {
+                return;
+            }
 
-        if (!shouldDelete) {
-            return;
+            onEdit();
+        },
+        handleRemove: ({ note, isLoading, onRemove }) => async () => {
+            if (isLoading()) {
+                return;
+            }
+
+            const { id, title } = note;
+            const shouldDelete = await modalProvider.showConfirm({
+                title: 'Please confirm your action',
+                body: `Are you sure you want to delete note "${title}"?`
+            }).result;
+
+            if (!shouldDelete) {
+                return;
+            }
+
+            onRemove(id);
         }
+    })
+);
 
-        this.props.onRemove(id);
-    };
+const NoteReadonlyMode = ({
+    note,
+    isLoading,
+    wrapUrlLinks,
+    handleEdit,
+    handleRemove
+}) => (
+    <div className={classNames('note', { isLoading: isLoading() })}>
+        <div>
+            <i
+                className="icon icon-left icon-pencil"
+                onClick={handleEdit}
+                onKeyPress={handleEdit}
+                role="button"
+                tabIndex="0"
+            />
+            <i
+                className="icon icon-right icon-bin"
+                onClick={handleRemove}
+                onKeyPress={handleRemove}
+                role="button"
+                tabIndex="0"
+            />
+        </div>
+        <div className="note-title">{note.title}</div>
+        <div
+            className="note-description"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+                __html: wrapUrlLinks(note.description)
+            }}
+        />
+        <FilesList files={note.files} />
+    </div>
+);
 
-    isLoading = () => _.get(this.props.note, 'meta.transactionId', false);
+NoteReadonlyMode.propTypes = {
+    note: notePropType.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
+    onRemove: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
+    onEdit: PropTypes.func.isRequired,
+    isLoading: PropTypes.func.isRequired,
+    wrapUrlLinks: PropTypes.func.isRequired,
+    handleEdit: PropTypes.func.isRequired,
+    handleRemove: PropTypes.func.isRequired
+};
 
-    wrapUrlLinks = text =>
-        _.escape(text).replace(
-            linkRegexp,
-            '<a href="$1" class="note-link" target="_blank" rel="nofollow noopener">$1</a>'
-        );
-
-    render() {
-        const { note } = this.props;
-        const isLoading = this.isLoading();
-
-        return (
-            <div className={classNames('note', { isLoading })}>
-                <div>
-                    <i
-                        className="icon icon-left icon-pencil"
-                        onClick={this.onEdit}
-                        onKeyPress={this.onEdit}
-                        role="button"
-                        tabIndex="0"
-                    />
-                    <i
-                        className="icon icon-right icon-bin"
-                        onClick={this.onRemove}
-                        onKeyPress={this.onRemove}
-                        role="button"
-                        tabIndex="0"
-                    />
-                </div>
-                <div className="note-title">{note.title}</div>
-                <div
-                    className="note-description"
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{
-                        __html: this.wrapUrlLinks(note.description)
-                    }}
-                />
-                <FilesList files={note.files} />
-            </div>
-        );
-    }
-}
+export default enhance(NoteReadonlyMode);
