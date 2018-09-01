@@ -4,8 +4,7 @@
     margin: 0 auto;
     position: relative;
 
-
-    [data-react-beautiful-dnd-drag-handle] {
+    [data-react-beautiful-dnd-draggable] {
         padding-bottom: 15px;
     }
 }
