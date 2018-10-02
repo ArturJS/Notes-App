@@ -1,9 +1,9 @@
 {
     "presets": [
         "next/babel",
-        "flow",
+        "@babel/preset-flow",
         [
-            "env",
+            "@babel/preset-env",
             {
                 "targets": {
                     "node": "8.9.1"
@@ -13,11 +13,11 @@
         ]
     ],
     "plugins": [
-        "transform-decorators-legacy",
-        "transform-class-properties",
-        "transform-object-rest-spread",
-        "syntax-flow",
-        "transform-flow-strip-types",
+        ["@babel/plugin-proposal-decorators", { "legacy": true }],
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-proposal-object-rest-spread",
+        "@babel/plugin-syntax-flow",
+        "@babel/plugin-transform-flow-strip-types",
         [
             "module-resolver",
             {
@@ -33,7 +33,7 @@
     ],
     "env": {
         "production": {
-            "plugins": ["transform-flow-strip-types"]
+            "plugins": ["@babel/plugin-transform-flow-strip-types"]
         },
         "development": {
             "plugins": [
