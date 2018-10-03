@@ -1,5 +1,6 @@
 import React from 'react';
 import Document, { Head, Main, NextScript } from 'next/document';
+import _ from 'lodash';
 
 export default class BaseDocument extends Document {
     static async getInitialProps(ctx) {
@@ -8,9 +9,27 @@ export default class BaseDocument extends Document {
         return initialProps;
     }
 
+    getStyles = _.memoize(() => {
+        const isCss = str => str.indexOf('.css') > -1;
+        const getVersion = str => {
+            const [, version = ''] = /(\?v=.+)*$/.exec(str);
+
+            return version;
+        };
+
+        return _.chain(this.props.buildManifest)
+            .values()
+            .filter(_.isArray)
+            .flatten()
+            .filter(_.isString)
+            .filter(isCss)
+            .uniqBy(getVersion)
+            .value();
+    });
+
     render() {
         const isProduction = process.env.NODE_ENV === 'production';
-        const assets = webpackIsomorphicTools.assets();
+        const styles = this.getStyles();
 
         return (
             <html lang="en">
@@ -20,10 +39,10 @@ export default class BaseDocument extends Document {
                         content="width=device-width, initial-scale=1, shrink-to-fit=no"
                     />
                     {isProduction &&
-                        Object.keys(assets.styles).map(style => (
+                        styles.map(stylePath => (
                             <link
-                                href={`/static/${assets.styles[style]}`}
-                                key={style}
+                                href={`/static/${stylePath}`}
+                                key={stylePath}
                                 rel="stylesheet"
                                 type="text/css"
                                 charSet="UTF-8"

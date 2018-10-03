@@ -1,12 +1,6 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-const webpackIsomorphicToolsConfig = require('../../webpack-isomorphic-tools/config');
 const excludeModule = require('./utils/exclude-module');
 const createExtension = require('./utils/create-extension');
-
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(
-    webpackIsomorphicToolsConfig
-);
 
 module.exports = createExtension({
     webpack(config, options) {
@@ -22,7 +16,6 @@ module.exports = createExtension({
                     loader:
                         'style-loader!css-loader?importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]!postcss-loader?parser=postcss-scss&sourceMap=true!sass-loader?outputStyle=expanded&sourceMap'
                 });
-                config.plugins.push(webpackIsomorphicToolsPlugin.development());
             }
         } else if (production) {
             config.module.rules.push({
@@ -35,10 +28,9 @@ module.exports = createExtension({
             });
             config.plugins.push(
                 new ExtractTextPlugin({
-                    filename: '[name].css?v=[chunkhash]',
+                    filename: '[name].css?v=[contenthash]',
                     allChunks: true
-                }),
-                webpackIsomorphicToolsPlugin
+                })
             );
         }
 
