@@ -2,12 +2,10 @@ import React from 'react';
 import { pure, compose } from 'recompose';
 import { notesApi, authApi } from '@common/api';
 import withReduxStore from '@common/hocs/with-redux-store.jsx';
-import withRootLayout from '@common/hocs/with-root-layout.jsx';
 import { ModalDialog } from '@common/features/modal';
 import AnonymousModeBanner from './components/anonymous-mode-banner';
 import AddNoteForm from './components/add-note-form';
 import NotesList from './components/notes-list';
-import '../../common/style/index.scss';
 import './home.scss';
 
 const enhance = compose(
@@ -40,8 +38,8 @@ const enhance = compose(
                     }
                 };
             } catch (err) {
-                console.error('SSR Auth failed!');
-                console.error('Error details: ', err);
+                // console.error('SSR Auth failed!');
+                // console.error('Error details: ', err);
 
                 return {
                     notes: []
@@ -49,7 +47,6 @@ const enhance = compose(
             }
         }
     }),
-    withRootLayout,
     pure
 );
 
