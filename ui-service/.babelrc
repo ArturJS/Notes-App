@@ -1,16 +1,14 @@
 {
     "presets": [
-        "next/babel",
-        "@babel/preset-flow",
         [
-            "@babel/preset-env",
+            "next/babel",
             {
-                "targets": {
-                    "node": "8.9.1"
-                },
-                "useBuiltIns": "usage"
+                "preset-env": {
+                    "modules": "commonjs"
+                }
             }
-        ]
+        ],
+        "@babel/preset-flow"
     ],
     "plugins": [
         ["@babel/plugin-proposal-decorators", { "legacy": true }],
