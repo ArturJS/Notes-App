@@ -99,7 +99,9 @@ export default class AddNoteForm extends Component<Props, State> {
         );
     };
 
-    createNote = async ({ title, description }: Note): Promise<void> => {
+    createNote = async (payload: Note): Promise<void> => {
+        const { title, description } = payload;
+
         await this.waitForFilesUploading();
 
         const { filesUploaderStore } = this.state;
@@ -129,7 +131,8 @@ export default class AddNoteForm extends Component<Props, State> {
         await this.uploadingPromise;
     };
 
-    validate = ({ title, description }: NoteValidate) => {
+    validate = (payload: NoteValidate) => {
+        const { title, description } = payload;
         const errors = {};
 
         if (!title || !title.trim()) {
