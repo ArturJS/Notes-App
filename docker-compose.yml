@@ -1,15 +1,15 @@
 version: '3'
 services:
     api-gateway:
-        build: 
+        build:
             context: ./api-gateway
             dockerfile: Dockerfile
-        container_name: "api-gateway"
+        container_name: 'api-gateway'
         env_file: ./api-gateway/.env
         environment:
             - DOCKER_BUILD=true
         ports:
-            - "8080:8080"
+            - '8080:8080'
         networks:
             internal-network:
         depends_on:
@@ -17,10 +17,10 @@ services:
             - ui-service
 
     api-service:
-        build: 
+        build:
             context: ./api-service
             dockerfile: Dockerfile
-        container_name: "api-service"
+        container_name: 'api-service'
         env_file: ./api-service/.env
         environment:
             - DOCKER_BUILD=true
@@ -32,13 +32,14 @@ services:
             - redis
 
     ui-service:
-        build: 
+        build:
             context: ./ui-service
             dockerfile: Dockerfile
-        container_name: "ui-service"
+        container_name: 'ui-service'
         env_file: ./ui-service/.env
         environment:
             - DOCKER_BUILD=true
+            - API_URL=http://api-service:3001
         networks:
             internal-network:
                 aliases:
@@ -46,7 +47,7 @@ services:
 
     redis:
         image: redis:4.0.5-alpine
-        command: ["redis-server", "--appendonly", "yes"]
+        command: ['redis-server', '--appendonly', 'yes']
         networks:
             internal-network:
                 aliases:
@@ -60,4 +61,4 @@ networks:
         driver: bridge
 
 volumes:
-  redis-data:
+    redis-data:

@@ -41,6 +41,7 @@ services:
         env_file: ./ui-service/.env
         environment:
             - DOCKER_BUILD=true
+            - API_URL=http://api-service:3001
         ports:
             - "3000:3000"
         networks:
