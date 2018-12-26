@@ -9,7 +9,7 @@ const getInitialState = () => {
 
     const initialAppState = _.get(
         window,
-        '__NEXT_DATA__.props.__INITIAL_REDUX_STATE__'
+        '__NEXT_DATA__.props.pageProps.__INITIAL_REDUX_STATE__'
     );
 
     delete window.__NEXT_DATA__.props;
