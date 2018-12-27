@@ -8,8 +8,6 @@ services:
         env_file: ./api-service/.env
         environment:
             - DOCKER_BUILD=true
-        ports:
-            - "3001:3001"
         networks:
             internal-network:
                 aliases:
@@ -26,8 +24,6 @@ services:
         environment:
             - DOCKER_BUILD=true
             - API_URL=http://api-service:3001
-        ports:
-            - "3000:3000"
         networks:
             internal-network:
                 aliases:
