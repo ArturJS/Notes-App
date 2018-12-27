@@ -1,21 +1,5 @@
 version: '3'
 services:
-    api-gateway:
-        build: 
-            context: ./api-gateway
-            dockerfile: Dockerfile
-        container_name: "api-gateway"
-        env_file: ./api-gateway/.env
-        environment:
-            - DOCKER_BUILD=true
-        ports:
-            - "8080:8080"
-        networks:
-            internal-network:
-        depends_on:
-            - api-service
-            - ui-service
-
     api-service:
         build: 
             context: ./api-service
@@ -24,8 +8,6 @@ services:
         env_file: ./api-service/.env
         environment:
             - DOCKER_BUILD=true
-        ports:
-            - "3001:3001"
         networks:
             internal-network:
                 aliases:
@@ -41,8 +23,7 @@ services:
         env_file: ./ui-service/.env
         environment:
             - DOCKER_BUILD=true
-        ports:
-            - "3000:3000"
+            - API_URL=http://api-service:3001
         networks:
             internal-network:
                 aliases:

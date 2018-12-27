@@ -19,12 +19,9 @@ const staticAssetsPath = path.resolve(rootDir, './.next');
 
 app.prepare().then(() => {
     router.get('*', async ctx => {
-        if (config.env.DOCKER_BUILD) {
-            // todo: consider better placement for apiBaseUrl
-            // todo: (get rid of hardcoded apiBaseUrl string)
-            ctx.req.apiBaseUrl = 'http://api-service:3001/api';
-        }
+        const { API_URL } = config.server;
 
+        ctx.req.apiBaseUrl = `${API_URL}/api`;
         await handle(ctx.req, ctx.res);
         ctx.respond = false;
     });
