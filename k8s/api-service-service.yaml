@@ -3,19 +3,18 @@ kind: Service
 metadata:
   annotations:
     kompose.cmd: kompose convert
-    kompose.service.type: LoadBalancer
+    kompose.service.expose: api-service
     kompose.version: 1.17.0 (a74acad)
   creationTimestamp: null
   labels:
-    io.kompose.service: ui-service
-  name: ui-service
+    io.kompose.service: api-service
+  name: api-service
 spec:
   ports:
-  - name: "8080"
-    port: 8080
-    targetPort: 3000
+  - name: "3001"
+    port: 3001
+    targetPort: 3001
   selector:
-    io.kompose.service: ui-service
-  type: LoadBalancer
+    io.kompose.service: api-service
 status:
   loadBalancer: {}

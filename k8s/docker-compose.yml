@@ -9,6 +9,10 @@ services:
         env_file: ../api-service/.env
         environment:
             - DOCKER_BUILD=true
+        labels: 
+            kompose.service.expose: 'api-service'
+        ports:
+            - "3001:3001"
         networks:
             internal-network:
                 aliases:
@@ -26,6 +30,8 @@ services:
         environment:
             - DOCKER_BUILD=true
             - API_URL=http://api-service:3001
+        labels:
+            kompose.service.type: LoadBalancer
         ports:
             - "8080:3000"
         networks:
