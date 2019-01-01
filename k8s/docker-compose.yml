@@ -2,10 +2,11 @@ version: '3'
 services:
     api-service:
         build:
-            context: ./api-service
+            context: ../api-service
             dockerfile: Dockerfile
+        image: arturjs/notes-app_api-service:0.0.1
         container_name: 'api-service'
-        env_file: ./api-service/.env
+        env_file: ../api-service/.env
         environment:
             - DOCKER_BUILD=true
         networks:
@@ -17,10 +18,11 @@ services:
 
     ui-service:
         build:
-            context: ./ui-service
+            context: ../ui-service
             dockerfile: Dockerfile
+        image: arturjs/notes-app_ui-service:0.0.1
         container_name: 'ui-service'
-        env_file: ./ui-service/.env
+        env_file: ../ui-service/.env
         environment:
             - DOCKER_BUILD=true
             - API_URL=http://api-service:3001
