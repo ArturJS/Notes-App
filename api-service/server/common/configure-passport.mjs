@@ -20,7 +20,8 @@ export const configurePassport = app => {
             ctx.session.returnUrl = returnUrl;
 
             await passport.authenticate('google', {
-                scope: ['email', 'profile']
+                scope: ['email', 'profile'],
+                callbackURL: `${returnUrl}api/auth/google/callback`
             })(ctx, next);
         })
         .get('/api/auth/google/callback', async ctx => {
@@ -65,8 +66,7 @@ export const configurePassport = app => {
         new OAuth2Strategy(
             {
                 clientID: GOOGLE_OAUTH20_CLIENT_ID,
-                clientSecret: GOOGLE_OAUTH20_CLIENT_SECRET,
-                callbackURL: `http://${PUBLIC_HOST}:${PUBLIC_PORT}/api/auth/google/callback`
+                clientSecret: GOOGLE_OAUTH20_CLIENT_SECRET
             },
             usersController.handleGoogleAuthentication
         )
