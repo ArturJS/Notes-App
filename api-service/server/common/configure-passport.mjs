@@ -5,6 +5,20 @@ import config from '@config';
 import logger from '@root/common/logger';
 import { usersController } from '@root/components/users';
 
+const serializeError = error => {
+    if (error instanceof Error) {
+        const alt = {};
+
+        Object.getOwnPropertyNames(error).forEach(key => {
+            alt[key] = error[key];
+        });
+
+        return JSON.stringify(alt, null, 2);
+    }
+
+    return error;
+};
+
 const router = new Router();
 
 export const configurePassport = app => {
@@ -31,15 +45,22 @@ export const configurePassport = app => {
 
             ctx.session.returnUrl = null;
 
-            await passport.authenticate('google', async (err, user) => {
-                if (!user) {
-                    logger.warn('Google auth error', err);
-                    ctx.redirect(`${returnUrl}?google-auth-error`);
-                } else {
-                    await ctx.login(user);
-                    ctx.redirect(returnUrl);
+            await passport.authenticate(
+                'google',
+                {
+                    scope: ['email', 'profile'],
+                    callbackURL: `${returnUrl}api/auth/google/callback`
+                },
+                async (err, user) => {
+                    if (!user) {
+                        logger.warn('Google auth error', serializeError(err));
+                        ctx.redirect(`${returnUrl}?google-auth-error`);
+                    } else {
+                        await ctx.login(user);
+                        ctx.redirect(returnUrl);
+                    }
                 }
-            })(ctx);
+            )(ctx);
         })
         .post('/api/auth/logout', async ctx => {
             await ctx.logout();
@@ -56,7 +77,6 @@ export const configurePassport = app => {
         done(null, user);
     });
 
-    const { PUBLIC_HOST, PUBLIC_PORT } = config.server;
     const {
         GOOGLE_OAUTH20_CLIENT_ID,
         GOOGLE_OAUTH20_CLIENT_SECRET
