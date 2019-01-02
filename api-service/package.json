@@ -86,7 +86,6 @@
         "sequelize-cli": "4.0.0",
         "stream-meter": "1.0.4",
         "uuid": "3.2.1",
-        "winston": "3.0.0-rc6",
-        "winston-daily-rotate-file": "3.2.1"
+        "winston": "3.0.0-rc6"
     }
 }
