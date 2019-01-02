@@ -4,7 +4,7 @@ services:
         build:
             context: ../api-service
             dockerfile: Dockerfile
-        image: arturjs/notes-app_api-service:latest
+        image: arturjs/notes-app_api-service:0.0.2
         container_name: 'api-service'
         env_file: ../api-service/.env
         environment:

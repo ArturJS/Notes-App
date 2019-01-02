@@ -77,11 +77,11 @@ spec:
             configMapKeyRef:
               key: REDIS_PORT
               name: api-service-api-service--env
-        image: arturjs/notes-app_api-service:latest
+        image: arturjs/notes-app_api-service:0.0.2
         name: api-service
         ports:
         - containerPort: 3001
         resources: {}
       restartPolicy: Always
-      imagePullPollicy: Always
+#      imagePullPollicy: Always
 status: {}
