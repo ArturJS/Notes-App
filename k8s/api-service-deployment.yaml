@@ -67,16 +67,6 @@ spec:
             configMapKeyRef:
               key: PORT
               name: api-service-api-service--env
-        - name: PUBLIC_HOST
-          valueFrom:
-            configMapKeyRef:
-              key: PUBLIC_HOST
-              name: api-service-api-service--env
-        - name: PUBLIC_PORT
-          valueFrom:
-            configMapKeyRef:
-              key: PUBLIC_PORT
-              name: api-service-api-service--env
         - name: REDIS_HOST
           valueFrom:
             configMapKeyRef:
@@ -87,10 +77,11 @@ spec:
             configMapKeyRef:
               key: REDIS_PORT
               name: api-service-api-service--env
-        image: arturjs/notes-app_api-service:0.0.1
+        image: arturjs/notes-app_api-service:latest
         name: api-service
         ports:
         - containerPort: 3001
         resources: {}
       restartPolicy: Always
+      imagePullPollicy: Always
 status: {}

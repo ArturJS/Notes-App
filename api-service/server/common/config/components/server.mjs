@@ -1,19 +1,15 @@
 import joi from 'joi';
 
-const { HOST, PORT, PUBLIC_HOST, PUBLIC_PORT } = process.env;
+const { HOST, PORT } = process.env;
 
 const validationSchema = joi.object({
     HOST: joi.string().required(),
-    PORT: joi.string().required(),
-    PUBLIC_HOST: joi.string().required(),
-    PUBLIC_PORT: joi.string().required()
+    PORT: joi.string().required()
 });
 const { error } = joi.validate(
     {
         HOST,
-        PORT,
-        PUBLIC_HOST,
-        PUBLIC_PORT
+        PORT
     },
     validationSchema
 );
@@ -24,7 +20,5 @@ if (error) {
 
 export const server = {
     HOST,
-    PORT,
-    PUBLIC_HOST,
-    PUBLIC_PORT
+    PORT
 };

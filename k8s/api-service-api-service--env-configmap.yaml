@@ -9,8 +9,6 @@ data:
   LOG_LEVEL: info
   NODE_ENV: production
   PORT: "3001"
-  PUBLIC_HOST: 127.0.0.1
-  PUBLIC_PORT: "8080"
   REDIS_HOST: redis
   REDIS_PORT: "6379"
 kind: ConfigMap
