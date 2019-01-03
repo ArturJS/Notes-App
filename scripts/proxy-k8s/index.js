@@ -1,13 +1,12 @@
-const { execSync } = require('child_process');
 const Koa = require('koa');
 const proxy = require('koa-proxy');
+const { getTargetHost } = require('./utils');
 
 const app = new Koa();
 const PORT = 1234;
-const host = execSync('minikube service ui-service --url').toString('utf8').replace(/\n/, '');
 
 app.use(proxy({
-    host,
+    host: getTargetHost(),
     match: /.*/,
     followRedirect: false,
     jar: true
