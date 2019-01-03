@@ -18,3 +18,4 @@ cassettes
 coverage
 data
 .next
+docker-release-tag.sh

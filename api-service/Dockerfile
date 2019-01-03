@@ -9,8 +9,10 @@ USER node
 
 COPY --chown=node:node package.json .
 COPY --chown=node:node package-lock.json .
+
+RUN npm install --production
+
 COPY --chown=node:node ./ ./
 
-RUN npm install
 
 ENTRYPOINT ["node", "server/index.js"]
