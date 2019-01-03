@@ -9,9 +9,9 @@ USER node
 
 COPY --chown=node:node package.json .
 COPY --chown=node:node package-lock.json .
-COPY --chown=node:node ./ ./
+RUN npm install
 
-RUN npm install && \
-    npm run build
+COPY --chown=node:node ./ ./
+RUN npm run build
 
 ENTRYPOINT ["node", "server/index.js"]
