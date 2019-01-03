@@ -62,7 +62,7 @@ spec:
             configMapKeyRef:
               key: REDIS_PORT
               name: ui-service-ui-service--env
-        image: arturjs/notes-app_ui-service:0.0.1
+        image: arturjs/notes-app_ui-service:0.0.2
         name: ui-service
         ports:
         - containerPort: 3000
