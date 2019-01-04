@@ -1,4 +1,4 @@
-# ArturJS.github.io
+# Notes-App
 
 ## TODO:
 
@@ -12,4 +12,8 @@
 -   [x] Integrate with Dropbox API
 -   [x] Decouple API and UI services
 -   [x] [Dockerize](https://docs.docker.com/get-started/part2/#dockerfile) an application
+-   [x] Use [Kompose](http://kompose.io/) to migrate from [docker-compose](https://docs.docker.com/compose/) to [Kubernetes](https://kubernetes.io/)
+-   [ ] Setup basis for E2E testing with [Nightwatch](http://nightwatchjs.org/) in isolated docker-compose environment (database should be inside isolated environment)
+-   [ ] Setup Continuous Integration with running E2E tests
 -   [ ] Deploy to AWS
+-   [ ] Setup Continuous Deployment to AWS (it should automatically deploy only when all CI checks are successfully passed)
