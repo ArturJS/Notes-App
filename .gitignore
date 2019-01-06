@@ -11,3 +11,4 @@ webpack-assets.json
 webpack-bundle-report.html
 *.log
 e2e/screenshots/
+k8s/*.yaml
