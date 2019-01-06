@@ -17,14 +17,12 @@ services:
             internal-network:
                 aliases:
                     - api-service
-        depends_on:
-            - redis
 
     ui-service:
         build:
             context: ../ui-service
             dockerfile: Dockerfile
-        image: arturjs/notes-app_ui-service:0.0.2
+        image: arturjs/notes-app_ui-service:0.0.3
         container_name: 'ui-service'
         env_file: ../ui-service/.env
         environment:
@@ -39,20 +37,6 @@ services:
                 aliases:
                     - ui-service
 
-    redis:
-        image: redis:4.0.5-alpine
-        command: ['redis-server', '--appendonly', 'yes']
-        networks:
-            internal-network:
-                aliases:
-                    - redis
-        volumes:
-            - redis-data:/data
-
-# http://andrewtarry.com/docker_compose/ - more info about networking in docker-compose
 networks:
     internal-network:
         driver: bridge
-
-volumes:
-    redis-data:
