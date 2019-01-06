@@ -17,8 +17,6 @@ services:
             internal-network:
                 aliases:
                     - api-service
-        depends_on:
-            - redis
 
     ui-service:
         build:
@@ -39,20 +37,6 @@ services:
                 aliases:
                     - ui-service
 
-    redis:
-        image: redis:4.0.5-alpine
-        command: ['redis-server', '--appendonly', 'yes']
-        networks:
-            internal-network:
-                aliases:
-                    - redis
-        volumes:
-            - redis-data:/data
-
-# http://andrewtarry.com/docker_compose/ - more info about networking in docker-compose
 networks:
     internal-network:
         driver: bridge
-
-volumes:
-    redis-data:
