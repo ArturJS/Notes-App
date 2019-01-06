@@ -22,7 +22,7 @@ services:
         build:
             context: ../ui-service
             dockerfile: Dockerfile
-        image: arturjs/notes-app_ui-service:0.0.2
+        image: arturjs/notes-app_ui-service:0.0.3
         container_name: 'ui-service'
         env_file: ../ui-service/.env
         environment:
