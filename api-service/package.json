@@ -76,6 +76,7 @@
         "koa-static": "4.0.2",
         "koa-static-cache": "5.1.2",
         "lodash": "4.17.4",
+        "lru-cache": "^5.1.1",
         "mime-types": "2.1.18",
         "module-alias": "2.0.6",
         "passport-google-oauth": "1.0.0",

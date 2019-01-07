@@ -1,6 +1,7 @@
 // @flow
 import db from '@root/common/models';
 import logger from '@root/common/logger';
+import { withCache } from './utils';
 import type { REORDERING_TYPES_TYPE } from './notes.enums';
 
 type TNoteEssential = {|
@@ -44,6 +45,27 @@ const REORDERING_TYPES = {
     INSERT_BEFORE: 'INSERT_BEFORE',
     INSERT_AFTER: 'INSERT_AFTER'
 };
+
+const decorateWithCache = withCache({
+    methods: [
+        {
+            name: 'getAll',
+            refreshCacheAfterCalls: ['create', 'update', 'reorder', 'remove'],
+            maxAge: 1000 * 60 * 10, // 10 minutes
+            paramNumberAsCacheKey: 0,
+            getParamsForCachedMethod: (
+                name, // one of `refreshCacheAfterCalls`
+                args // with which arguments it is invoked
+            ) => {
+                if (name === 'reorder') {
+                    return [args[0].noteId];
+                }
+
+                return [args[0]];
+            }
+        }
+    ]
+});
 
 class NotesDAL {
     async getAll(userId: number): Promise<TNoteFull[]> {
@@ -403,4 +425,4 @@ class NotesDAL {
     }
 }
 
-export default new NotesDAL();
+export default new (decorateWithCache(NotesDAL))();
