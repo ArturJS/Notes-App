@@ -9,10 +9,10 @@ services:
         env_file: ../api-service/.env
         environment:
             - DOCKER_BUILD=true
-        labels: 
+        labels:
             kompose.service.expose: 'api-service'
         ports:
-            - "3001:3001"
+            - '3001:3001'
         networks:
             internal-network:
                 aliases:
@@ -22,7 +22,7 @@ services:
         build:
             context: ../ui-service
             dockerfile: Dockerfile
-        image: arturjs/notes-app_ui-service:0.0.3
+        image: arturjs/notes-app_ui-service:0.0.4
         container_name: 'ui-service'
         env_file: ../ui-service/.env
         environment:
@@ -31,7 +31,7 @@ services:
         labels:
             kompose.service.type: LoadBalancer
         ports:
-            - "8080:3000"
+            - '8080:3000'
         networks:
             internal-network:
                 aliases:
