@@ -1,10 +1,10 @@
 .notes-list {
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-    position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
 
-    [data-react-beautiful-dnd-draggable] {
-        padding-bottom: 15px;
-    }
+  [data-react-beautiful-dnd-draggable] {
+    padding-bottom: 15px;
+  }
 }
