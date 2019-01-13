@@ -23,6 +23,10 @@
             "jest --bail --findRelatedTests --env=jsdom",
             "git add"
         ],
+        "src/**/*.scss": [
+            "stylelint --fix",
+            "git add"
+        ],
         "server/**/*.{js,mjs}": [
             "prettier --write",
             "eslint --fix",
@@ -101,6 +105,10 @@
         "react-test-renderer": "16.3.2",
         "sass-loader": "6.0.6",
         "style-loader": "0.21.0",
+        "stylelint": "^9.9.0",
+        "stylelint-config-airbnb": "0.0.0",
+        "stylelint-order": "^2.0.0",
+        "stylelint-scss": "^3.5.0",
         "url-loader": "1.0.1",
         "webpack": "3.12.0",
         "webpack-bundle-analyzer": "2.9.1"
