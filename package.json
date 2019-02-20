@@ -15,6 +15,7 @@
         "start:ui-service": "cd ui-service && npm start",
         "postinstall": "cd ui-service && npm install && cd ../api-service && npm install",
         "test": "cd ui-service && npm test && cd ../api-service && npm test",
+        "proxy": "cross-env PORT=80 node ./scripts/proxy-k8s",
         "proxy-k8s": "node ./scripts/proxy-k8s"
     },
     "husky": {
@@ -27,8 +28,10 @@
         "husky": "^1.0.0-rc.13"
     },
     "dependencies": {
+        "cross-env": "^5.2.0",
         "koa": "^2.6.2",
         "koa-proxy": "^0.9.0",
-        "npm-run-all": "4.1.3"
+        "npm-run-all": "4.1.3",
+        "server-destroy": "^1.0.1"
     }
 }
