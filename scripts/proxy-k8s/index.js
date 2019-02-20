@@ -1,17 +1,7 @@
-const Koa = require('koa');
-const proxy = require('koa-proxy');
-const { getTargetHost } = require('./utils');
+const initServer = require('./init-server');
 
-const app = new Koa();
-const PORT = 1234;
+const {
+    PORT = 1234
+} = process.env;
 
-app.use(proxy({
-    host: getTargetHost(),
-    match: /.*/,
-    followRedirect: false,
-    jar: true
-}));
-
-app.listen(PORT, () => {
-    console.log(`proxy-k8s is up and running on ${PORT}`);
-});
+initServer(PORT); // Well, it's time to begin!
