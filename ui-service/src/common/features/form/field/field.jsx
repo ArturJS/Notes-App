@@ -8,7 +8,14 @@ import './field.scss';
 
 const enhance = compose(pure);
 
-const Field = ({ className, name, component, placeholder, autoComplete }) => (
+const Field = ({
+    className,
+    name,
+    component,
+    placeholder,
+    autoComplete,
+    autoFocus
+}) => (
     <div className={classNames('field', className)}>
         <FieldError name={name} />
         <FinalField
@@ -17,6 +24,7 @@ const Field = ({ className, name, component, placeholder, autoComplete }) => (
             className="field__control"
             placeholder={placeholder}
             autoComplete={autoComplete}
+            autoFocus={autoFocus}
         />
     </div>
 );
@@ -27,13 +35,15 @@ Field.propTypes = {
         .isRequired,
     className: PropTypes.string,
     placeholder: PropTypes.string,
-    autoComplete: PropTypes.string
+    autoComplete: PropTypes.string,
+    autoFocus: PropTypes.bool
 };
 
 Field.defaultProps = {
     className: '',
     placeholder: '',
-    autoComplete: ''
+    autoComplete: '',
+    autoFocus: false
 };
 
 export default enhance(Field);

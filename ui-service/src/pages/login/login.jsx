@@ -53,10 +53,12 @@ const enhance = compose(
 
 const Login = ({ isPending, isFailed, resendAuthToken, validateForm }) => (
     <div className="login-page">
-        {isPending && <p>Verifying auth token... Please wait.</p>}
+        {isPending && (
+            <p className="login-info">Verifying auth token... Please wait.</p>
+        )}
         {isFailed && (
             <>
-                <p>
+                <p className="login-info">
                     Authentication failed. It might happen due to expired auth
                     token.
                 </p>
@@ -71,7 +73,7 @@ const Login = ({ isPending, isFailed, resendAuthToken, validateForm }) => (
                                 component="input"
                                 autoComplete="off"
                                 placeholder="Your email"
-                                className="field-title"
+                                autoFocus
                             />
                             <div className="buttons-group">
                                 <Button type="submit" theme="primary">
