@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import logger from '@root/common/logger';
 import usersService from './users.service';
 
 const mapUserInfo = user => ({
@@ -42,9 +43,34 @@ class UsersController {
         ctx.body = mapUserInfo(createdUser);
     }
 
-    async handleAuthentication(username, token, done) {
+    async login(ctx) {
+        const { token } = ctx.request.body;
+
+        logger.info(`login with token="${token}"`);
+
         const user = await usersService.authenticateViaToken(token);
 
+        logger.info(`End login with token="${token}". Found user `, user);
+
+        const authData = _.pick(user, ['id', 'email']);
+
+        await ctx.login(authData);
+        ctx.body = authData;
+    }
+
+    async logout(ctx) {
+        await ctx.logout();
+        ctx.body = 0;
+    }
+
+    async handleAuthentication(username, token, done) {
+        logger.info(`Start handleAuthentication with token="${token}"`);
+        const user = await usersService.authenticateViaToken(token);
+
+        logger.info(
+            `End handleAuthentication with token="${token}". Found user `,
+            user
+        );
         done(null, {
             id: user.id,
             email: user.email
@@ -52,12 +78,11 @@ class UsersController {
     }
 
     async createAndSendToken(ctx) {
-        const { email } = ctx.request.body;
-        const { origin } = ctx.request;
+        const { email, baseUrl } = ctx.request.body;
 
         await usersService.createAndSendToken({
             email,
-            baseUrl: origin
+            baseUrl
         });
         ctx.body = 0;
     }

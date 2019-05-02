@@ -39,10 +39,13 @@ class UsersService {
                 email
             });
         }
+
+        return relatedUser;
     }
 
     async createAndSendToken({ email, baseUrl }) {
-        const loginPath = `${baseUrl}/login`;
+        const token = await jwtUtils.sign({ email });
+        const loginPath = `${baseUrl}/login?token=${token}`;
 
         await mailerService.sendEmail({
             receiverEmail: email,
