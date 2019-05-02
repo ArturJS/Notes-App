@@ -42,29 +42,24 @@ class UsersController {
         ctx.body = mapUserInfo(createdUser);
     }
 
-    async handleGoogleAuthentication(accessToken, refreshToken, profile, done) {
-        const email = profile.emails[0].value; // TODO handle absence of email
-        const firstName = profile.name.givenName;
-        const lastName = profile.name.familyName;
-
-        let relatedUser = await usersService.getByEmail(email, {
-            suppressError: true
-        });
-
-        if (!relatedUser) {
-            relatedUser = await usersService.create({
-                email,
-                firstName,
-                lastName
-            });
-        }
+    async handleAuthentication(username, token, done) {
+        const user = await usersService.authenticateViaToken(token);
 
         done(null, {
-            id: relatedUser.id,
-            email: relatedUser.email,
-            firstName: relatedUser.firstName,
-            lastName: relatedUser.lastName
+            id: user.id,
+            email: user.email
         });
+    }
+
+    async createAndSendToken(ctx) {
+        const { email } = ctx.request.body;
+        const { origin } = ctx.request;
+
+        await usersService.createAndSendToken({
+            email,
+            baseUrl: origin
+        });
+        ctx.body = 0;
     }
 }
 

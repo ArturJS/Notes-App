@@ -1,4 +1,11 @@
-import { ErrorNotFound, ErrorAlreadyExists } from '@root/common/exceptions';
+import {
+    ErrorNotFound,
+    ErrorAlreadyExists,
+    ErrorNotAuthorized
+} from '@root/common/exceptions';
+import logger from '@root/common/logger';
+import * as jwtUtils from '@root/common/utils/jwt.utils';
+import { mailerService } from '../mailer';
 import usersDAL from './users.dal';
 
 const mapUserInfo = user => ({
@@ -9,6 +16,41 @@ const mapUserInfo = user => ({
 });
 
 class UsersService {
+    async authenticateViaToken(token) {
+        let email;
+
+        try {
+            const user = await jwtUtils.verify(token);
+
+            // eslint-disable-next-line prefer-destructuring
+            email = user.email;
+        } catch (err) {
+            logger.warn('Failed to verify auth token. Details: ', err);
+
+            throw new ErrorNotAuthorized();
+        }
+
+        let relatedUser = await this.getByEmail(email, {
+            suppressError: true
+        });
+
+        if (!relatedUser) {
+            relatedUser = await this.create({
+                email
+            });
+        }
+    }
+
+    async createAndSendToken({ email, baseUrl }) {
+        const loginPath = `${baseUrl}/login`;
+
+        await mailerService.sendEmail({
+            receiverEmail: email,
+            subject: 'Login to Notes-App',
+            html: `<a href="${loginPath}">Click to login</a>`
+        });
+    }
+
     async getAll() {
         const users = await usersDAL.getAll();
 
@@ -41,8 +83,8 @@ class UsersService {
         }
 
         const createdUser = await usersDAL.create({
-            firstName: user.firstName,
-            lastName: user.lastName,
+            firstName: user.firstName || '',
+            lastName: user.lastName || '',
             email: user.email
         });
 

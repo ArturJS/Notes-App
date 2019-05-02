@@ -1,7 +1,6 @@
 import passport from 'koa-passport';
-import { OAuth2Strategy } from 'passport-google-oauth';
+import { Strategy } from 'passport-local';
 import Router from 'koa-router';
-import config from '@config';
 import logger from '@root/common/logger';
 import { usersController } from '@root/components/users';
 
@@ -62,10 +61,18 @@ export const configurePassport = app => {
                 }
             )(ctx);
         })
+        .post('/api/auth/login', async ctx => {
+            await ctx.logout();
+            ctx.body = 0;
+        })
         .post('/api/auth/logout', async ctx => {
             await ctx.logout();
             ctx.body = 0;
-        });
+        })
+        .post(
+            '/api/auth/create-and-send-token',
+            usersController.createAndSendToken
+        );
 
     app.use(router.routes());
 
@@ -77,18 +84,5 @@ export const configurePassport = app => {
         done(null, user);
     });
 
-    const {
-        GOOGLE_OAUTH20_CLIENT_ID,
-        GOOGLE_OAUTH20_CLIENT_SECRET
-    } = config.auth;
-
-    passport.use(
-        new OAuth2Strategy(
-            {
-                clientID: GOOGLE_OAUTH20_CLIENT_ID,
-                clientSecret: GOOGLE_OAUTH20_CLIENT_SECRET
-            },
-            usersController.handleGoogleAuthentication
-        )
-    );
+    passport.use(new Strategy(usersController.handleAuthentication));
 };
