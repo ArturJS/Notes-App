@@ -30,7 +30,6 @@ jest.mock('../../button', () => ({ theme, children, onClick }) => (
 ));
 jest.mock('../../../features/auth', () => ({
     authActions: {
-        loginRequest: jest.fn(),
         logoutRequest: jest.fn()
     },
     authSelectors: {
@@ -53,7 +52,6 @@ describe('<UserAuthState />', () => {
         it('when isLoggedIn', () => {
             // eslint-disable-next-line no-shadow
             const authActions = {
-                loginRequest: jest.fn(),
                 logoutRequest: jest.fn()
             };
             const tree = renderer
@@ -66,7 +64,6 @@ describe('<UserAuthState />', () => {
         it('when NOT isLoggedIn', () => {
             // eslint-disable-next-line no-shadow
             const authActions = {
-                loginRequest: jest.fn(),
                 logoutRequest: jest.fn()
             };
             const tree = renderer
@@ -105,25 +102,9 @@ describe('<UserAuthState />', () => {
         });
     });
 
-    it('should invoke `loginRequest()` after button click', () => {
-        // eslint-disable-next-line no-shadow
-        const authActions = {
-            loginRequest: jest.fn(),
-            logoutRequest: jest.fn()
-        };
-        const wrapper = mount(
-            <UserAuthState isLoggedIn={false} authActions={authActions} />
-        );
-
-        wrapper.find('button').simulate('click');
-
-        expect(authActions.loginRequest).toHaveBeenCalled();
-    });
-
     it('should invoke `logoutRequest()` after button click', () => {
         // eslint-disable-next-line no-shadow
         const authActions = {
-            loginRequest: jest.fn(),
             logoutRequest: jest.fn()
         };
         const wrapper = mount(

@@ -4,6 +4,7 @@ import { dropbox } from './components/dropbox';
 import { env } from './components/env';
 import { logger } from './components/logger';
 import { server } from './components/server';
+import { mailer } from './components/mailer';
 
 const config = {
     auth,
@@ -11,7 +12,8 @@ const config = {
     dropbox,
     env,
     logger,
-    server
+    server,
+    mailer
 };
 
 export default config;

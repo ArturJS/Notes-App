@@ -1,18 +1,9 @@
 import { handleActions } from 'redux-actions';
 import produce from 'immer';
-import {
-    LOGIN_REQUEST,
-    LOGIN_SUCCESS,
-    LOGIN_FAILURE,
-    LOGOUT_REQUEST,
-    LOGOUT_SUCCESS,
-    LOGOUT_FAILURE
-} from './auth.actions';
+import { LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE } from './auth.actions';
 
 const initialState = {
     isLoggedIn: false,
-    isLoginPending: false,
-    isLoginSuccess: null,
     isLogoutPending: false,
     isLogoutSuccess: null,
     authData: {
@@ -23,28 +14,6 @@ const initialState = {
 /* eslint-disable no-param-reassign */
 const authReducer = handleActions(
     {
-        [LOGIN_REQUEST]: state =>
-            produce(state, draftState => {
-                draftState.isLoginPending = true;
-            }),
-
-        [LOGIN_SUCCESS]: (state, { payload }) =>
-            produce(state, draftState => {
-                draftState.isLoginPending = false;
-                draftState.isLoginSuccess = true;
-                draftState.isLoggedIn = true;
-                draftState.authData = {
-                    email: payload.email
-                };
-            }),
-
-        [LOGIN_FAILURE]: state =>
-            produce(state, draftState => {
-                draftState.isLoggedIn = false;
-                draftState.isLoginPending = false;
-                draftState.isLoginSuccess = false;
-            }),
-
         [LOGOUT_REQUEST]: state =>
             produce(state, draftState => {
                 draftState.isLogoutPending = true;

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { pure, compose, withHandlers } from 'recompose';
+import { withRouter } from 'next/router';
 import Button from '../button';
 import { authActions, authSelectors } from '../../features/auth';
 import withReduxStore from '../../hocs/with-redux-store';
@@ -24,12 +25,10 @@ const mapDispatchToProps = dispatch => ({
 const enhance = compose(
     withReduxStore(),
     connect(mapStateToProps, mapDispatchToProps),
+    withRouter,
     withHandlers({
-        login: ({
-            // eslint-disable-next-line no-shadow
-            authActions
-        }) => () => {
-            authActions.loginRequest();
+        login: ({ router }) => () => {
+            router.push('/login');
         },
         logout: ({
             // eslint-disable-next-line no-shadow
