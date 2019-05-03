@@ -1,17 +1,6 @@
-import { config } from './api.config';
 import { baseApi } from './base.api';
 
 export const authApi = {
-    loginWithGoogle() {
-        const { baseURL } = config;
-        const { origin, pathname } = window.location;
-        const returnUrl = encodeURIComponent(`${origin}${pathname}`);
-
-        window.location.replace(
-            `${baseURL}/auth/google?returnUrl=${returnUrl}`
-        );
-    },
-
     async loginViaToken(token) {
         const { data: user } = await baseApi.ajax({
             method: 'post',

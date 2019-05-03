@@ -5,8 +5,6 @@ describe('auth.selectors.js', () => {
         it('should extract only needed data from state', () => {
             const expectedAuthState = {
                 isLoggedIn: true,
-                isLoginPending: false,
-                isLoginSuccess: true,
                 isLogoutPending: false,
                 isLogoutSuccess: false,
                 authData: {
