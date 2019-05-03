@@ -2,18 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'next/router';
 import { compose, lifecycle, withStateHandlers, withHandlers } from 'recompose';
+import { get } from 'lodash';
 import { authApi } from '@common/api';
-import { Form, Field } from '@common/features/form';
-import Button from '@common/components/button';
+import LoginForm from './components/login-form';
 import './login.scss';
+
+const checkIsLoginIntent = router => !get(router, 'query.token');
 
 const enhance = compose(
     withRouter,
     withStateHandlers(
-        {
+        ({ router }) => ({
+            isLoginIntent: checkIsLoginIntent(router),
             isPending: true,
             isFailed: false
-        },
+        }),
         {
             reportFailure: () => () => ({
                 isPending: false,
@@ -23,7 +26,12 @@ const enhance = compose(
     ),
     lifecycle({
         async componentDidMount() {
-            const { router, reportFailure } = this.props;
+            const { router, reportFailure, isLoginIntent } = this.props;
+
+            if (isLoginIntent) {
+                return;
+            }
+
             const { token } = router.query || {};
 
             try {
@@ -45,43 +53,46 @@ const enhance = compose(
 
             return errors;
         },
-        resendAuthToken: () => ({ email }) => {
-            authApi.sendAuthToken(email);
+        resendAuthToken: () => async ({ email }) => {
+            await authApi.sendAuthToken(email);
         }
     })
 );
 
-const Login = ({ isPending, isFailed, resendAuthToken, validateForm }) => (
+const Login = ({
+    isLoginIntent,
+    isPending,
+    isFailed,
+    resendAuthToken,
+    validateForm
+}) => (
     <div className="login-page">
-        {isPending && (
-            <p className="login-info">Verifying auth token... Please wait.</p>
-        )}
-        {isFailed && (
-            <>
+        {isPending &&
+            !isLoginIntent && (
                 <p className="login-info">
-                    Authentication failed. It might happen due to expired auth
-                    token.
+                    Verifying auth token... Please wait.
                 </p>
-                <Form
-                    className="login-form"
+            )}
+        {(isFailed || isLoginIntent) && (
+            <>
+                {!isLoginIntent && (
+                    <p className="login-info">
+                        Authentication failed. It might happen due to expired
+                        auth token.
+                    </p>
+                )}
+                {isLoginIntent && (
+                    <p className="login-info">
+                        Please enter your email and we will send you
+                        authentication link.
+                    </p>
+                )}
+                <LoginForm
                     onSubmit={resendAuthToken}
                     validate={validateForm}
-                    render={() => (
-                        <>
-                            <Field
-                                name="email"
-                                component="input"
-                                autoComplete="off"
-                                placeholder="Your email"
-                                autoFocus
-                            />
-                            <div className="buttons-group">
-                                <Button type="submit" theme="primary">
-                                    Resend auth token
-                                </Button>
-                            </div>
-                        </>
-                    )}
+                    buttonText={`${
+                        isLoginIntent ? 'Send' : 'Resend'
+                    } auth link`}
                 />
             </>
         )}
@@ -92,7 +103,8 @@ Login.propTypes = {
     isPending: PropTypes.bool.isRequired,
     isFailed: PropTypes.bool.isRequired,
     resendAuthToken: PropTypes.func.isRequired,
-    validateForm: PropTypes.func.isRequired
+    validateForm: PropTypes.func.isRequired,
+    isLoginIntent: PropTypes.bool.isRequired
 };
 
 export default enhance(Login);
