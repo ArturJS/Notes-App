@@ -1,8 +1,10 @@
+const video = require('nightwatch-video-recorder');
+
 module.exports = {
     beforeEach: function(browser, done) {
-        require('nightwatch-video-recorder').start(browser, done);
+        video.start(browser, done);
     },
     afterEach: function(browser, done) {
-        require('nightwatch-video-recorder').stop(browser, done);
+        video.stop(browser, done);
     }
 };

@@ -1,10 +1,10 @@
 version: '3'
 services:
     api-service:
-        build: 
+        build:
             context: ./api-service
             dockerfile: Dockerfile
-        container_name: "api-service"
+        container_name: 'api-service'
         env_file: ./api-service/.env
         environment:
             - DOCKER_BUILD=true
@@ -14,40 +14,55 @@ services:
                     - api-service
 
     ui-service:
-        build: 
+        build:
             context: ./ui-service
             dockerfile: Dockerfile
-        container_name: "ui-service"
+        container_name: 'ui-service'
         env_file: ./ui-service/.env
         environment:
             - DOCKER_BUILD=true
             - API_URL=http://api-service:3001
+        ports:
+            - '3000:3000'
         networks:
             internal-network:
                 aliases:
                     - ui-service
 
-    chromedriver:
-        image: blueimp/chromedriver
-        environment:
-            - VNC_ENABLED=true
-            - EXPOSE_X11=true
+    selenium-hub:
+        image: selenium/hub:3.141.59
+        container_name: selenium-hub
         ports:
-            - 5900:5900
+            - '4444:4444'
         networks:
             internal-network:
                 aliases:
-                    - chromedriver
-    nightwatch:
-        image: blueimp/nightwatch:0.9
-        # init: true
+                    - selenium-hub
+    chrome:
+        image: selenium/node-chrome:3.141.59
+        volumes:
+            - /dev/shm:/dev/shm
         depends_on:
-            - chromedriver
+            - selenium-hub
+        environment:
+            - HUB_HOST=selenium-hub
+            - HUB_PORT=4444
+        networks:
+            internal-network:
+                aliases:
+                    - chrome
+
+    nightwatch:
+        build:
+            context: ./e2e
+            dockerfile: Dockerfile
+        depends_on:
+            - selenium-hub
             - ui-service
         environment:
-            - WAIT_FOR_HOSTS=ui-service:3000 chromedriver:4444 chromedriver:6060
+            - SELENIUM_HUB_URL=http://selenium-hub:4444
         volumes:
-            - ./e2e:/home/node
+            - ./e2e:/home/nightwatch
         networks:
             internal-network:
                 aliases:

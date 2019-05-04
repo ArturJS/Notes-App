@@ -5,7 +5,19 @@
     "custom_assertions_path": ["common/custom-assertions"],
     "page_objects_path": ["pages"],
     "test_settings": {
+        "videos": {
+            "enabled": false,
+            "delete_on_success": false,
+            "path": "videos"
+        },
         "default": {
+            "desiredCapabilities": {
+                "browserName": "chrome",
+                "chromeOptions": {
+                    "args": ["--no-sandbox"]
+                },
+                "acceptSslCerts": true
+            },
             "screenshots": {
                 "enabled": true,
                 "on_failure": true,
@@ -17,7 +29,7 @@
                 "path": "videos"
             },
             "launch_url": "http://ui-service:3000",
-            "selenium_host": "chromedriver"
+            "selenium_host": "selenium-hub"
         }
     }
 }
