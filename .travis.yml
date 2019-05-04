@@ -1,9 +1,11 @@
 language: node_js
 sudo: false
 node_js:
-  - "8.11.2"
-cache:
-  directories:
-  - node_modules
-script:
-  - npm test
+    - '8.16.0'
+jobs:
+    include:
+        - stage: unit-tests
+          script: npm test
+
+        - stage: e2e-tests
+          script: npm run e2e
