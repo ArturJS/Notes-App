@@ -15,7 +15,7 @@ SUCESS_CMD="jq .status | grep 0"
 
 while ! curl -s "${SEL_STATUS_URL}" | sh -c "${SUCESS_CMD}"; do
   echo -n '.'
-  sleep 1
+  sleep 0.1
 done
-sleep 5
+sleep 10
 echo "Done wait-selenium-hub.sh"

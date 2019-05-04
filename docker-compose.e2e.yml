@@ -5,7 +5,7 @@ services:
             context: ./api-service
             dockerfile: Dockerfile
         container_name: 'api-service'
-        env_file: ./api-service/.env
+        env_file: ./api-service/.env.e2e
         environment:
             - DOCKER_BUILD=true
         networks:
@@ -18,7 +18,7 @@ services:
             context: ./ui-service
             dockerfile: Dockerfile
         container_name: 'ui-service'
-        env_file: ./ui-service/.env
+        env_file: ./ui-service/.env.e2e
         environment:
             - DOCKER_BUILD=true
             - API_URL=http://api-service:3001
