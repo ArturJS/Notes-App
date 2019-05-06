@@ -25,6 +25,23 @@ const getNextVersionNumber = (version, bumpVersionType) => {
     }
 };
 
+const toFromProjectRootPaths = relativePaths =>
+    relativePaths.map(filePath => path.resolve(__dirname, '../../', filePath));
+
+const getFilesWithVersions = () => {
+    const foldersWithPackageJsons = ['./', './ui-service/', './api-service/'];
+    const relativePathsToPackageJsons = foldersWithPackageJsons.reduce(
+        (acc, value) => [
+            ...acc,
+            `${value}package.json`,
+            `${value}package-lock.json`
+        ],
+        []
+    );
+
+    return toFromProjectRootPaths(relativePathsToPackageJsons);
+};
+
 const replaceInFiles = async ({ files, from, to, encoding = 'utf8' }) => {
     const readFile = promisify(fs.readFile);
     const writeFile = promisify(fs.writeFile);
@@ -66,11 +83,8 @@ const main = async () => {
     }
 
     await replaceInFiles({
-        files: [
-            path.resolve(__dirname, '../../', 'package.json'),
-            path.resolve(__dirname, '../../', 'package-lock.json')
-        ],
-        from: `"version": "${version}"`,
+        files: getFilesWithVersions(),
+        from: /"version": "[^"]+"/,
         to: `"version": "${nextVersionNumber}"`
     });
 
