@@ -4,6 +4,7 @@ const path = require('path');
 const { prompt } = require('inquirer');
 const chalk = require('chalk');
 const { version } = require('../../package.json');
+const { execShell } = require('./utils');
 
 const VERSION_TYPES = {
     PATCH: 'patch',
@@ -65,10 +66,10 @@ const main = async () => {
         }
     ]);
     const nextVersionNumber = getNextVersionNumber(version, versionType);
-    const { yesOrNo } = await prompt([
+    const { shouldBumpVersion } = await prompt([
         {
             type: 'list',
-            name: 'yesOrNo',
+            name: 'shouldBumpVersion',
             message: `The next version number will be ${chalk.green(
                 nextVersionNumber
             )}. Is it ok?`,
@@ -76,7 +77,7 @@ const main = async () => {
         }
     ]);
 
-    if (yesOrNo === 'no') {
+    if (shouldBumpVersion === 'no') {
         console.log('Cancelling bump version operation.');
 
         return;
@@ -91,6 +92,26 @@ const main = async () => {
     console.log(
         'Success! package.json and package-lock.json has been updated!'
     );
+
+    const { shouldPublishDocker } = await prompt([
+        {
+            type: 'list',
+            name: 'shouldPublishDocker',
+            message: 'Publish new docker image?',
+            choices: ['no', 'yes']
+        }
+    ]);
+
+    if (shouldPublishDocker === 'no') {
+        console.log('Cancelling docker publish operation.');
+
+        return;
+    }
+
+    await execShell({
+        command: 'node publish-docker.js',
+        cwd: path.resolve(__dirname)
+    });
 };
 
 main();

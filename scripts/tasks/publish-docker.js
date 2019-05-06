@@ -1,25 +1,8 @@
-const { spawn } = require('child_process');
 const path = require('path');
 const { version } = require('../../package.json');
+const { execShell } = require('./utils');
 
 const { log } = console;
-
-const execShell = async ({ command, cwd }) =>
-    new Promise((resolve, reject) => {
-        spawn(command, {
-            cwd,
-            stdio: 'inherit',
-            shell: true
-        }).on('close', code => {
-            if (code !== 0) {
-                log(`The command "${command}" failed with code ${code}!`);
-                reject();
-                return;
-            }
-
-            resolve();
-        });
-    });
 
 const buildDockerImages = async ({ pathsToDockerfiles, version }) => {
     for (let dockerfilePath of pathsToDockerfiles) {
