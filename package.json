@@ -8,6 +8,7 @@
     "author": "ArturJS",
     "license": "MIT",
     "scripts": {
+        "bump-version": "node ./scripts/tasks/bump-version.js",
         "e2e": "docker-compose --file docker-compose.e2e.yml up --abort-on-container-exit",
         "e2e:rebuild:ui-service": "docker-compose --file docker-compose.e2e.yml up --no-deps --build ui-service",
         "start": "npx npm-run-all --parallel start:api-service start:ui-service",
@@ -25,7 +26,9 @@
         }
     },
     "devDependencies": {
-        "husky": "^1.0.0-rc.13"
+        "chalk": "^2.4.2",
+        "husky": "^1.0.0-rc.13",
+        "inquirer": "^6.3.1"
     },
     "dependencies": {
         "cross-env": "^5.2.0",
