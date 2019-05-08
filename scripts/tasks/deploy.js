@@ -9,7 +9,7 @@ const main = async () => {
     try {
         await execShell({
             command: [
-                'cd notes-app-chart/templates',
+                'cd helm-chart/templates',
                 'sops -d -i ui-service-ui-service--env-configmap.yaml',
                 'sops -d -i api-service-api-service--env-configmap.yaml'
             ].join(' && '),
@@ -28,13 +28,13 @@ const main = async () => {
     console.log('Deploying...');
     const releaseName = await execShell({
         command:
-            "helm ls | (grep notes-app-chart || echo 'notes-app-release') | awk '{print $1}'",
+            "helm ls | (grep helm-chart || echo 'notes-app-release') | awk '{print $1}'",
         cwd,
         collectResult: true
     });
 
     await execShell({
-        command: `helm upgrade --install ${releaseName.trim()} ./notes-app-chart`,
+        command: `helm upgrade --install ${releaseName.trim()} ./helm-chart`,
         cwd
     });
     console.log('Done!');
