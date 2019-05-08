@@ -1,0 +1,85 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+    annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.service.expose: api-service
+        kompose.version: 1.17.0 (a74acad)
+    creationTimestamp: null
+    labels:
+        io.kompose.service: api-service
+    name: api-service
+spec:
+    replicas: 1
+    strategy:
+        type: RollingUpdate
+        rollingUpdate:
+            maxUnavailable: 1
+            maxSurge: 1
+    template:
+        metadata:
+            creationTimestamp: null
+            labels:
+                io.kompose.service: api-service
+        spec:
+            containers:
+                - env:
+                      - name: AUTH_SESSION_SECRET
+                        valueFrom:
+                            configMapKeyRef:
+                                key: AUTH_SESSION_SECRET
+                                name: api-service-api-service--env
+                      - name: DATABASE_URL
+                        valueFrom:
+                            configMapKeyRef:
+                                key: DATABASE_URL
+                                name: api-service-api-service--env
+                      - name: DOCKER_BUILD
+                        value: 'true'
+                      - name: DROPBOX_TOKEN
+                        valueFrom:
+                            configMapKeyRef:
+                                key: DROPBOX_TOKEN
+                                name: api-service-api-service--env
+                      - name: HOST
+                        valueFrom:
+                            configMapKeyRef:
+                                key: HOST
+                                name: api-service-api-service--env
+                      - name: LOG_LEVEL
+                        valueFrom:
+                            configMapKeyRef:
+                                key: LOG_LEVEL
+                                name: api-service-api-service--env
+                      - name: NODE_ENV
+                        valueFrom:
+                            configMapKeyRef:
+                                key: NODE_ENV
+                                name: api-service-api-service--env
+                      - name: PORT
+                        valueFrom:
+                            configMapKeyRef:
+                                key: PORT
+                                name: api-service-api-service--env
+                      - name: MAIL_USER_SERVICE
+                        valueFrom:
+                            configMapKeyRef:
+                                key: MAIL_USER_SERVICE
+                                name: api-service-api-service--env
+                      - name: MAIL_USER_EMAIL
+                        valueFrom:
+                            configMapKeyRef:
+                                key: MAIL_USER_EMAIL
+                                name: api-service-api-service--env
+                      - name: MAIL_USER_PASSWORD
+                        valueFrom:
+                            configMapKeyRef:
+                                key: MAIL_USER_PASSWORD
+                                name: api-service-api-service--env
+                  image: arturjs/notes-app_api-service:1.0.0
+                  name: api-service
+                  ports:
+                      - containerPort: 3001
+                  resources: {}
+            restartPolicy: Always
+status: {}

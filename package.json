@@ -9,6 +9,8 @@
     "license": "MIT",
     "scripts": {
         "bump-version": "node ./scripts/tasks/bump-version.js",
+        "deploy": "node ./scripts/tasks/deploy.js",
+        "encrypt-configs": "node ./scripts/tasks/encrypt-configs.js",
         "e2e": "docker-compose --file docker-compose.e2e.yml up --abort-on-container-exit",
         "e2e:rebuild:ui-service": "docker-compose --file docker-compose.e2e.yml up --no-deps --build ui-service",
         "start": "npx npm-run-all --parallel start:api-service start:ui-service",
