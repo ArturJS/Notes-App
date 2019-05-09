@@ -56,7 +56,7 @@ spec:
                             configMapKeyRef:
                                 key: PORT
                                 name: ui-service-ui-service--env
-                  image: arturjs/notes-app_ui-service:1.0.0
+                  image: arturjs/notes-app_ui-service:1.1.0
                   name: ui-service
                   ports:
                       - containerPort: 3000

@@ -76,7 +76,7 @@ spec:
                             configMapKeyRef:
                                 key: MAIL_USER_PASSWORD
                                 name: api-service-api-service--env
-                  image: arturjs/notes-app_api-service:1.0.0
+                  image: arturjs/notes-app_api-service:1.1.0
                   name: api-service
                   ports:
                       - containerPort: 3001
