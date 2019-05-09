@@ -1,6 +1,6 @@
 {
     "name": "notes-app",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Very handy notes application!",
     "repository": "https://github.com/ArturJS/ArturJS.github.io",
     "main": "index.js",
