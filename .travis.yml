@@ -9,3 +9,8 @@ jobs:
 
         - stage: e2e-tests
           script: npm run e2e
+
+notifications:
+    webhooks:
+        urls:
+            - http://3.16.184.186:3000/notifications
