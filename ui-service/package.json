@@ -164,7 +164,7 @@
         "regenerator-runtime": "0.11.1",
         "regenerator-transform": "0.12.3",
         "reselect": "3.0.1",
-        "serialize-javascript": "1.4.0",
+        "serialize-javascript": "3.1.0",
         "shortid": "2.2.8",
         "smoothscroll-polyfill": "0.4.0"
     }
