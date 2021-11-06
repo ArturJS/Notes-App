@@ -1,1 +1,1 @@
-export { default } from './add-note-form.jsx';
+export { default } from './add-note-form';

@@ -7,15 +7,12 @@
                     "modules": "commonjs"
                 }
             }
-        ],
-        "@babel/preset-flow"
+        ]
     ],
     "plugins": [
         ["@babel/plugin-proposal-decorators", { "legacy": true }],
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-proposal-object-rest-spread",
-        "@babel/plugin-syntax-flow",
-        "@babel/plugin-transform-flow-strip-types",
         [
             "module-resolver",
             {
@@ -28,21 +25,5 @@
                 }
             }
         ]
-    ],
-    "env": {
-        "production": {
-            "plugins": ["@babel/plugin-transform-flow-strip-types"]
-        },
-        "development": {
-            "plugins": [
-                [
-                    "flow-runtime",
-                    {
-                        "assert": true,
-                        "annotate": true
-                    }
-                ]
-            ]
-        }
-    }
+    ]
 }

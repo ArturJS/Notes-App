@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const withFlowSupport = require('./with-flow-support');
+const withTypescriptSupport = require('./with-typescript-support');
 const withExcludeModules = require('./with-exclude-modules');
 const withFonts = require('./with-fonts');
 const withStyles = require('./with-styles');
 
 module.exports = _.flow([
-    withFlowSupport,
+    withTypescriptSupport,
     withExcludeModules,
     withFonts,
     withStyles

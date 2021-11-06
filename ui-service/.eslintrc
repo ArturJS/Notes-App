@@ -4,10 +4,9 @@
         "airbnb",
         "airbnb-base",
         "prettier",
-        "plugin:jest/recommended",
-        "plugin:flowtype/recommended"
+        "plugin:jest/recommended"
     ],
-    "plugins": ["flowtype", "jest", "import"],
+    "plugins": ["jest", "import"],
     "parser": "babel-eslint",
     "rules": {
         "react/jsx-no-bind": 0,

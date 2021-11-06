@@ -1,5 +1,5 @@
 import React from 'react';
-import Document, { Head, Main, NextScript } from 'next/document';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
 import _ from 'lodash';
 
 export default class BaseDocument extends Document {
@@ -32,12 +32,8 @@ export default class BaseDocument extends Document {
         const styles = this.getStyles();
 
         return (
-            <html lang="en">
+            <Html lang="en">
                 <Head>
-                    <meta
-                        name="viewport"
-                        content="width=device-width, initial-scale=1, shrink-to-fit=no"
-                    />
                     {isProduction &&
                         styles.map(stylePath => (
                             <link
@@ -53,7 +49,7 @@ export default class BaseDocument extends Document {
                     <Main />
                     <NextScript />
                 </body>
-            </html>
+            </Html>
         );
     }
 }

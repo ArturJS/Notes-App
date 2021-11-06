@@ -1,5 +1,5 @@
 import React from 'react';
-import App, { Container } from 'next/app';
+import App from 'next/app';
 import UserAuthState from '@common/components/user-auth-state';
 import Header from '@common/components/header';
 import '@common/style/index.scss';
@@ -19,14 +19,12 @@ export default class BaseApp extends App {
         const { Component, pageProps } = this.props;
 
         return (
-            <Container>
-                <div id="app">
-                    <Header>
-                        <UserAuthState />
-                    </Header>
-                    <Component {...pageProps} />
-                </div>
-            </Container>
+            <div id="app">
+                <Header>
+                    <UserAuthState />
+                </Header>
+                <Component {...pageProps} />
+            </div>
         );
     }
 }
