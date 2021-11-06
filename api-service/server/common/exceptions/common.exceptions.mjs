@@ -89,3 +89,13 @@ export class ErrorBadRequest extends Exception {
         });
     }
 }
+
+export class ErrorFileUpload extends Exception {
+    constructor(message) {
+        super({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            errorCode: 'ErrorFileUpload',
+            message
+        });
+    }
+}

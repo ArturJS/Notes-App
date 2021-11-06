@@ -7,6 +7,7 @@ import axios from 'axios';
 import config from '@config';
 import db from '@root/common/models';
 import logger from '@root/common/logger';
+import { ErrorFileUpload } from '../../common/exceptions';
 
 type TGetFile = null | {|
     id: number,
@@ -90,21 +91,33 @@ class FilesDAL {
         const downloadPath = `${filename}-${uuidV4()}.${fileExtension}`;
         const streamMeter = createStreamMeter();
 
-        await axios({
-            method: 'POST',
-            url: 'https://content.dropboxapi.com/2/files/upload',
-            headers: {
-                'Content-Type': 'application/octet-stream',
-                Authorization: `Bearer ${DROPBOX_TOKEN}`,
-                'Dropbox-API-Arg': JSON.stringify({
-                    path: `/users-files/${encodeURIComponent(downloadPath)}`,
-                    mode: 'overwrite',
-                    autorename: true,
-                    mute: false
-                })
-            },
-            data: uploadStream.pipe(streamMeter)
-        });
+        try {
+            await axios({
+                method: 'POST',
+                url: 'https://content.dropboxapi.com/2/files/upload',
+                headers: {
+                    'Content-Type': 'application/octet-stream',
+                    Authorization: `Bearer ${DROPBOX_TOKEN}`,
+                    'Dropbox-API-Arg': JSON.stringify({
+                        path: `/users-files/${encodeURIComponent(downloadPath)}`,
+                        mode: 'add',
+                        autorename: true,
+                        mute: false,
+                        strict_conflict: false
+                    })
+                },
+                data: uploadStream.pipe(streamMeter)
+            });
+        } catch (error) {
+            logger.error(
+                [
+                    `Exception in FilesDAL.create(${userId}, ${filename}). `,
+                    error.response.data
+                ].join('')
+            );
+
+            throw new ErrorFileUpload(error.response.data);
+        }
 
         const size = streamMeter.bytes;
         const file = await db.Files.create({
