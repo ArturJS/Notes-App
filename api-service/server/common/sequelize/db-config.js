@@ -42,7 +42,13 @@ const databaseConfig = {
         host: DB_HOSTNAME,
         port: DB_PORT,
         dialect: 'postgres',
-        operatorsAliases: false
+        operatorsAliases: false,
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false // in order to fix "ERROR: self signed certificate"
+            }
+        }
     }
 };
 
