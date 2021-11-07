@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { compose, mapProps, withStateHandlers, withHandlers } from 'recompose';
 import { Form, Field } from '~/common/features/form';
 import Button from '~/common/components/button';
-import './login-form.scss';
 
 const enhance = compose(
     withStateHandlers(

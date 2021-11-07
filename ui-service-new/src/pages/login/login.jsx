@@ -5,7 +5,6 @@ import { compose, lifecycle, withStateHandlers, withHandlers } from 'recompose';
 import { get } from 'lodash';
 import { authApi } from '~/common/api';
 import LoginForm from './components/login-form';
-import './login.scss';
 
 const checkIsLoginIntent = router => !get(router, 'query.token');
 
