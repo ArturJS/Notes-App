@@ -14,7 +14,7 @@ const enhance = compose(
                 headers: {
                     Cookie: req.headers.cookie || ''
                 },
-                baseURL: req.apiBaseUrl
+                baseURL: req.apiBaseUrl || 'http://localhost:3000/api'
             };
 
             try {

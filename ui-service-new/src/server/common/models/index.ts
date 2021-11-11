@@ -19,20 +19,11 @@ if (env !== 'test' && !db.Sequelize) {
 }
 
 function initDB() {
-    console.log({
-        dbConfig
-    })
-
     const sequelize = new Sequelize(dbConfig);
     const notIndexJs = filename =>
         filename !== basename &&
         path.extname(filename) === '.js';
     const modelsFolder = path.resolve(PROJECT_ROOT, 'src/server/common/models');
-
-    console.log({
-        modelsFolder,
-        folderContent: fs.readdirSync(modelsFolder)
-    })
 
     fs
         .readdirSync(modelsFolder)
