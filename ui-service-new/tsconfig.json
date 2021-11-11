@@ -30,6 +30,8 @@
   ],
   "paths": {
     "~": ["src/"],
-    "~/*": ["src/*"]
+    "~/*": ["src/*"],
+    "@root": ["src/server/"],
+    "@config": ["src/server/common/config/"]
   }
 }
