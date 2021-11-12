@@ -22,23 +22,15 @@
     "joi": "13.2.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "2.5.0",
-    "koa-bodyparser": "4.2.0",
-    "koa-compress": "2.0.0",
-    "koa-favicon": "2.0.0",
-    "koa-mount": "3.0.0",
     "koa-passport": "4.0.1",
     "koa-proxy": "^0.9.0",
     "koa-router": "7.4.0",
     "koa-session": "5.0.0",
-    "koa-static": "4.0.2",
-    "koa-static-cache": "5.1.2",
     "localforage": "1.7.1",
     "lodash": "4.17.13",
     "lru-cache": "^5.1.1",
     "mime-types": "2.1.18",
     "next": "12.0.3",
-    "next-http-proxy-middleware": "^1.1.1",
-    "next-routes": "1.4.1",
     "nodemailer": "^6.1.1",
     "passport-local": "^1.0.0",
     "pg": "7.4.1",
@@ -58,8 +50,6 @@
     "redux-actions": "2.3.0",
     "redux-optimistic-ui": "3.1.0",
     "redux-saga": "0.16.0",
-    "regenerator-runtime": "0.11.1",
-    "regenerator-transform": "0.12.3",
     "reselect": "3.0.1",
     "sequelize": "5.15.1",
     "sequelize-cli": "4.0.0",
@@ -75,7 +65,27 @@
     "@types/react": "17.0.34",
     "eslint": "7",
     "eslint-config-next": "12.0.3",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "lint-staged": "^11.2.6",
+    "prettier": "^2.4.1",
     "sass": "^1.43.4",
+    "simple-git-hooks": "^2.7.0",
+    "stylelint": "^14.0.1",
+    "stylelint-order": "^5.0.0",
+    "stylelint-scss": "^4.0.0",
     "typescript": "4.4.4"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "src/**/*.scss": [
+      "stylelint --fix"
+    ]
   }
 }
