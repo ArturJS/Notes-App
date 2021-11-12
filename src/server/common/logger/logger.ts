@@ -1,6 +1,6 @@
 import path from 'path';
 import winston from 'winston';
-import config from '@config';
+import config from '~/server/common/config';
 
 const logger = winston.createLogger({
     level: config.logger.LOG_LEVEL,

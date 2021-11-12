@@ -1,4 +1,4 @@
-import db from '@root/common/models';
+import db from '~/server/common/models';
 
 type TUserInfo = {
     id: number,

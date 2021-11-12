@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import { ErrorNotFound } from '@root/common/exceptions';
+import { ErrorNotFound } from '~/server/common/exceptions';
 import filesDAL from './files.dal';
 
 type TFile = {

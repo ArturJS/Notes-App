@@ -1,5 +1,5 @@
 import joi from 'joi';
-import { createApiValidator } from '@root/common/utils/validation.utils';
+import { createApiValidator } from '~/server/common/utils/validation.utils';
 
 class FilesApiValidator {
     getById = createApiValidator([

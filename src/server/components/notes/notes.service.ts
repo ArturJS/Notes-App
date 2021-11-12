@@ -2,7 +2,7 @@ import {
     ErrorNotFound,
     ErrorAccessDenied,
     ErrorBadRequest
-} from '@root/common/exceptions';
+} from '~/server/common/exceptions';
 import { REORDERING_TYPES } from './notes.enums';
 import { REORDERING_TYPES_TYPE } from './notes.enums';
 import notesDAL from './notes.dal';

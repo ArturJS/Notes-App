@@ -1,7 +1,7 @@
 import passport from 'koa-passport';
 import { Strategy } from 'passport-local';
 import Router from 'koa-router';
-import { usersController } from '@root/components/users';
+import { usersController } from '~/server/components/users';
 
 const router = new Router();
 

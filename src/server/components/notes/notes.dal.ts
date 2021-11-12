@@ -1,5 +1,5 @@
-import db from '@root/common/models';
-import logger from '@root/common/logger';
+import db from '~/server/common/models';
+import logger from '~/server/common/logger';
 import { withCache } from './utils';
 import { REORDERING_TYPES_TYPE } from './notes.enums';
 

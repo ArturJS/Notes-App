@@ -1,5 +1,5 @@
 import joi from 'joi';
-import { createApiValidator } from '@root/common/utils/validation.utils';
+import { createApiValidator } from '~/server/common/utils/validation.utils';
 import { REORDERING_TYPES } from './notes.enums';
 
 const reorderingTypes = Object.values(REORDERING_TYPES);

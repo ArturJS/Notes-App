@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import asyncBusboy from 'async-busboy';
-import logger from '@root/common/logger';
+import logger from '~/server/common/logger';
 import filesService from './files.service';
 
 const getUserId = ctx => _.get(ctx, 'session.passport.user.id');

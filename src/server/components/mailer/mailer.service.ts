@@ -1,6 +1,6 @@
 import mailer from 'nodemailer';
-import config from '@config';
-import logger from '@root/common/logger';
+import config from '~/server/common/config';
+import logger from '~/server/common/logger';
 
 class MailerService {
     constructor() {

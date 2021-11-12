@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import config from '@config';
+import config from '~/server/common/config';
 
 const { AUTH_SESSION_SECRET } = config.auth;
 

@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { withAuth } from '@root/common/middlewares';
+import { withAuth } from '~/server/common/middlewares';
 import usersApiValidator from './users.api-validator';
 import usersController from './users.controller';
 

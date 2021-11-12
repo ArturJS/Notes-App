@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import logger from '@root/common/logger';
+import logger from '~/server/common/logger';
 import usersService from './users.service';
 
 const mapUserInfo = user => ({

@@ -1,9 +1,9 @@
 import Koa from 'koa';
 import session from 'koa-session';
 import cors from '@koa/cors';
-import config from '@root/common/config';
-import { errorMiddleware } from '@root/common/middlewares';
-import { configurePassport } from '@root/common/configure-passport';
+import config from '~/server/common/config';
+import { errorMiddleware } from '~/server/common/middlewares';
+import { configurePassport } from '~/server/common/configure-passport';
 import routes from './routes';
 
 const { AUTH_SESSION_SECRET } = config.auth;
@@ -11,6 +11,7 @@ const { AUTH_SESSION_SECRET } = config.auth;
 
 const app = new Koa();
 
+// @ts-ignore
 app.keys = [AUTH_SESSION_SECRET];
 
 app

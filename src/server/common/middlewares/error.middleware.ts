@@ -1,6 +1,6 @@
-import config from '@config';
-import { Exception } from '@root/common/exceptions';
-import logger from '@root/common/logger';
+import config from '~/server/common/config';
+import { Exception } from '~/server/common/exceptions';
+import logger from '~/server/common/logger';
 
 const isNotProduction = config.env.NODE_ENV !== 'production';
 

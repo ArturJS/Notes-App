@@ -18,7 +18,11 @@
     "jsx": "preserve",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "incremental": true
+    "incremental": true,
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["src/*"]
+    }
   },
   "exclude": [
     "node_modules"
@@ -27,11 +31,5 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
-  "paths": {
-    "~": ["src/"],
-    "~/*": ["src/*"],
-    "@root": ["src/server/"],
-    "@config": ["src/server/common/config/"]
-  }
+  ]
 }

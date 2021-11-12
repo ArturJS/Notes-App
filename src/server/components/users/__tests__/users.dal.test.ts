@@ -1,4 +1,4 @@
-jest.mock('@root/common/models', () => ({
+jest.mock('~/server/common/models', () => ({
     Users: {
         findAll: jest.fn(),
         findOne: jest.fn(),
@@ -8,7 +8,7 @@ jest.mock('@root/common/models', () => ({
 
 /* eslint-disable import/first */
 import _ from 'lodash';
-import db from '@root/common/models';
+import db from '~/server/common/models';
 import usersDal from '../users.dal';
 /* eslint-enable import/first */
 

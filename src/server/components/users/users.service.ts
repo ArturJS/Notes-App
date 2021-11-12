@@ -2,9 +2,9 @@ import {
     ErrorNotFound,
     ErrorAlreadyExists,
     ErrorNotAuthorized
-} from '@root/common/exceptions';
-import logger from '@root/common/logger';
-import * as jwtUtils from '@root/common/utils/jwt.utils';
+} from '~/server/common/exceptions';
+import logger from '~/server/common/logger';
+import * as jwtUtils from '~/server/common/utils/jwt.utils';
 import { mailerService } from '../mailer';
 import usersDAL from './users.dal';
 

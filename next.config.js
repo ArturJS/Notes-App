@@ -15,7 +15,7 @@ const tsPathsToAlias = (tsPaths) => {
 
 module.exports = {
   webpack(config) {
-    Object.assign(config.resolve.alias, tsPathsToAlias(tsConfig.paths));
+    Object.assign(config.resolve.alias, tsPathsToAlias(tsConfig.compilerOptions.paths));
     return config;
   },
   serverRuntimeConfig: {

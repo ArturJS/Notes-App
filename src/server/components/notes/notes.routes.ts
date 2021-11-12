@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { withAuth } from '@root/common/middlewares/auth.middleware';
+import { withAuth } from '~/server/common/middlewares/auth.middleware';
 import notesApiValidator from './notes.api-validator';
 import notesController from './notes.controller';
 

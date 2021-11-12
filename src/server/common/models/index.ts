@@ -14,11 +14,12 @@ const dbConfig = require('../sequelize/db-config')[env];
 
 const db = {};
 
+// @ts-ignore
 if (env !== 'test' && !db.Sequelize) {
     initDB();
 }
 
-function initDB() {
+function initDB() { // @ts-ignore
     const sequelize = new Sequelize(dbConfig);
     const notIndexJs = filename =>
         filename !== basename &&
@@ -40,7 +41,9 @@ function initDB() {
         }
     });
 
+    //@ts-ignore
     db.sequelize = sequelize;
+    //@ts-ignore
     db.Sequelize = Sequelize;
 }
 

@@ -3,9 +3,9 @@ import uuidV4 from 'uuid/v4';
 import mimeType from 'mime-types';
 import createStreamMeter from 'stream-meter';
 import axios from 'axios';
-import config from '@config';
-import db from '@root/common/models';
-import logger from '@root/common/logger';
+import config from '~/server/common/config';
+import db from '~/server/common/models';
+import logger from '~/server/common/logger';
 import { ErrorFileUpload } from '../../common/exceptions';
 
 type TGetFile = null | {
