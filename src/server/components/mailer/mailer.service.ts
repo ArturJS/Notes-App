@@ -3,6 +3,12 @@ import config from '~/server/common/config';
 import logger from '~/server/common/logger';
 
 class MailerService {
+    _mailUser: {
+        service: string;
+        email: string;
+        password: string;
+    };
+
     constructor() {
         this._mailUser = {
             service: config.mailer.MAIL_USER_SERVICE,

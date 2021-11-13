@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import asyncBusboy from 'async-busboy';
 import logger from '~/server/common/logger';
-import filesService from './files.service';
+import filesService, { TFile } from './files.service';
 
 const getUserId = ctx => _.get(ctx, 'session.passport.user.id');
 const uploadFile = async ctx => {
@@ -18,7 +18,7 @@ const uploadFile = async ctx => {
         return createdFile;
     });
 
-    return new Promise(async resolve => {
+    return new Promise<TFile>(async resolve => {
         const busboyData = await asyncBusboy(ctx.req, {
             onFile: async (fieldName, file, filename, encoding, mimetype) => {
                 const createdFile = await uploadOnlyFirstFile({

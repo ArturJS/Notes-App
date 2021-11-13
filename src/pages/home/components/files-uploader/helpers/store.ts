@@ -4,8 +4,6 @@ type TSubscriber = (state: Object, changed: string[]) => void;
 type TUnsubscribe = () => void;
 
 export interface IStore {
-    constructor(initialState: Object): IStore;
-
     subscribe(callback: TSubscriber): TUnsubscribe;
 
     getState(): Object;
@@ -14,6 +12,9 @@ export interface IStore {
 }
 
 class Store implements IStore {
+    _state: Record<string, any>;
+    _observer: Observer;
+
     constructor(initialState) {
         this._state = initialState;
         this._observer = new Observer();

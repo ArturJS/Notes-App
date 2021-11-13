@@ -18,6 +18,7 @@ module.exports = {
     Object.assign(config.resolve.alias, tsPathsToAlias(tsConfig.compilerOptions.paths));
     return config;
   },
+  pageExtensions: ['page.tsx', 'api.ts'],
   serverRuntimeConfig: {
     PROJECT_ROOT: __dirname
   }

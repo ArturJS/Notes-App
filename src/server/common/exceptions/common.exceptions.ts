@@ -14,6 +14,9 @@ const formatErrorMessage = message => {
 };
 
 export class Exception extends Error {
+    _statusCode: number;
+    _errorCode: string;
+
     constructor({ statusCode, errorCode, message }) {
         const errorMessage = formatErrorMessage(message);
 

@@ -24,6 +24,12 @@
       "~/*": ["src/*"]
     }
   },
+  "types": [
+    "lodash",
+    "react",
+    "node",
+    "jest"
+  ],
   "exclude": [
     "node_modules"
   ],

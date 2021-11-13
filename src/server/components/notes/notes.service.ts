@@ -84,7 +84,7 @@ class NotesService {
                 ].indexOf(reorderType) === -1;
 
             if (wrongReorderingType) {
-                throw ErrorBadRequest([
+                throw new ErrorBadRequest([
                     `Wrong reorderingType="${reorderingType}"!`,
                     `Allowed values ${JSON.stringify(REORDERING_TYPES)}`
                 ]);

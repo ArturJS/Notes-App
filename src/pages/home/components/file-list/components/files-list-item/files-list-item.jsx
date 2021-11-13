@@ -94,6 +94,7 @@ export default class FilesListItem extends Component {
                 title={fileName}
                 href={file.downloadPath}
                 target="_blank"
+                rel="noreferrer"
             >
                 <span className="files-list__item-name-start">
                     {fileNameStart}

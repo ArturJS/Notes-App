@@ -1,42 +1,11 @@
-version: '3'
+version: '3.4'
 services:
-    api-service:
+    notes-app:
         build:
-            context: ./api-service
+            context: ./
             dockerfile: Dockerfile
-        image: arturjs/notes-app_api-service:1.0.0
-        container_name: 'api-service'
-        env_file: ./api-service/.env
-        environment:
-            - DOCKER_BUILD=true
-        labels:
-            kompose.service.expose: 'api-service'
-        ports:
-            - '3001:3001'
-        networks:
-            internal-network:
-                aliases:
-                    - api-service
-
-    ui-service:
-        build:
-            context: ./ui-service
-            dockerfile: Dockerfile
-        image: arturjs/notes-app_ui-service:1.0.0
-        container_name: 'ui-service'
-        env_file: ./ui-service/.env
-        environment:
-            - DOCKER_BUILD=true
-            - API_URL=http://api-service:3001
+        env_file: ./.env
         labels:
             kompose.service.type: LoadBalancer
         ports:
             - '8080:3000'
-        networks:
-            internal-network:
-                aliases:
-                    - ui-service
-
-networks:
-    internal-network:
-        driver: bridge

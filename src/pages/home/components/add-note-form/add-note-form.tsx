@@ -22,7 +22,10 @@ type NoteValidate = {
     description?: string
 };
 
-type Props = {};
+type Props = {
+    notesActions: typeof notesActions;
+    isLoggedIn: boolean;
+};
 
 type State = {
     filesUploaderStore: IStore,
@@ -38,6 +41,10 @@ const mapDispatchToProps = dispatch => ({
 
 
 class AddNoteForm extends Component<Props, State> {
+    uploadingPromise: Promise<void>;
+    resolveUploadPromise: () => void;
+    unsubscribeFromFilesStore: () => void;
+
     static propTypes = {
         notesActions: notesActionsPropType.isRequired,
         isLoggedIn: PropTypes.bool.isRequired
@@ -127,7 +134,10 @@ class AddNoteForm extends Component<Props, State> {
 
     validate = (payload: NoteValidate) => {
         const { title, description } = payload;
-        const errors = {};
+        const errors = {} as {
+            title?: string;
+            description?: string;
+        };
 
         if (!title || !title.trim()) {
             errors.title = 'Please enter title';

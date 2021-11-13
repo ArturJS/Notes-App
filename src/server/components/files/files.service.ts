@@ -2,7 +2,7 @@ import { Readable } from 'stream';
 import { ErrorNotFound } from '~/server/common/exceptions';
 import filesDAL from './files.dal';
 
-type TFile = {
+export type TFile = {
     id: number,
     downloadPath: string,
     filename: string,

@@ -47,4 +47,26 @@ function initDB() { // @ts-ignore
     db.Sequelize = Sequelize;
 }
 
-export default db;
+type TObject = Record<string, any>;
+
+type TFn = (params: TObject, options?: TObject) => Promise<TObject>;
+
+type TSequelizeModel = {
+    findAll: (params?: TObject) => Promise<Array<TObject>>;
+    findOne: TFn;
+    create: TFn;
+    update: (
+        dataToUpdate: TObject,
+        params: TObject,
+        transactionParams?: TObject
+    ) => Promise<Array<TObject>>;
+    destroy: TFn;
+};
+
+export default db as {
+    Files: TSequelizeModel;
+    Notes: TSequelizeModel;
+    Users: TSequelizeModel;
+    sequelize: any;
+    Sequelize: any;
+};

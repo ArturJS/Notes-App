@@ -97,7 +97,7 @@ describe('UsersDAL', () => {
             db.Users.create = jest.fn(async () => testUser);
 
             const resultUser = await usersDal.create({
-                ...testUser,
+                ...testUser, // @ts-ignore
                 extraInfo: 'some extra info'
             });
 

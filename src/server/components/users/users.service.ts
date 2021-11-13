@@ -22,8 +22,8 @@ class UsersService {
         try {
             const user = await jwtUtils.verify(token);
 
-            // eslint-disable-next-line prefer-destructuring
-            email = user.email;
+            // @ts-ignore
+            email = user.email; // eslint-disable-line prefer-destructuring
         } catch (err) {
             logger.warn('Failed to verify auth token. Details: ', err);
 

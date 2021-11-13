@@ -1,5 +1,6 @@
 import db from '~/server/common/models';
 import logger from '~/server/common/logger';
+import { TFile } from '~/server/components/files/files.service';
 import { withCache } from './utils';
 import { REORDERING_TYPES_TYPE } from './notes.enums';
 
@@ -67,7 +68,7 @@ const decorateWithCache = withCache({
 
 class NotesDAL {
     async getAll(userId: number): Promise<TNoteFull[]> {
-        const notes = await this._getSortedNotesByUserId(userId, 'get notes');
+        const notes = await this._getSortedNotesByUserId(userId);
 
         return notes.map(mapNote);
     }
@@ -234,6 +235,7 @@ class NotesDAL {
                 },
                 transactionParams
             );
+            // @ts-ignore
             await this._connectOldSiblings(note, transactionParams);
         });
     }
@@ -253,6 +255,7 @@ class NotesDAL {
                 transactionParams
             );
 
+            // @ts-ignore
             await this._connectOldSiblings(targetNote, transactionParams);
 
             // todo remove related files
@@ -377,6 +380,7 @@ class NotesDAL {
 
             await this._autoFixBrokenRefs(notesIds);
 
+            // @ts-ignore
             return notesList;
         }
 
@@ -423,4 +427,5 @@ class NotesDAL {
     }
 }
 
+// @ts-ignore
 export default new (decorateWithCache(NotesDAL))();

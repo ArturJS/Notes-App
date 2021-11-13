@@ -27,7 +27,7 @@ const Field = ({
 
 Field.propTypes = {
     name: PropTypes.string.isRequired,
-    component: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
+    component: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType])
         .isRequired,
     className: PropTypes.string,
     placeholder: PropTypes.string,
