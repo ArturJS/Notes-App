@@ -11,7 +11,7 @@
   "dependencies": {
     "@koa/cors": "2.2.1",
     "async-busboy": "0.6.2",
-    "axios": "0.18.1",
+    "axios": "0.21.2",
     "axios-mock-adapter": "1.15.0",
     "classnames": "2.2.5",
     "dotenv-safe": "5.0.1",
