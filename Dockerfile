@@ -1,4 +1,4 @@
-FROM node:8.10.0-slim
+FROM node:14-slim
 
 WORKDIR /usr/node/notes-app
 RUN apt-get update && apt-get install -y openssl curl sudo && \
@@ -12,7 +12,7 @@ COPY --chown=node:node package.json .
 COPY --chown=node:node package-lock.json .
 COPY --chown=node:node ./ ./
 
-RUN npm install --production && \
-    npm run build:docker
+RUN npm install && \
+  npm run build
 
-ENTRYPOINT ["node", "server/index.js"]
+ENTRYPOINT ["npm", "start"]
