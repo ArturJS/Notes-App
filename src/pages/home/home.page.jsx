@@ -15,7 +15,9 @@ const enhance = compose(
                     Cookie: req.headers.cookie || ''
                 },
                 baseURL: req.apiBaseUrl || 'http://localhost:3000/api',
-                headers: { 'X-Forwarded-For': req.socket.remoteAddress }
+                headers: {
+                    'X-Forwarded-For': req.headers['X-Forwarded-For'] || req.socket.remoteAddress
+                }
             };
 
             try {
