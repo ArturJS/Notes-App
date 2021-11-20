@@ -22,6 +22,8 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd /root/repos/Notes-App;
+            echo "$AGE_KEY" > ./age-key.txt
+            ./scripts/crypto/age.linux.bin -d -i ./age-key.txt .env.age > .env
             export NVM_DIR="$HOME/.nvm";
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
             nvm install v12.22.7;
@@ -29,8 +31,6 @@ jobs:
             npm i -g pm2;
             npm install;
             npm run build;
-            echo "$AGE_KEY" > ./age-key.txt
-            ./scripts/crypto/age.linux.bin -d -i ./age-key.txt .env.age > .env
             export PM2_ONLINE_APPS="$(pm2 list | grep online | grep -v pm2)"
             if [[ "$PM2_ONLINE_APPS" != "" ]]; then pm2 reload all; fi
             pm2 stop notes_app 2> /dev/null; # we don't care if notes_app is absent, just stop if it's available
