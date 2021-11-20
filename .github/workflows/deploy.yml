@@ -24,8 +24,9 @@ jobs:
             cd /root/repos/Notes-App;
             git checkout -f;
             git pull origin master;
-            echo "$AGE_KEY" > ./age-key.txt
-            ./scripts/crypto/age.linux.bin -d -i ./age-key.txt .env.age > .env
+            chmod u+x ./scripts/crypto/age.linux.bin;
+            echo "$AGE_KEY" > ./age-key.txt;
+            ./scripts/crypto/age.linux.bin -d -i ./age-key.txt .env.age > .env;
             export NVM_DIR="$HOME/.nvm";
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
             nvm install v12.22.7;
