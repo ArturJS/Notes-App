@@ -6,7 +6,11 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "env-decrypt": "./scripts/crypto/age.linux.bin -d .env.age > .env",
+    "env-encrypt": "./scripts/crypto/age.linux.bin -p .env > .env.age",
+    "env-decrypt-win": "scripts\\crypto\\age.win.exe -d .env.age > .env",
+    "env-encrypt-win": "scripts\\crypto\\age.win.exe -p .env > .env.age"
   },
   "dependencies": {
     "@koa/cors": "2.2.1",

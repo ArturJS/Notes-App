@@ -1,0 +1,38 @@
+name: Build and Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and Deploy
+        uses: appleboy/ssh-action@master
+        env:
+          AGE_KEY: ${{ secrets.AGE_KEY }}
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd /root/repos/Notes-App;
+            export NVM_DIR="$HOME/.nvm";
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
+            nvm install v12.22.7;
+            nvm use v12.22.7;
+            npm i -g pm2;
+            npm install;
+            npm run build;
+            echo "$AGE_KEY" > ./age-key.txt
+            ./scripts/crypto/age.linux.bin -d -i ./age-key.txt .env.age > .env
+            export PM2_ONLINE_APPS="$(pm2 list | grep online | grep -v pm2)"
+            if [[ "$PM2_ONLINE_APPS" != "" ]]; then pm2 reload all; fi
+            pm2 stop notes_app 2> /dev/null; # we don't care if notes_app is absent, just stop if it's available
+            pm2 start npm --watch --ignore-watch="node_modules" --restart-delay=10000 --name "notes_app" -- start &
+            echo "New version is available on http://$(curl ifconfig.me/ip)/"
