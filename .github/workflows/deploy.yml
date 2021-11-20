@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Build and Deploy
         uses: appleboy/ssh-action@master
-        env:
-          AGE_KEY: ${{ secrets.AGE_KEY }}
         with:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
@@ -25,6 +23,7 @@ jobs:
             git checkout -f;
             git pull origin master;
             chmod u+x ./scripts/crypto/age.linux.bin;
+            export AGE_KEY="${{ secrets.AGE_KEY }}";
             echo "$AGE_KEY" > ./age-key.txt;
             ./scripts/crypto/age.linux.bin -d -i ./age-key.txt .env.age > .env;
             export NVM_DIR="$HOME/.nvm";
