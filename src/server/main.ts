@@ -28,7 +28,7 @@ app
     )
     .use(session({}, app))
     .use(async (ctx, next) => {
-        ctx.request.body = ctx.request.req.body;
+        ctx.request.body = ctx.req.body;
 
         await next();
     });

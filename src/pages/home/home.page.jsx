@@ -12,12 +12,10 @@ const enhance = compose(
         async getInitialReduxState({ req }) {
             const apiParams = {
                 headers: {
-                    Cookie: req.headers.cookie || ''
-                },
-                baseURL: req.apiBaseUrl || 'http://localhost:3000/api',
-                headers: {
+                    Cookie: req.headers.cookie || '',
                     'X-Forwarded-For': req.headers['X-Forwarded-For'] || req.socket.remoteAddress
-                }
+                },
+                baseURL: req.apiBaseUrl || 'http://localhost:3000/api'
             };
 
             try {
@@ -40,8 +38,9 @@ const enhance = compose(
                     }
                 };
             } catch (err) {
-                // console.error('SSR Auth failed!');
-                // console.error('Error details: ', err);
+                console.error('SSR Auth failed!');
+                console.error('Error details: ', err.message);
+                console.error('Error details: ', err.stack);
 
                 return {
                     notes: []
