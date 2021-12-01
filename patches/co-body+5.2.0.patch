@@ -1,15 +1,23 @@
 diff --git a/node_modules/co-body/lib/json.js b/node_modules/co-body/lib/json.js
-index 7bc8f12..2872133 100644
+index 7bc8f12..9bf12ab 100644
 --- a/node_modules/co-body/lib/json.js
 +++ b/node_modules/co-body/lib/json.js
-@@ -38,9 +38,7 @@ module.exports = function(req, opts){
+@@ -38,10 +38,18 @@ module.exports = function(req, opts){
    // raw-body returns a promise when no callback is specified
    return Promise.resolve()
      .then(function() {
--      return raw(inflate(req), opts);
--    })
--    .then(function(str) {
-+      const str = req.body;
++      if (
++        typeof req.body === 'string' || // not fully parsed by nextjs
++        typeof req.body === 'object' // already parsed by nextjs
++      ) {
++        return req.body;
++      }
++
+       return raw(inflate(req), opts);
+     })
+     .then(function(str) {
        try {
++        if (typeof str === 'object') return str; // already parsed by nextjs
          var parsed = parse(str);
          return opts.returnRawBody ? { parsed: parsed, raw: str } : parsed;
+       } catch (err) {
