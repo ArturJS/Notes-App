@@ -13,7 +13,9 @@ const enhance = compose(
             const apiParams = {
                 headers: {
                     Cookie: req.headers.cookie || '',
-                    'X-Forwarded-For': req.headers['X-Forwarded-For'] || req.socket.remoteAddress
+                    'X-Forwarded-For':
+                        req.headers['X-Forwarded-For'] ||
+                        req.socket.remoteAddress
                 },
                 baseURL: req.apiBaseUrl || 'http://localhost:3000/api'
             };
@@ -38,10 +40,6 @@ const enhance = compose(
                     }
                 };
             } catch (err) {
-                console.error('SSR Auth failed!');
-                console.error('Error details: ', err.message);
-                console.error('Error details: ', err.stack);
-
                 return {
                     notes: []
                 };
