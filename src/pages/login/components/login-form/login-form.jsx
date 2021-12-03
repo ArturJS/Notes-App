@@ -11,31 +11,31 @@ const enhance = compose(
             submitFailed: false
         },
         {
-            setSubmitStatus: () => ({
-                submitSucceeded = false,
-                submitFailed = false
-            }) => ({
-                submitSucceeded,
-                submitFailed
-            })
+            setSubmitStatus:
+                () =>
+                ({ submitSucceeded = false, submitFailed = false }) => ({
+                    submitSucceeded,
+                    submitFailed
+                })
         }
     ),
     withHandlers({
-        withSubmitStatus: ({ setSubmitStatus }) => onSubmitFn => async (
-            ...args
-        ) => {
-            try {
-                await onSubmitFn(...args);
+        withSubmitStatus:
+            ({ setSubmitStatus }) =>
+            (onSubmitFn) =>
+            async (...args) => {
+                try {
+                    await onSubmitFn(...args);
 
-                setSubmitStatus({
-                    submitSucceeded: true
-                });
-            } catch (err) {
-                setSubmitStatus({
-                    submitFailed: true
-                });
+                    setSubmitStatus({
+                        submitSucceeded: true
+                    });
+                } catch (err) {
+                    setSubmitStatus({
+                        submitFailed: true
+                    });
+                }
             }
-        }
     }),
     mapProps(({ onSubmit, withSubmitStatus, ...restProps }) => ({
         ...restProps,
@@ -59,7 +59,7 @@ const LoginForm = ({
                 <Field
                     name="email"
                     component="input"
-                    autoComplete="off"
+                    autoComplete="email"
                     placeholder="Your email"
                     autoFocus
                 />
