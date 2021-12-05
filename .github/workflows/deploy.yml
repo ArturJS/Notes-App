@@ -36,5 +36,5 @@ jobs:
             export PM2_ONLINE_APPS="$(pm2 list | grep online | grep -v pm2)"
             if [[ "$PM2_ONLINE_APPS" != "" ]]; then pm2 reload all; fi
             pm2 stop notes_app 2> /dev/null; # we don't care if notes_app is absent, just stop if it's available
-            pm2 start npm --watch --ignore-watch="node_modules" --restart-delay=10000 --name "notes_app" -- start &
-            echo "New version is available on http://$(curl ifconfig.me/ip)/"
+            pm2 start npm --name "notes_app" -- start &
+            echo "New version is available on https://$(curl ifconfig.me/ip)/"
