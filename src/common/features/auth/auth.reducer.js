@@ -1,6 +1,11 @@
 import { handleActions } from 'redux-actions';
 import produce from 'immer';
-import { LOGOUT_REQUEST, LOGOUT_SUCCESS, LOGOUT_FAILURE } from './auth.actions';
+import {
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+    LOGOUT_FAILURE,
+    LOGIN_SUCCESS
+} from './auth.actions';
 
 const initialState = {
     isLoggedIn: false,
@@ -14,24 +19,29 @@ const initialState = {
 /* eslint-disable no-param-reassign */
 const authReducer = handleActions(
     {
-        [LOGOUT_REQUEST]: state =>
-            produce(state, draftState => {
+        [LOGOUT_REQUEST]: (state) =>
+            produce(state, (draftState) => {
                 draftState.isLogoutPending = true;
             }),
 
-        [LOGOUT_SUCCESS]: state =>
-            produce(state, draftState => {
+        [LOGOUT_SUCCESS]: (state) =>
+            produce(state, (draftState) => {
                 draftState.isLogoutPending = false;
                 draftState.isLogoutSuccess = true;
                 draftState.isLoggedIn = false;
                 draftState.authData = initialState.authData;
             }),
 
-        [LOGOUT_FAILURE]: state =>
-            produce(state, draftState => {
+        [LOGOUT_FAILURE]: (state) =>
+            produce(state, (draftState) => {
                 draftState.isLoggedIn = false;
                 draftState.isLogoutPending = false;
                 draftState.isLogoutSuccess = false;
+            }),
+
+        [LOGIN_SUCCESS]: (state) =>
+            produce(state, (draftState) => {
+                draftState.isLoggedIn = true;
             })
     },
     initialState

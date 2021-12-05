@@ -15,7 +15,7 @@ const getAllNotes = async () => {
 
     return notes || [];
 };
-const getIdParam = url => {
+const getIdParam = (url) => {
     let [, noteId] = /\/notes\/(\d+)/.exec(url) || [];
 
     noteId = +noteId;
@@ -27,11 +27,16 @@ const getIdParam = url => {
     return noteId;
 };
 
-export const applyNotesApiInterceptor = () => {
-    const mock = new MockAdapter(axios);
+let mock;
 
-    mock
-        .onGet('/notes')
+export const removeNotesApiInterceptor = () => {
+    mock?.restore();
+};
+
+export const applyNotesApiInterceptor = () => {
+    mock = new MockAdapter(axios);
+
+    mock.onGet('/notes')
         .reply(async () => {
             const notes = await getAllNotes();
 
@@ -84,7 +89,7 @@ export const applyNotesApiInterceptor = () => {
             const noteId = getIdParam(url);
             const notes = await getAllNotes();
 
-            _.remove(notes, note => note.id === noteId);
+            _.remove(notes, (note) => note.id === noteId);
 
             await persistentStorage.setItem('notes', notes);
 

@@ -1,14 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { withRouter } from 'next/router';
 import { compose, lifecycle, withStateHandlers, withHandlers } from 'recompose';
 import { get } from 'lodash';
 import { authApi } from '~/common/api';
+import { authActions } from '~/common/features/auth';
+import withReduxStore from '~/common/hocs/with-redux-store';
 import LoginForm from './components/login-form';
 
-const checkIsLoginIntent = router => !get(router, 'query.token');
+const checkIsLoginIntent = (router) => !get(router, 'query.token');
+
+const mapDispatchToProps = (dispatch) => ({
+    authActions: bindActionCreators(authActions, dispatch)
+});
 
 const enhance = compose(
+    withReduxStore(),
+    connect(null, mapDispatchToProps),
     withRouter,
     withStateHandlers(
         ({ router }) => ({
@@ -35,26 +45,30 @@ const enhance = compose(
 
             try {
                 await authApi.loginViaToken(token);
-
-                router.push('/');
+                this.props.authActions.loginSuccess();
+                router.replace('/');
             } catch (err) {
                 reportFailure();
             }
         }
     }),
     withHandlers({
-        validateForm: () => ({ email }) => {
-            const errors = {};
+        validateForm:
+            () =>
+            ({ email }) => {
+                const errors = {};
 
-            if (!email || !email.trim()) {
-                errors.email = 'Please enter email';
+                if (!email || !email.trim()) {
+                    errors.email = 'Please enter email';
+                }
+
+                return errors;
+            },
+        resendAuthToken:
+            () =>
+            async ({ email }) => {
+                await authApi.sendAuthToken(email);
             }
-
-            return errors;
-        },
-        resendAuthToken: () => async ({ email }) => {
-            await authApi.sendAuthToken(email);
-        }
     })
 );
 
@@ -66,12 +80,9 @@ const Login = ({
     validateForm
 }) => (
     <div className="login-page">
-        {isPending &&
-            !isLoginIntent && (
-                <p className="login-info">
-                    Verifying auth token... Please wait.
-                </p>
-            )}
+        {isPending && !isLoginIntent && (
+            <p className="login-info">Verifying auth token... Please wait.</p>
+        )}
         {(isFailed || isLoginIntent) && (
             <>
                 {!isLoginIntent && (
