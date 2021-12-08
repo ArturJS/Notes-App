@@ -1,4 +1,7 @@
 const path = require('path');
+const withPWA = require('next-pwa');
+const runtimeCaching = require('next-pwa/cache');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const tsConfig = require('./tsconfig.json');
 
 const tsPathsToAlias = (tsPaths) => {
@@ -13,13 +16,29 @@ const tsPathsToAlias = (tsPaths) => {
   return result;
 };
 
-module.exports = {
+module.exports = withPWA({
   webpack(config) {
     Object.assign(config.resolve.alias, tsPathsToAlias(tsConfig.compilerOptions.paths));
+
+    config.plugins.push(
+      new CopyWebpackPlugin({
+          patterns: [
+              {
+                  from: path.resolve(__dirname, './src/public'),
+                  to: path.resolve(__dirname, './public')
+              }
+          ]
+      }),
+    );
+
     return config;
   },
   pageExtensions: ['page.tsx', 'api.ts'],
   serverRuntimeConfig: {
     PROJECT_ROOT: __dirname
-  }
-};
+  },
+  pwa: {
+    dest: 'public',
+    runtimeCaching,
+  },
+});

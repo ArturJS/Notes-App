@@ -31,6 +31,12 @@ export default class BaseApp extends App {
                         sizes="any"
                     />
                     <link rel="apple-touch-icon" href={appleFaviconIcon.src} />
+                    <meta name="twitter:image" content={appleFaviconIcon.src} />
+                    <meta property="og:image" content={appleFaviconIcon.src} />
+                    <meta
+                        name="viewport"
+                        content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+                    />
                 </Head>
                 <Header>
                     <UserAuthState />

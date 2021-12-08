@@ -14,3 +14,4 @@ e2e/screenshots/
 k8s/*.yaml
 tmp/
 age-key.txt
+public/
