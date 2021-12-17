@@ -1,3 +1,9 @@
 {
-    "plugins": ["stylelint-order", "stylelint-scss"]
+    "plugins": ["stylelint-order", "stylelint-scss"],
+    "rules": {
+        "order/order": [
+            "custom-properties",
+            "declarations"
+        ]
+    }
 }

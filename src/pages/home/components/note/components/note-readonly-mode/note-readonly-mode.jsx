@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { compose, pure, withHandlers } from 'recompose';
 import classNames from 'classnames';
 import _ from 'lodash';
+import xss from 'xss';
+import snarkdown from 'snarkdown';
 import { notePropType } from '~/common/prop-types/notes.prop-types';
 import { modalProvider } from '~/common/features/modal';
 import FilesList from '../../../file-list';
@@ -12,48 +14,44 @@ const linkRegexp = /(http[^\s]+)/g;
 const enhance = compose(
     pure,
     withHandlers({
-        isLoading: ({ note }) => () => _.get(note, 'meta.transactionId', false),
-        wrapUrlLinks: () => text =>
-            _.escape(text).replace(
-                linkRegexp,
-                '<a href="$1" class="note-link" target="_blank" rel="nofollow noopener">$1</a>'
-            )
+        isLoading:
+            ({ note }) =>
+            () =>
+                _.get(note, 'meta.transactionId', false)
     }),
     withHandlers({
-        handleEdit: ({ isLoading, onEdit }) => () => {
-            if (isLoading()) {
-                return;
+        handleEdit:
+            ({ isLoading, onEdit }) =>
+            () => {
+                if (isLoading()) {
+                    return;
+                }
+
+                onEdit();
+            },
+        handleRemove:
+            ({ note, isLoading, onRemove }) =>
+            async () => {
+                if (isLoading()) {
+                    return;
+                }
+
+                const { id, title } = note;
+                const shouldDelete = await modalProvider.showConfirm({
+                    title: 'Please confirm your action',
+                    body: `Are you sure you want to delete note "${title}"?`
+                }).result;
+
+                if (!shouldDelete) {
+                    return;
+                }
+
+                onRemove(id);
             }
-
-            onEdit();
-        },
-        handleRemove: ({ note, isLoading, onRemove }) => async () => {
-            if (isLoading()) {
-                return;
-            }
-
-            const { id, title } = note;
-            const shouldDelete = await modalProvider.showConfirm({
-                title: 'Please confirm your action',
-                body: `Are you sure you want to delete note "${title}"?`
-            }).result;
-
-            if (!shouldDelete) {
-                return;
-            }
-
-            onRemove(id);
-        }
     })
 );
 
-const NoteReadonlyMode = ({
-    note,
-    isLoading,
-    wrapUrlLinks,
-    handleEdit,
-    handleRemove
-}) => (
+const NoteReadonlyMode = ({ note, isLoading, handleEdit, handleRemove }) => (
     <div className={classNames('note', { isLoading: isLoading() })}>
         <div>
             <i
@@ -76,7 +74,7 @@ const NoteReadonlyMode = ({
             className="note-description"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{
-                __html: wrapUrlLinks(note.description)
+                __html: xss(snarkdown(note.description)) // todo useMemo
             }}
         />
         <FilesList files={note.files} />

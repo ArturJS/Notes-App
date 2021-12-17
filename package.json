@@ -63,9 +63,11 @@
     "serialize-javascript": "3.1.0",
     "shortid": "2.2.8",
     "smoothscroll-polyfill": "0.4.0",
+    "snarkdown": "^2.0.0",
     "stream-meter": "1.0.4",
     "uuid": "3.2.1",
-    "winston": "3.0.0-rc6"
+    "winston": "3.0.0-rc6",
+    "xss": "^1.0.10"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",
