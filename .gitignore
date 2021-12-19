@@ -15,3 +15,4 @@ k8s/*.yaml
 tmp/
 age-key.txt
 public/
+!src/public

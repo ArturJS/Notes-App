@@ -1,0 +1,16 @@
+{
+    "name": "Notes App",
+    "short_name": "Notes",
+    "icons": [
+      {
+        "src": "/apple-favicon.png",
+        "sizes": "any",
+        "type": "image/png"
+      }
+    ],
+    "theme_color": "#f54b36",
+    "background_color": "#f54b36",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait"
+  }
