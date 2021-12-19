@@ -19,12 +19,16 @@ const enhance = compose(
                 },
                 baseURL: req.apiBaseUrl || 'http://localhost:3000/api'
             };
+            const user = await authApi.getUserData(apiParams);
+
+            if (!user) {
+                return {
+                    notes: []
+                };
+            }
 
             try {
-                const [notes, user] = await Promise.all([
-                    notesApi.getAll(apiParams),
-                    authApi.getUserData(apiParams)
-                ]);
+                const notes = await notesApi.getAll(apiParams);
 
                 return {
                     notes,

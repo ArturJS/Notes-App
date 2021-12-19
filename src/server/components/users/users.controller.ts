@@ -2,14 +2,14 @@ import _ from 'lodash';
 import logger from '~/server/common/logger';
 import usersService from './users.service';
 
-const mapUserInfo = user => ({
+const mapUserInfo = (user) => ({
     id: user.id,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email
 });
 
-const getUserEmail = ctx => _.get(ctx, 'session.passport.user.email');
+const getUserEmail = (ctx) => _.get(ctx, 'session.passport.user.email');
 
 class UsersController {
     async getAll(ctx) {
@@ -26,6 +26,12 @@ class UsersController {
     }
 
     async getUserData(ctx) {
+        if (!ctx.isAuthenticated()) {
+            logger.info('User is not authenticated');
+            ctx.body = null;
+            return;
+        }
+
         const email = getUserEmail(ctx);
         const user = await usersService.getByEmail(email);
 

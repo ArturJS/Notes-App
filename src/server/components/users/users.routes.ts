@@ -14,6 +14,6 @@ router
         usersController.getByEmail
     )
     .post('/users', withAuth, usersApiValidator.create, usersController.create)
-    .get('/user', withAuth, usersController.getUserData);
+    .get('/user', usersController.getUserData);
 
 export default router;
