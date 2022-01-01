@@ -1,6 +1,7 @@
+// const path = require('path');
 // require('dotenv-safe').config({
-//     example: '../../../.env.example',
-//     path: '../../../.env'
+//     example: path.resolve(__dirname, '../../../../.env.example'),
+//     path: path.resolve(__dirname, '../../../../.env')
 // });
 
 const { DATABASE_URL } = process.env;
@@ -36,10 +37,12 @@ const baseDbConfig = {
 };
 
 const databaseConfig = {
-    development: baseDbConfig,
-    production: {
+    development: {
         ...baseDbConfig,
-        logging: false
+        logging: true
+    },
+    production: {
+        ...baseDbConfig
     }
 };
 

@@ -4,11 +4,11 @@ import {
     ErrorNotAuthorized
 } from '~/server/common/exceptions';
 import logger from '~/server/common/logger';
-import * as jwtUtils from '~/server/common/utils/jwt.utils';
+import * as authUtils from '~/server/common/utils/auth.utils';
 import { mailerService } from '../mailer';
 import usersDAL from './users.dal';
 
-const mapUserInfo = user => ({
+const mapUserInfo = (user) => ({
     id: user.id,
     firstName: user.firstName,
     lastName: user.lastName,
@@ -17,34 +17,33 @@ const mapUserInfo = user => ({
 
 class UsersService {
     async authenticateViaToken(token) {
-        let email;
-
         try {
-            const user = await jwtUtils.verify(token);
+            const { email } = authUtils.verify<{ email: string }>(token);
 
-            // @ts-ignore
-            email = user.email; // eslint-disable-line prefer-destructuring
+            logger.info(`Trying to login as ${email}`);
+
+            let relatedUser = await this.getByEmail(email, {
+                suppressError: true
+            });
+
+            if (!relatedUser) {
+                relatedUser = await this.create({
+                    email
+                });
+            }
+
+            logger.info(`Logged in as ${email}`);
+
+            return relatedUser;
         } catch (err) {
             logger.warn('Failed to verify auth token. Details: ', err);
 
             throw new ErrorNotAuthorized();
         }
-
-        let relatedUser = await this.getByEmail(email, {
-            suppressError: true
-        });
-
-        if (!relatedUser) {
-            relatedUser = await this.create({
-                email
-            });
-        }
-
-        return relatedUser;
     }
 
     async createAndSendToken({ email, baseUrl }) {
-        const token = await jwtUtils.sign({ email });
+        const token = authUtils.sign<{ email: string }>({ email });
         const loginPath = `${baseUrl}/login?token=${token}`;
 
         await mailerService.sendEmail({
