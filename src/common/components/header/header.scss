@@ -111,6 +111,7 @@ $header-height: 40px;
   }
 
   &-menu {
+    transition: height 500ms;
     min-height: 0;
     box-shadow: rgba(0, 0, 0, .2) 0px 3px 15px;
 
