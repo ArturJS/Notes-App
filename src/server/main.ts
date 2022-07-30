@@ -25,7 +25,14 @@ app.use(requestInfoMiddleware)
             credentials: true
         })
     )
-    .use(session({}, app))
+    .use(
+        session(
+            {
+                maxAge: 31536000 // 1 year
+            },
+            app
+        )
+    )
     .use(bodyParser());
 
 configurePassport(app); // must be after session but before routes!
