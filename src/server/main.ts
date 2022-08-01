@@ -28,7 +28,7 @@ app.use(requestInfoMiddleware)
     .use(
         session(
             {
-                maxAge: 31536000 // 1 year
+                maxAge: 365 * 24 * 3600 * 1000 // 1 year
             },
             app
         )
