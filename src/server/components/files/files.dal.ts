@@ -9,23 +9,23 @@ import logger from '~/server/common/logger';
 import { ErrorFileUpload } from '../../common/exceptions';
 
 type TGetFile = null | {
-    id: number,
-    downloadStream: Readable,
-    filename: string
+    id: number;
+    downloadStream: Readable;
+    filename: string;
 };
 
 type TCreateFile = null | {
-    id: number,
-    downloadPath: string,
-    filename: string,
-    size: number
+    id: number;
+    downloadPath: string;
+    filename: string;
+    size: number;
 };
 
 const { DROPBOX_TOKEN } = config.dropbox;
 
 class FilesDAL {
     async getAll(userId: number): Promise<string[]> {
-        const files = await db.Files.findAll({
+        const files = await db.files.findMany({
             where: { userId }
         });
 
@@ -33,8 +33,8 @@ class FilesDAL {
     }
 
     async getById(userId: number, fileId: number): Promise<TGetFile> {
-        const file = await db.Files.findOne({
-            where: { id: fileId, userId }
+        const file = await db.files.findUnique({
+            where: { id: fileId }
         });
 
         if (!file) {
@@ -79,11 +79,11 @@ class FilesDAL {
             uploadStream,
             meta
         }: {
-            uploadStream: Readable,
+            uploadStream: Readable;
             meta: {
-                mimetype: string,
-                filename: string
-            }
+                mimetype: string;
+                filename: string;
+            };
         } = params;
         const { filename, mimetype } = meta;
         const fileExtension = mimeType.extension(mimetype);
@@ -98,7 +98,9 @@ class FilesDAL {
                     'Content-Type': 'application/octet-stream',
                     Authorization: `Bearer ${DROPBOX_TOKEN}`,
                     'Dropbox-API-Arg': JSON.stringify({
-                        path: `/users-files/${encodeURIComponent(downloadPath)}`,
+                        path: `/users-files/${encodeURIComponent(
+                            downloadPath
+                        )}`,
                         mode: 'add',
                         autorename: true,
                         mute: false,
@@ -118,12 +120,14 @@ class FilesDAL {
             throw new ErrorFileUpload(error.response.data);
         }
 
-        const size = streamMeter.bytes;
-        const file = await db.Files.create({
-            name: filename,
-            downloadPath,
-            userId,
-            size
+        const size = streamMeter.bytes as number;
+        const file = await db.files.create({
+            data: {
+                name: filename,
+                downloadPath,
+                userId,
+                size
+            }
         });
 
         return {
@@ -141,7 +145,7 @@ class FilesDAL {
                 userId
             }
         };
-        const fileToRemove = await db.Files.findOne(ormQuery);
+        const fileToRemove = await db.files.findUnique(ormQuery);
 
         try {
             await axios({
@@ -166,7 +170,7 @@ class FilesDAL {
             );
         }
 
-        await db.Files.destroy(ormQuery);
+        await db.files.delete(ormQuery);
     }
 }
 

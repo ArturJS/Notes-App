@@ -11,12 +11,11 @@
     "env-encrypt": "./scripts/crypto/age.linux.bin -p .env > .env.age",
     "env-decrypt-win": "scripts\\crypto\\age.win.exe -d .env.age > .env",
     "env-encrypt-win": "scripts\\crypto\\age.win.exe -p .env > .env.age",
-    "postinstall": "patch-package",
-    "db:create": "npx sequelize db:create",
-    "db:migrate": "npx sequelize db:migrate"
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@koa/cors": "2.2.1",
+    "@prisma/client": "^4.1.1",
     "async-busboy": "0.6.2",
     "axios": "0.21.2",
     "axios-mock-adapter": "1.15.0",
@@ -59,8 +58,6 @@
     "redux-optimistic-ui": "3.1.0",
     "redux-saga": "0.16.0",
     "reselect": "3.0.1",
-    "sequelize": "5.15.1",
-    "sequelize-cli": "4.0.0",
     "serialize-javascript": "3.1.0",
     "shortid": "2.2.8",
     "smoothscroll-polyfill": "0.4.0",
@@ -83,6 +80,7 @@
     "lint-staged": "^11.2.6",
     "patch-package": "^6.4.7",
     "prettier": "^2.4.1",
+    "prisma": "^4.1.1",
     "react-test-renderer": "^17.0.2",
     "sass": "^1.43.4",
     "simple-git-hooks": "^2.7.0",
