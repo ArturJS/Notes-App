@@ -210,7 +210,7 @@ class NotesDAL {
 
             await this._connectOldSiblings(db, targetNote);
 
-            await db.notes.destroy({
+            await db.notes.delete({
                 where: {
                     id: noteId
                 }
