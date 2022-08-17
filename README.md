@@ -14,6 +14,7 @@
 -   [x] [Dockerize](https://docs.docker.com/get-started/part2/#dockerfile) an application
 -   [x] Use [Kompose](http://kompose.io/) to migrate from [docker-compose](https://docs.docker.com/compose/) to [Kubernetes](https://kubernetes.io/)
 -   [x] Use [Helm](https://helm.sh/) to pack whole app and test it localy
+-   [x] Migrate from Sequelize to Prisma
 -   [ ] Setup and configure [Jenkins](https://github.com/helm/charts/tree/master/stable/jenkins) on AWS EC2 instance
 -   [ ] Explore where you can build new versions of Docker images for each service (TravisCI?)
 -   [ ] Setup basis for E2E testing with [Nightwatch](http://nightwatchjs.org/) in isolated docker-compose environment (database should be inside isolated environment)
