@@ -8,21 +8,21 @@ import { REORDERING_TYPES_TYPE } from './notes.enums';
 import notesDAL from './notes.dal';
 
 type TFile = {
-    id: number,
-    downloadPath: string,
-    name: string,
-    size: number
+    id: number;
+    downloadPath: string;
+    name: string;
+    size: number;
 };
 
 type TNoteEssential = {
-    title: string,
-    description: string,
-    files?: TFile[]
+    title: string;
+    description: string;
+    files?: TFile[];
 };
 
 type TNoteFull = TNoteEssential & {
-    id: number,
-    files: TFile[]
+    id: number;
+    files: TFile[];
 };
 
 const mapNote = (note): TNoteFull => ({
@@ -65,16 +65,15 @@ class NotesService {
         return mapNote(updatedNote);
     }
 
-    async reorder(params: {
+    async reorder(
         userId: number,
-        noteId: number,
-        reorderingType: REORDERING_TYPES_TYPE,
-        anchorNoteId: number
-    }): Promise<void> {
-        // todo: use params destructuring when
-        // todo:    the issue https://github.com/codemix/flow-runtime/issues/201
-        // todo:    is fixed
-        const { userId, noteId, reorderingType, anchorNoteId } = params;
+        params: {
+            noteId: number;
+            reorderingType: REORDERING_TYPES_TYPE;
+            anchorNoteId: number;
+        }
+    ): Promise<void> {
+        const { noteId, reorderingType, anchorNoteId } = params;
         // todo introduce validators
         const checkReorderingType = (reorderType: string) => {
             const wrongReorderingType =
@@ -95,7 +94,7 @@ class NotesService {
 
         await this._checkAccessToNotes(userId, [noteId, anchorNoteId]);
 
-        await notesDAL.reorder({
+        await notesDAL.reorder(userId, {
             noteId,
             reorderingType,
             anchorNoteId
@@ -103,7 +102,8 @@ class NotesService {
     }
 
     async remove(userId: number, noteId: number): Promise<void> {
-        await notesDAL.remove(userId, noteId);
+        await this._checkAccessToNotes(userId, [noteId]);
+        await notesDAL.remove(noteId);
     }
 
     async _checkAccessToNotes(

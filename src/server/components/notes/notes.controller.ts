@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import notesService from './notes.service';
 
-const mapNote = note => ({
+const mapNote = (note) => ({
     id: note.id,
     title: note.title,
     description: note.description,
     files: note.files || []
 });
 
-const getUserId = ctx => _.get(ctx, 'session.passport.user.id');
+const getUserId = (ctx) => _.get(ctx, 'session.passport.user.id');
 
 class NotesController {
     async getAll(ctx) {
@@ -46,8 +46,7 @@ class NotesController {
         const userId = getUserId(ctx);
         const { noteId, reorderingType, anchorNoteId } = ctx.request.body;
 
-        await notesService.reorder({
-            userId,
+        await notesService.reorder(userId, {
             noteId,
             reorderingType,
             anchorNoteId

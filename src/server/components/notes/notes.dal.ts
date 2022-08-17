@@ -35,14 +35,11 @@ const decorateWithCache = withCache({
             maxAge: 1000 * 60 * 10, // 10 minutes
             paramNumberAsCacheKey: 0,
             getParamsForCachedMethod: (
-                name, // one of `refreshCacheAfterCalls`
+                name: 'create' | 'update' | 'reorder' | 'remove',
                 args // with which arguments it is invoked
             ) => {
-                if (name === 'reorder') {
-                    return [args[0].noteId];
-                }
-
-                return [args[0]];
+                const userId = args[0];
+                return [userId];
             }
         }
     ]
@@ -60,7 +57,7 @@ class NotesDAL {
             where: { id: noteId }
         });
 
-        if (!note) {
+        if (!note || note.userId !== userId) {
             return null;
         }
 
@@ -114,18 +111,15 @@ class NotesDAL {
         return mapNote(updatedNote);
     }
 
-    async reorder(params: {
-        noteId: number;
-        reorderingType: REORDERING_TYPES_TYPE;
-        anchorNoteId: number;
-    }): Promise<void> {
+    async reorder(
+        userId: number,
+        params: {
+            noteId: number;
+            reorderingType: REORDERING_TYPES_TYPE;
+            anchorNoteId: number;
+        }
+    ): Promise<void> {
         const { noteId, reorderingType, anchorNoteId } = params;
-
-        console.log({
-            noteId,
-            reorderingType,
-            anchorNoteId
-        });
 
         // @ts-ignore
         await db.$transaction(async (db) => {
@@ -365,5 +359,5 @@ class NotesDAL {
     }
 }
 
-// @ts-ignore
-export default new (decorateWithCache(NotesDAL))();
+// @ts-ignore: ToDo fix types
+export default new (decorateWithCache<NotesDAL>(NotesDAL))();
