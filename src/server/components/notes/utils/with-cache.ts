@@ -126,10 +126,9 @@ const wrapMethods = ({ prototype, methods }) => {
 };
 
 export const withCache =
-    <T>({ methods }: TConfigParams) =>
-    (wrappedClass: T): T => {
-        // @ts-ignore
-        const { prototype } = wrappedClass;
+    ({ methods }: TConfigParams) =>
+    <T>(wrappedClass: T): T => {
+        const { prototype } = wrappedClass as unknown as { prototype: any };
         const classMethods = Object.getOwnPropertyNames(prototype);
 
         validateParams({ methods, classMethods });

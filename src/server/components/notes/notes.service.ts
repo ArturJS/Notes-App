@@ -103,7 +103,7 @@ class NotesService {
 
     async remove(userId: number, noteId: number): Promise<void> {
         await this._checkAccessToNotes(userId, [noteId]);
-        await notesDAL.remove(noteId);
+        await notesDAL.remove(userId, noteId);
     }
 
     async _checkAccessToNotes(

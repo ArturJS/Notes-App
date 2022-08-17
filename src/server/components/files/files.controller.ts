@@ -3,8 +3,8 @@ import asyncBusboy from 'async-busboy';
 import logger from '~/server/common/logger';
 import filesService, { TFile } from './files.service';
 
-const getUserId = ctx => _.get(ctx, 'session.passport.user.id');
-const uploadFile = async ctx => {
+const getUserId = (ctx) => _.get(ctx, 'session.passport.user.id');
+const uploadFile = async (ctx) => {
     const userId = getUserId(ctx);
     const uploadOnlyFirstFile = _.once(async ({ file, filename, mimetype }) => {
         const createdFile = await filesService.create(userId, {
@@ -18,7 +18,7 @@ const uploadFile = async ctx => {
         return createdFile;
     });
 
-    return new Promise<TFile>(async resolve => {
+    return new Promise<TFile>(async (resolve) => {
         const busboyData = await asyncBusboy(ctx.req, {
             onFile: async (fieldName, file, filename, encoding, mimetype) => {
                 const createdFile = await uploadOnlyFirstFile({
@@ -46,7 +46,7 @@ class FilesController {
     async getById(ctx) {
         const userId = getUserId(ctx);
         const fileId = +ctx.params.id;
-        const { filename, downloadStream } = await filesService.getById(
+        const { name, downloadStream } = await filesService.getById(
             userId,
             fileId
         );
@@ -54,7 +54,7 @@ class FilesController {
         ctx.set({
             'Content-Type': 'application/force-download',
             'Content-disposition': `attachment; filename=${encodeURIComponent(
-                filename
+                name
             )}`
         });
         ctx.body = downloadStream;
@@ -66,7 +66,7 @@ class FilesController {
         ctx.body = {
             id: createdFile.id,
             downloadPath: createdFile.downloadPath,
-            filename: createdFile.filename,
+            filename: createdFile.name,
             size: createdFile.size
         };
     }

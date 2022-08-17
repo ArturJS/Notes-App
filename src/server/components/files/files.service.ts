@@ -3,15 +3,15 @@ import { ErrorNotFound } from '~/server/common/exceptions';
 import filesDAL from './files.dal';
 
 export type TFile = {
-    id: number,
-    downloadPath: string,
-    filename: string,
-    size: number
+    id: number;
+    downloadPath: string;
+    name: string;
+    size: number;
 };
 
 type TDownloadFile = {
-    filename: string,
-    downloadStream: Readable
+    name: string;
+    downloadStream: Readable;
 };
 
 // todo: implement garbage collector for unused filed
@@ -31,10 +31,10 @@ class FilesService {
             throw new ErrorNotFound(`File by id="${fileId}" not found!`);
         }
 
-        const { filename, downloadStream } = fileData;
+        const { name, downloadStream } = fileData;
 
         return {
-            filename,
+            name,
             downloadStream
         };
     }
@@ -42,10 +42,7 @@ class FilesService {
     async create(userId: number, { uploadStream, meta }): Promise<TFile> {
         const createdFile = await filesDAL.create(userId, {
             uploadStream,
-            meta: {
-                filename: meta.filename,
-                mimetype: meta.mimetype
-            }
+            meta
         });
 
         return createdFile;

@@ -359,5 +359,6 @@ class NotesDAL {
     }
 }
 
-// @ts-ignore: ToDo fix types
-export default new (decorateWithCache<NotesDAL>(NotesDAL))();
+const NotesDALWithCache = decorateWithCache(NotesDAL);
+
+export default new NotesDALWithCache();
