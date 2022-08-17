@@ -5,40 +5,22 @@ import { withCache } from './utils';
 import { REORDERING_TYPES_TYPE } from './notes.enums';
 
 type TNoteEssential = {
-    title: string,
-    description: string,
-    files?: TFile[]
+    title: string;
+    description: string;
+    files?: TFile[];
 };
 
 type TNoteFull = TNoteEssential & {
-    id: number,
-    files: TFile[]
+    id: number;
+    files: TFile[];
 };
 
-const mapNote = note => ({
+const mapNote = (note) => ({
     id: note.id,
     title: note.title,
     description: note.description,
     files: note.files || []
 });
-
-const withinTransaction = async processingCallback => {
-    const transaction = await db.sequelize.transaction({
-        isolationLevel: 'SERIALIZABLE',
-        type: 'EXCLUSIVE'
-    });
-
-    try {
-        const result = await processingCallback(transaction);
-
-        await transaction.commit();
-
-        return result;
-    } catch (err) {
-        await transaction.rollback();
-        throw err;
-    }
-};
 
 const REORDERING_TYPES = {
     INSERT_BEFORE: 'INSERT_BEFORE',
@@ -53,14 +35,11 @@ const decorateWithCache = withCache({
             maxAge: 1000 * 60 * 10, // 10 minutes
             paramNumberAsCacheKey: 0,
             getParamsForCachedMethod: (
-                name, // one of `refreshCacheAfterCalls`
+                name: 'create' | 'update' | 'reorder' | 'remove',
                 args // with which arguments it is invoked
             ) => {
-                if (name === 'reorder') {
-                    return [args[0].noteId];
-                }
-
-                return [args[0]];
+                const userId = args[0];
+                return [userId];
             }
         }
     ]
@@ -74,11 +53,11 @@ class NotesDAL {
     }
 
     async getById(userId: number, noteId: number): Promise<TNoteFull | null> {
-        const note = await db.Notes.findOne({
-            where: { id: noteId, userId }
+        const note = await db.notes.findUnique({
+            where: { id: noteId }
         });
 
-        if (!note) {
+        if (!note || note.userId !== userId) {
             return null;
         }
 
@@ -86,38 +65,32 @@ class NotesDAL {
     }
 
     async create(userId: number, note: TNoteEssential): Promise<TNoteFull> {
-        const createdNote = await withinTransaction(async transaction => {
-            const lastNote = await db.Notes.findOne(
-                {
-                    where: { nextId: null }
-                },
-                { transaction, lock: transaction.LOCK.UPDATE }
-            );
+        // @ts-ignore
+        const createdNote = await db.$transaction(async (db) => {
+            const [lastNote] = await db.notes.findMany({
+                where: { nextId: null }
+            });
             // eslint-disable-next-line no-shadow
-            const createdNote = await db.Notes.create(
-                {
+            const createdNote = await db.notes.create({
+                data: {
                     title: note.title,
                     description: note.description,
                     files: note.files || [],
                     prevId: lastNote ? lastNote.id : null,
                     nextId: null,
                     userId
-                },
-                { transaction, lock: transaction.LOCK.UPDATE }
-            );
+                }
+            });
 
             if (lastNote) {
-                await db.Notes.update(
-                    {
+                await db.notes.update({
+                    data: {
                         nextId: createdNote.id
                     },
-                    {
-                        where: {
-                            id: lastNote.id
-                        }
-                    },
-                    { transaction, lock: transaction.LOCK.UPDATE }
-                );
+                    where: {
+                        id: lastNote.id
+                    }
+                });
             }
 
             return createdNote;
@@ -128,66 +101,59 @@ class NotesDAL {
 
     async update(userId: number, note: TNoteFull): Promise<TNoteFull> {
         const noteId = note.id;
-        const affectedRecords = await db.Notes.update(note, {
+        const updatedNote = await db.notes.update({
+            data: note,
             where: {
-                id: noteId,
-                userId
-            },
-            returning: true,
-            plain: true
+                id: noteId
+            }
         });
-        const updatedNote = affectedRecords[1];
 
         return mapNote(updatedNote);
     }
 
-    async reorder(params: {
-        noteId: number,
-        reorderingType: REORDERING_TYPES_TYPE,
-        anchorNoteId: number
-    }): Promise<void> {
+    async reorder(
+        userId: number,
+        params: {
+            noteId: number;
+            reorderingType: REORDERING_TYPES_TYPE;
+            anchorNoteId: number;
+        }
+    ): Promise<void> {
         const { noteId, reorderingType, anchorNoteId } = params;
 
-        await withinTransaction(async transaction => {
-            const insertBetweenSiblings = async (
-                { targetNoteId, newPrevId = null, newNextId = null },
-                transactionParams // eslint-disable-line no-shadow
-            ) => {
-                await db.Notes.update(
-                    {
+        // @ts-ignore
+        await db.$transaction(async (db) => {
+            const insertBetweenSiblings = async ({
+                targetNoteId,
+                newPrevId = null,
+                newNextId = null
+            }) => {
+                await db.notes.update({
+                    data: {
                         prevId: newPrevId,
                         nextId: newNextId
                     },
-                    {
-                        where: {
-                            id: targetNoteId
-                        }
-                    },
-                    transactionParams
-                );
+                    where: {
+                        id: targetNoteId
+                    }
+                });
 
                 if (newNextId) {
-                    await db.Notes.update(
-                        { prevId: targetNoteId },
-                        {
-                            where: {
-                                id: newNextId
-                            }
-                        },
-                        transactionParams
-                    );
+                    await db.notes.update({
+                        data: { prevId: targetNoteId },
+                        where: {
+                            id: newNextId
+                        }
+                    });
                 }
 
                 if (newPrevId) {
-                    await db.Notes.update(
-                        { nextId: targetNoteId },
-                        {
-                            where: {
-                                id: newPrevId
-                            }
-                        },
-                        transactionParams
-                    );
+                    await db.notes.update({
+                        data: { nextId: targetNoteId },
+                        where: {
+                            id: newPrevId
+                        }
+                    });
                 }
             };
             const getNewSiblings = (reorderType, anchorNoteItem) => {
@@ -203,71 +169,46 @@ class NotesDAL {
                     nextId: anchorNoteItem.id
                 };
             };
-            const transactionParams = {
-                transaction,
-                lock: transaction.LOCK.UPDATE
-            };
             const [note, anchorNote] = await Promise.all([
-                db.Notes.findOne(
-                    {
-                        where: {
-                            id: noteId
-                        }
-                    },
-                    transactionParams
-                ),
-                db.Notes.findOne(
-                    {
-                        where: {
-                            id: anchorNoteId
-                        }
-                    },
-                    transactionParams
-                )
+                db.notes.findUnique({
+                    where: {
+                        id: noteId
+                    }
+                }),
+                db.notes.findUnique({
+                    where: {
+                        id: anchorNoteId
+                    }
+                })
             ]);
             const newSiblings = getNewSiblings(reorderingType, anchorNote);
 
-            await insertBetweenSiblings(
-                {
-                    targetNoteId: noteId,
-                    newPrevId: newSiblings.prevId,
-                    newNextId: newSiblings.nextId
-                },
-                transactionParams
-            );
-            // @ts-ignore
-            await this._connectOldSiblings(note, transactionParams);
+            await insertBetweenSiblings({
+                targetNoteId: noteId,
+                newPrevId: newSiblings.prevId,
+                newNextId: newSiblings.nextId
+            });
+
+            await this._connectOldSiblings(db, note);
         });
     }
 
     async remove(userId: number, noteId: number): Promise<void> {
-        await withinTransaction(async transaction => {
-            const transactionParams = {
-                transaction,
-                lock: transaction.LOCK.UPDATE
-            };
-            const targetNote = await db.Notes.findOne(
-                {
-                    where: {
-                        id: noteId
-                    }
-                },
-                transactionParams
-            );
+        // @ts-ignore
+        await db.$transaction(async (db) => {
+            const targetNote = await db.notes.findUnique({
+                where: {
+                    id: noteId
+                }
+            });
 
-            // @ts-ignore
-            await this._connectOldSiblings(targetNote, transactionParams);
+            await this._connectOldSiblings(db, targetNote);
 
-            // todo remove related files
-            await db.Notes.destroy(
-                {
-                    where: {
-                        id: noteId,
-                        userId
-                    }
-                },
-                transactionParams
-            );
+            await db.notes.delete({
+                where: {
+                    id: noteId
+                }
+            });
         });
     }
 
@@ -275,9 +216,9 @@ class NotesDAL {
         userId: number,
         noteIds: number[]
     ): Promise<boolean> {
-        const notes = await db.Notes.findAll({
+        const notes = await db.notes.findMany({
             where: {
-                id: noteIds,
+                id: { in: noteIds },
                 userId
             }
         });
@@ -286,60 +227,54 @@ class NotesDAL {
     }
 
     async _connectOldSiblings(
-        targetNote: { prevId: number | null, nextId: number | null },
-        transactionParams
+        db,
+        targetNote: { prevId: number | null; nextId: number | null }
     ): Promise<void> {
         const { prevId, nextId } = targetNote;
 
         if (prevId) {
-            await db.Notes.update(
-                { nextId },
-                {
-                    where: {
-                        id: prevId
-                    }
-                },
-                transactionParams
-            );
+            await db.notes.update({
+                data: { nextId },
+                where: {
+                    id: prevId
+                }
+            });
         }
 
         if (nextId) {
-            await db.Notes.update(
-                { prevId },
-                {
-                    where: {
-                        id: nextId
-                    }
-                },
-                transactionParams
-            );
+            await db.notes.update({
+                data: { prevId },
+                where: {
+                    id: nextId
+                }
+            });
         }
     }
 
     async _getSortedNotesByUserId(userId: number): Promise<TNoteFull[]> {
-        const notesList = await db.Notes.findAll({
+        const notesList = await db.notes.findMany({
             where: { userId }
         });
 
-        const isNotFirstAndLastNotesAvailableCheck = notes => {
+        const isNotFirstAndLastNotesAvailableCheck = (notes) => {
             if (notesList.length === 0) {
                 return false;
             }
 
-            const firstNote = notes.find(note => !note.nextId);
-            const lastNote = notes.find(note => !note.prevId);
+            const firstNote = notes.find((note) => !note.nextId);
+            const lastNote = notes.find((note) => !note.prevId);
 
             return !(firstNote && lastNote);
         };
-        const isBrokenReferenceCheck = notes => {
+        const isBrokenReferenceCheck = (notes) => {
             if (notesList.length === 0) {
                 return false;
             }
 
-            const firstNote = notes.find(note => !note.nextId);
+            const firstNote = notes.find((note) => !note.nextId);
             const passedNotesSet = new Set([firstNote]);
-            const getNoteById = noteId =>
-                notes.find(note => note.id === noteId);
+            const getNoteById = (noteId) =>
+                notes.find((note) => note.id === noteId);
             let nextNote = getNoteById(firstNote.prevId);
 
             while (nextNote) {
@@ -357,9 +292,8 @@ class NotesDAL {
 
             return false;
         };
-        const isNotFirstAndLastNotesAvailable = isNotFirstAndLastNotesAvailableCheck(
-            notesList
-        );
+        const isNotFirstAndLastNotesAvailable =
+            isNotFirstAndLastNotesAvailableCheck(notesList);
         const isBrokenReference = isBrokenReferenceCheck(notesList);
         const isWrongRefs =
             isNotFirstAndLastNotesAvailable || isBrokenReference;
@@ -389,9 +323,9 @@ class NotesDAL {
         }
 
         const sortedNotesList = [];
-        const getNoteById = noteId =>
-            notesList.find(note => note.id === noteId);
-        let nextNote = notesList.find(note => !note.nextId);
+        const getNoteById = (noteId) =>
+            notesList.find((note) => note.id === noteId);
+        let nextNote = notesList.find((note) => !note.nextId);
 
         while (nextNote) {
             sortedNotesList.push(nextNote);
@@ -402,22 +336,20 @@ class NotesDAL {
     }
 
     async _autoFixBrokenRefs(notesIds: number[]): Promise<void> {
-        await withinTransaction(async transaction => {
+        // @ts-ignore
+        await db.$transaction(async (db) => {
             const allUpdatesPromises = notesIds.map((noteId, index) => {
                 const isFirst = index === 0;
                 const isLast = index === notesIds.length - 1;
-                const updatePromise = db.Notes.update(
-                    {
+                const updatePromise = db.notes.update({
+                    where: {
+                        id: noteId
+                    },
+                    data: {
                         prevId: isFirst ? null : notesIds[index - 1],
                         nextId: isLast ? null : notesIds[index + 1]
-                    },
-                    {
-                        where: {
-                            id: noteId
-                        }
-                    },
-                    { transaction, lock: transaction.LOCK.UPDATE }
-                );
+                    }
+                });
 
                 return updatePromise;
             });
@@ -427,5 +359,6 @@ class NotesDAL {
     }
 }
 
-// @ts-ignore
-export default new (decorateWithCache(NotesDAL))();
+const NotesDALWithCache = decorateWithCache(NotesDAL);
+
+export default new NotesDALWithCache();

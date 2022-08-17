@@ -4,6 +4,8 @@ const MAX_CACHE_SIZE = 1024 * 1024 * 10; // 10 megabytes
 const DISPOSE_OLD_CACHE_INTERVAL_MS = 1000 * 60 * 10; // 10 minutes
 
 class CacheProvider {
+    private _cache: Cache;
+
     constructor() {
         this._cache = new Cache({
             max: MAX_CACHE_SIZE,

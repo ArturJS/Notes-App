@@ -88,7 +88,6 @@ NoteReadonlyMode.propTypes = {
     // eslint-disable-next-line react/no-unused-prop-types
     onEdit: PropTypes.func.isRequired,
     isLoading: PropTypes.func.isRequired,
-    wrapUrlLinks: PropTypes.func.isRequired,
     handleEdit: PropTypes.func.isRequired,
     handleRemove: PropTypes.func.isRequired
 };

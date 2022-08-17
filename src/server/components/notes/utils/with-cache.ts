@@ -3,15 +3,15 @@ import { cacheProvider } from './cache-provider';
 type TArray = Array<any>;
 type TConfigParams = {
     methods: Array<{
-        name: string,
-        refreshCacheAfterCalls: Array<string>,
-        maxAge: number,
-        paramNumberAsCacheKey: number,
+        name: string;
+        refreshCacheAfterCalls: Array<string>;
+        maxAge: number;
+        paramNumberAsCacheKey: number;
         getParamsForCachedMethod: (
             name: string, // one of `refreshCacheAfterCalls`
             args: TArray // with which arguments it is invoked
-        ) => TArray
-    }>
+        ) => TArray;
+    }>;
 };
 
 const INVALIDATE_CACHE = Symbol('Invalidate cache');
@@ -19,7 +19,7 @@ const INVALIDATE_CACHE = Symbol('Invalidate cache');
 const difference = (a: TArray, b: TArray) => {
     const s = new Set(b);
 
-    return a.filter(x => !s.has(x));
+    return a.filter((x) => !s.has(x));
 };
 
 const uniqueElements = (arr: TArray) => [...new Set(arr)];
@@ -28,8 +28,8 @@ const validateParams = ({
     methods,
     classMethods
 }: {
-    methods: Partial<TConfigParams['methods']>,
-    classMethods: Array<string>
+    methods: Partial<TConfigParams['methods']>;
+    classMethods: Array<string>;
 }): void => {
     const allMethodNames = methods
         .map(({ name, refreshCacheAfterCalls }) => [
@@ -59,9 +59,9 @@ const validateParams = ({
 
 const withCaching = ({ wrappedMethod, paramNumberAsCacheKey, maxAge }) => {
     // eslint-disable-next-line no-param-reassign
-    wrappedMethod[INVALIDATE_CACHE] = async key => cacheProvider.del(key);
+    wrappedMethod[INVALIDATE_CACHE] = async (key) => cacheProvider.del(key);
 
-    return async function(...args) {
+    return async function (...args) {
         const key = args[paramNumberAsCacheKey];
         const cachedResult = await cacheProvider.get(key);
 
@@ -83,7 +83,7 @@ const withRefreshCache = ({
     paramNumberAsCacheKey,
     getParamsForCachedMethod
 }) =>
-    async function(...args) {
+    async function (...args) {
         const result = await wrappedMethod.apply(this, args);
         const params = getParamsForCachedMethod(wrappedMethod.name, args);
 
@@ -105,7 +105,7 @@ const wrapMethods = ({ prototype, methods }) => {
             paramNumberAsCacheKey,
             getParamsForCachedMethod
         }) => {
-            refreshCacheAfterCalls.forEach(methodName => {
+            refreshCacheAfterCalls.forEach((methodName) => {
                 // eslint-disable-next-line no-param-reassign
                 prototype[methodName] = withRefreshCache({
                     wrappedMethod: prototype[methodName],
@@ -125,14 +125,14 @@ const wrapMethods = ({ prototype, methods }) => {
     );
 };
 
-export const withCache = ({ methods }: TConfigParams) => (
-    wrappedClass: Function
-) => {
-    const { prototype } = wrappedClass;
-    const classMethods = Object.getOwnPropertyNames(prototype);
+export const withCache =
+    ({ methods }: TConfigParams) =>
+    <T>(wrappedClass: T): T => {
+        const { prototype } = wrappedClass as unknown as { prototype: any };
+        const classMethods = Object.getOwnPropertyNames(prototype);
 
-    validateParams({ methods, classMethods });
-    wrapMethods({ prototype, methods });
+        validateParams({ methods, classMethods });
+        wrapMethods({ prototype, methods });
 
-    return wrappedClass;
-};
+        return wrappedClass;
+    };
