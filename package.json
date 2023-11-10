@@ -18,7 +18,7 @@
     "@koa/cors": "2.2.1",
     "@prisma/client": "^4.1.1",
     "async-busboy": "0.6.2",
-    "axios": "0.21.2",
+    "axios": "1.6.0",
     "axios-mock-adapter": "1.15.0",
     "classnames": "2.2.5",
     "dotenv-safe": "5.0.1",
