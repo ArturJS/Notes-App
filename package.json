@@ -39,7 +39,7 @@
     "mime-types": "2.1.18",
     "next": "13.5.6",
     "next-pwa": "^5.4.4",
-    "nodemailer": "^6.1.1",
+    "nodemailer": "^6.9.9",
     "passport-local": "^1.0.0",
     "pg": "^8.0.3",
     "pg-hstore": "2.3.2",
